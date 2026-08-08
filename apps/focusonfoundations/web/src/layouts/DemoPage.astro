@@ -1,0 +1,23 @@
+---
+import SiteLayout from '../components/SiteLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import QragDemo from '../components/QragDemo.astro';
+
+const { demo } = Astro.props;
+---
+<SiteLayout title={`${demo.title} — Focus on Foundations`} description={demo.description}>
+  <Header />
+  <main class="demo-page-header">
+    <div class="container">
+      <p><a href="/demos/">← All demos</a></p>
+      <h1>{demo.title}</h1>
+      <p class="lead">{demo.description}</p>
+      {demo.transcriptIndexPath && (
+        <p><a href={demo.transcriptIndexPath}>Browse source transcripts and Q&amp;A →</a></p>
+      )}
+      <QragDemo demo={demo} />
+    </div>
+  </main>
+  <Footer />
+</SiteLayout>

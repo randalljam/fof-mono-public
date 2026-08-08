@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "removesingleplayer",
+  "version": "${version}",
+  "name": "Remove Singleplayer",
+  "description": "Hides the Singleplayer button on the Minecraft main menu.",
+  "authors": [
+    "KidGames"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.kidgames.removesingleplayer.RemoveSingleplayerClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "fabric-api": "*",
+    "minecraft": "~1.21.1",
+    "java": ">=21"
+  }
+}

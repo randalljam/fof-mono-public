@@ -1,0 +1,90 @@
+# Prism Sync — canonical config (computers, filters, rsync excludes, server port).
+# Human reference: docs/personal/computer-info.md
+
+[server]
+port = 8770
+
+[paths]
+instances_dir = "~/Library/Application Support/PrismLauncher/instances"
+icons_dir = "~/Library/Application Support/PrismLauncher/icons"
+remote_instances_dir = "Library/Application Support/PrismLauncher/instances"
+remote_icons_dir = "Library/Application Support/PrismLauncher/icons"
+log_file = "_data/prism-sync_log.md"
+
+[[computers]]
+id = "master"
+name = "computer-name"
+label = "label"
+host = "your-host.local"
+user = "your-user"
+role = "master"
+enabled = true
+order = 0
+
+[[computers]]
+id = "1"
+name = "computer-name"
+label = "label"
+host = "your-host.local"
+user = "your-user"
+role = "target"
+enabled = true
+order = 1
+
+[[computers]]
+id = "2"
+name = "computer-name"
+label = "label"
+host = "your-host.local"
+user = "your-user"
+role = "target"
+enabled = true
+order = 2
+
+[[computers]]
+id = "4"
+name = "computer-name"
+label = "label"
+host = "your-host.local"
+user = "your-user"
+role = "target"
+enabled = true
+order = 3
+
+[[computers]]
+id = "3"
+name = "computer-name"
+label = "label"
+host = "your-host.local"
+user = "your-user"
+role = "target"
+enabled = true
+order = 4
+
+[instance_filters]
+excludes = ["_Base"]
+includes = []
+
+[[rsync_excludes]]
+path = "minecraft/saves/"
+label = "label"
+
+[[rsync_excludes]]
+path = "minecraft/screenshots/"
+label = "label"
+
+[[rsync_excludes]]
+path = "minecraft/logs/"
+label = "label"
+
+[[rsync_excludes]]
+path = "minecraft/crash-reports/"
+label = "label"
+
+[[rsync_excludes]]
+path = "minecraft/config/options.txt"
+label = "label"
+
+[[rsync_excludes]]
+path = "minecraft/options.txt"
+label = "label"

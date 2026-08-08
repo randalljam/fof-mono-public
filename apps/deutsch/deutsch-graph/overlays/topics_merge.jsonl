@@ -1,0 +1,5 @@
+# Topic consolidations applied at build time, before topic-id assignment.
+# One JSON object per line: {"from": "<label as it appears in TOPICS fields>", "to": "<canonical label>"}
+# Comment lines (#) are ignored. Case-insensitive match on "from".
+# Source of candidate merges: data/deutsch/log_2024-09-17_topics review.md (many were already
+# applied to the corpus files; add entries here only for merges verified still needed).

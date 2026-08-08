@@ -1,0 +1,17 @@
+---
+import SiteLayout from '../../components/SiteLayout.astro';
+import CountingCreatures from '../../components/applets/CountingCreatures.jsx';
+---
+<SiteLayout
+  title="Counting Creatures — Focus on Foundations"
+  description="An interactive lesson on number bases: count like a human (base 10), a sloth (base 6), and a computer (base 2)."
+  favicon="/favicon-counting-creatures.svg"
+  noindex
+>
+  <noscript>
+    <p style="padding: 2rem; text-align: center; font-family: system-ui, sans-serif;">
+      Counting Creatures needs JavaScript. Please enable it and reload.
+    </p>
+  </noscript>
+  <CountingCreatures client:load />
+</SiteLayout>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MathQuest Control Panel</title>
+  <link rel="stylesheet" href="/control-panel.css">
+</head>
+<body>
+  <main>
+    <header class="topbar">
+      <div>
+        <h1>MathQuest Control Panel</h1>
+        <p id="server-line">Connecting...</p>
+      </div>
+      <div class="global-controls">
+        <label>Mode <select id="quiz-mode"><option value="npc">NPC</option><option value="popup">Popup</option></select></label>
+        <label>Multiple NPCs <input id="allow-multiple" type="checkbox"></label>
+        <label>Despawn <input id="despawn-seconds" type="number" min="10" max="3600" step="10"></label>
+        <label>Evaluator code <input id="evaluator-code"></label>
+        <a class="button-link" href="/quest.html" target="_blank" rel="noreferrer">Quest Panel</a>
+        <a class="button-link" href="/mob-spawn.html" target="_blank" rel="noreferrer">Mob Spawn Panel</a>
+        <button id="vanish-all">Vanish All</button>
+      </div>
+    </header>
+    <section id="players" class="player-grid"></section>
+    <section class="gallery">
+      <button id="gallery-toggle" class="gallery-toggle">NPC Gallery</button>
+      <div id="gallery-body" class="gallery-body"></div>
+    </section>
+    <section class="reward-groups">
+      <button id="reward-groups-toggle" class="gallery-toggle">Reward Groups</button>
+      <div id="reward-groups-body" class="reward-groups-body">
+        <div class="reward-groups-toolbar">
+          <button id="add-reward-group" type="button">Add group</button>
+        </div>
+        <div id="reward-groups-list" class="reward-groups-list"></div>
+      </div>
+    </section>
+  </main>
+  <template id="player-card-template">
+    <article class="player-card">
+      <div class="player-head">
+        <select class="player-select"></select>
+        <label class="real-name-row"><span>Real name</span><input class="real-name" type="text" autocomplete="off"></label>
+        <div class="online-state"></div>
+        <div class="tp-credit-balance" aria-live="polite">TP credits: 0</div>
+      </div>
+      <div class="settings-grid">
+        <label>Operation <select class="operation"><option value="addition">Addition</option><option value="subtraction">Subtraction</option><option value="multiplication">Multiplication</option><option value="division">Division</option><option value="exponentiation">Exponentiation</option></select></label>
+        <label>Quiz type <select class="quiz-type"><option value="standard_arithmetic">Standard arithmetic</option><option value="written_column_arithmetic">Written column arithmetic</option></select></label>
+        <label class="full-row">Quiz source <select class="quiz-source"><option value="generated">Use settings below</option><option value="internal_problem_list">Use internal problem list</option><option value="internal_quick_quiz">Use internal quick quiz</option><option value="internal_fluency_feast">Use internal fluency feast</option></select></label>
+        <label>Range <input class="range" placeholder="0-9"></label>
+        <label>Problems <input class="problems" type="number" min="1" max="50"></label>
+        <label class="check tp-credit-setting">Earn TP credits <input class="tp-credit-earning" type="checkbox"></label>
+        <label class="tp-credit-setting">Credits per quiz <input class="tp-credits-per-quiz" type="number" min="1" max="100" step="1" value="1"></label>
+        <label class="full-row tp-credit-setting">Reward choice <select class="tp-credit-reward-choice"><option value="teleport">Teleport (1 credit)</option></select></label>
+        <label>Reward count <input class="reward-count" type="number" min="1" max="64"></label>
+        <label>Reward item <input class="reward-item" list="reward-item-list"></label>
+        <label>Fluency reward count <input class="fluency-reward-count" type="number" min="1" max="64"></label>
+        <label>Fluency reward item <input class="fluency-reward-item" list="reward-item-list"></label>
+        <label>Spawn distance <input class="radius" type="number" min="1" max="64" value="10"></label>
+        <label>NPC <select class="npc-select"></select></label>
+        <label class="check">Lock to player <input class="lock" type="checkbox" checked></label>
+      </div>
+      <div class="actions">
+        <button class="spawn">Spawn NPC</button>
+        <button class="open">Open Quiz</button>
+        <button class="vanish">Vanish</button>
+      </div>
+      <div class="status"></div>
+      <div class="mob-tools">
+        <label>Mob <input class="mob-id" list="mob-list" placeholder="zombie"></label>
+        <label>Mobs <input class="mob-count" type="number" min="1" max="100" value="10"></label>
+        <label>Radius <input class="mob-radius" type="number" min="1" max="128" value="20"></label>
+        <button class="spawn-mobs">Spawn Mobs</button>
+        <div class="mob-status"></div>
+      </div>
+    </article>
+  </template>
+  <datalist id="item-list"></datalist>
+  <datalist id="reward-item-list"></datalist>
+  <datalist id="reward-group-list"></datalist>
+  <datalist id="mob-list"></datalist>
+  <script src="/item-list.js"></script>
+  <script src="/mob-list.js"></script>
+  <script src="/control-panel.js"></script>
+</body>
+</html>

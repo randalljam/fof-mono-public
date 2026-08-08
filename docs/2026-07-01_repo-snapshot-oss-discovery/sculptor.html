@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sculptor (Imbue) — deep dive for the fof-mono workflow</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161d29; --panel2:#1c2634; --border:#243040; --border2:#2f3d50;
+    --ink:#e6edf3; --muted:#9aa7b6; --dim:#6d7b8c; --accent:#58a6ff; --accent2:#7ee787;
+    --gold:#f0c674; --amber:#eb9f4b; --pink:#ff7b9c; --violet:#bc8cff; --teal:#39d3c3; --red:#ff6b6b;
+    --shadow:0 8px 30px rgba(0,0,0,.4);
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:linear-gradient(180deg,#0b0f16,#0d1117 400px);color:var(--ink);font-family:var(--sans);line-height:1.55;font-size:15px}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  code{font-family:var(--mono);background:#0b1220;border:1px solid var(--border);border-radius:5px;padding:1px 5px;font-size:.86em;color:#cde3ff}
+  h1,h2,h3,h4{line-height:1.25;margin:0}
+  .layout{display:grid;grid-template-columns:250px 1fr;gap:0;max-width:1440px;margin:0 auto}
+  nav.side{position:sticky;top:0;height:100vh;overflow-y:auto;padding:26px 16px 40px;border-right:1px solid var(--border);background:rgba(10,14,20,.6);backdrop-filter:blur(6px)}
+  nav.side .brand{font-weight:800;font-size:16px;letter-spacing:.4px}
+  nav.side .brand span{color:var(--amber)}
+  nav.side .sub{color:var(--dim);font-size:11.5px;margin:4px 0 22px;font-family:var(--mono)}
+  nav.side a.navlink{display:block;color:var(--muted);padding:7px 11px;border-radius:8px;font-size:13.5px;margin:2px 0;border:1px solid transparent}
+  nav.side a.navlink:hover{background:var(--panel);color:var(--ink);text-decoration:none}
+  nav.side a.navlink.active{background:var(--panel2);color:#fff;border-color:var(--border2)}
+  nav.side a.navlink .n{color:var(--dim);font-family:var(--mono);font-size:11px;margin-right:8px}
+  nav.side .foot{margin-top:22px;color:var(--dim);font-size:11px;border-top:1px solid var(--border);padding-top:14px}
+  main{padding:34px 44px 120px;min-width:0}
+  section{margin-bottom:58px;scroll-margin-top:20px}
+  .eyebrow{font-family:var(--mono);color:var(--amber);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+  .hero h1{font-size:34px;margin:10px 0 6px;letter-spacing:-.5px}
+  .hero .lede{color:var(--muted);font-size:17px;max-width:820px}
+  h2.sec{font-size:24px;margin-bottom:6px;letter-spacing:-.3px}
+  .sec-lede{color:var(--muted);max-width:840px;margin-bottom:18px}
+  h3.sub{font-size:17px;margin:26px 0 10px;color:#fff;border-left:3px solid var(--amber);padding-left:10px}
+  .kicker{color:var(--amber);font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+  .callout{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-left:4px solid var(--amber);border-radius:10px;padding:16px 20px;margin:16px 0}
+  .callout.gold{border-left-color:var(--gold)} .callout.pink{border-left-color:var(--pink)} .callout.teal{border-left-color:var(--teal)} .callout.blue{border-left-color:var(--accent)}
+  .callout h4{font-size:15px;margin-bottom:6px} .callout p{margin:6px 0;color:var(--muted);font-size:14px} .callout b{color:var(--ink)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+  .card:hover{border-color:var(--border2)}
+  .card h4{font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .card .desc{color:var(--muted);font-size:13.5px;margin:8px 0} .card b{color:var(--ink)}
+  .card ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:13px} .card li{margin:4px 0}
+  ul.tidy{margin:8px 0;padding-left:20px;color:var(--muted);font-size:14px} ul.tidy li{margin:6px 0} ul.tidy b{color:var(--ink)}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{color:var(--dim);font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px}
+  tr:hover td{background:var(--panel)}
+  td .s{font-family:var(--mono);font-size:12px;color:#cde3ff}
+  .scroll{overflow-x:auto;border:1px solid var(--border);border-radius:10px}
+  .tag{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:6px;background:#0b1220;border:1px solid var(--border);color:var(--dim)}
+  .uv{font-family:var(--mono);font-size:9.5px;padding:1px 6px;border-radius:5px;border:1px solid #a83;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+  .verdict{font-family:var(--mono);font-size:10.5px;padding:2px 9px;border-radius:20px;white-space:nowrap}
+  .v-yes{color:var(--accent2);border:1px solid #2b5} .v-partial{color:var(--gold);border:1px solid #a83} .v-no{color:var(--red);border:1px solid #a33}
+  /* lanes diagram */
+  .lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0 6px}
+  @media(max-width:820px){.lanes{grid-template-columns:1fr}.layout{grid-template-columns:1fr}nav.side{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border)}main{padding:24px}}
+  .lane{background:var(--panel);border:1px solid var(--border2);border-radius:11px;padding:14px 15px}
+  .lane .loc{font-family:var(--mono);font-size:10.5px;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+  .lane.local .loc{color:var(--amber)} .lane.cloud .loc{color:var(--accent)}
+  .lane h4{font-size:14.5px;color:#fff} .lane p{color:var(--muted);font-size:12.5px;margin:6px 0 0}
+  .lane .eng{margin-top:9px;display:flex;gap:6px;flex-wrap:wrap}
+  .band{margin-top:10px;border-radius:11px;padding:13px 16px;border:1px dashed var(--amber);background:rgba(235,159,75,.07)}
+  .band b{color:var(--amber)} .band p{margin:5px 0 0;color:var(--muted);font-size:13px}
+  .band.cloud{border-color:var(--accent);background:rgba(88,166,255,.06)} .band.cloud b{color:var(--accent)}
+  .backlink{display:inline-block;margin-bottom:16px;font-family:var(--mono);font-size:12px;color:var(--dim)}
+  .flowline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin:6px 0}
+  .flowline .chip{font-family:var(--mono);font-size:11.5px;background:#0b1220;border:1px solid var(--border2);border-radius:7px;padding:4px 9px;color:#cde3ff}
+  .flowline .arr{color:var(--dim)}
+  .step{display:flex;gap:12px;margin:12px 0;align-items:flex-start}
+  .step .n{font-family:var(--mono);color:#1a1206;background:var(--amber);border-radius:7px;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex:none}
+  .step .b b{color:#fff} .step .b p{margin:3px 0 0;color:var(--muted);font-size:13.5px}
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="side">
+    <div class="brand">Sculptor <span>· deep dive</span></div>
+    <div class="sub">imbue-ai/sculptor · for fof-mono</div>
+    <a class="navlink active" href="#tldr"><span class="n">00</span>The practical read</a>
+    <a class="navlink" href="#how"><span class="n">01</span>How it works</a>
+    <a class="navlink" href="#lanes"><span class="n">02</span>Your 3 lanes today</a>
+    <a class="navlink" href="#fit"><span class="n">03</span>Where Sculptor fits</a>
+    <a class="navlink" href="#friction"><span class="n">04</span>Frictions to plan for</a>
+    <a class="navlink" href="#try"><span class="n">05</span>A try-it plan</a>
+    <div class="foot">
+      <a href="index.html">← system snapshot</a> · <a href="index.html#discovery">OSS discovery</a><br><br>
+      Sources: <code>github.com/imbue-ai/sculptor</code>, imbue.com blog + docs, Show HN, reviews (mid-2026). Some internals hedged — see the <span class="uv">unverified</span> tags.
+    </div>
+  </nav>
+
+  <main>
+    <a class="backlink" href="index.html#discovery">← OSS discovery · top pick #1</a>
+
+    <section id="tldr" class="hero">
+      <div class="eyebrow">Deep dive · OSS discovery top pick #1</div>
+      <h1>Sculptor by Imbue</h1>
+      <p class="lede">A free, open-source (MIT) <b style="color:var(--ink)">desktop app that manages many coding agents running in parallel</b>, each in its own isolated copy of your repo — and it runs <b style="color:var(--ink)">both Claude Code and Codex</b>, the two engines you already use locally. Its signature "Pairing Mode" syncs any agent's working tree and git state straight into your Cursor window so you can test and hand-edit its work. In other words: it's a polished UI for the exact hand-rolled "one worktree per branch, one agent per window" workflow you built in your worktrees guide.</p>
+      <div class="callout amber">
+        <h4>The one-paragraph fit for your setup</h4>
+        <p>Sculptor is a <b>local-Mac tool for your two <em>local</em> lanes</b> (Cursor worktrees + Codex local worktrees). It consolidates them under one UI, adds real per-agent isolation (containers instead of a shared <code>.venv</code>), and bridges the gap you handle manually today — getting an agent's isolated work back into your IDE — via Pairing Mode. It does <b>not</b> touch your <b>Cataclysm cloud lane</b> or your iPhone flow: those stay on Claude Code's cloud. So think of Sculptor as "upgrade the local-parallel-agent lane," not "replace how I work everywhere."</p>
+      </div>
+      <div class="cards" style="margin-top:8px">
+        <div class="card"><h4>✅ What it's great at for you</h4><ul class="tidy" style="font-size:13px"><li>Running <b>3–5 local agents at once</b> across your projects, each isolated, in one window.</li><li>Mixing <b>Claude Code and Codex</b> per task without separate terminals/worktrees.</li><li><b>Pairing Mode</b> → an agent's branch appears live in Cursor to test/edit.</li><li>Integrated <b>GitHub PR</b> flow (via <code>gh</code>) matching your PR-level review.</li></ul></div>
+        <div class="card"><h4>⚠️ What to know going in</h4><ul class="tidy" style="font-size:13px"><li><b>Local &amp; Mac-only</b> (Apple Silicon); needs <b>Docker running</b> + the Claude CLI.</li><li>Introduces a <b>third worktree location</b>; your <code>_LOCAL_FILES</code>/bootstrap don't carry over as-is.</li><li>Auto-names branches <code>&lt;user&gt;/&lt;slug&gt;</code> — needs config to match your branch discipline.</li><li><b>Experimental research preview</b> — expect bugs and change.</li></ul></div>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="kicker">01 · Technical</div>
+      <h2 class="sec">How it works under the hood</h2>
+      <p class="sec-lede">Sculptor is an orchestrator, not a model. The frontend is a React/TypeScript desktop app; the backend is Python. It shells out to real agent CLIs and wraps them in isolation, review, and git plumbing.</p>
+
+      <h3 class="sub">Isolation — how parallel agents don't collide</h3>
+      <p class="desc" style="color:var(--muted)">Each unit of work is a <b style="color:var(--ink)">workspace</b> = one branch + one isolated working copy. Sculptor documents <b style="color:var(--ink)">three workspace modes</b>: <b>worktree</b> (a branched dir sharing your git history, at <code>~/.sculptor/workspaces/[ID]/code/</code>), <b>clone</b> (a fully independent copy with mirrored remotes), and <b>in-place</b> (edits your real repo — no isolation). Separately, an experimental <b>container backend</b> can run each agent inside a <b>Docker container</b> built from your dev-container spec, so it can install deps, run tests, and execute code without touching your machine.</p>
+      <div class="callout gold">
+        <h4>Important nuance — containers vs. worktrees <span class="uv">verify</span></h4>
+        <p>Imbue's <b>announcement/blog</b> describe a Docker <b>container per agent</b> as the whole point ("keeps your machine safe," deps baked into a cached image, "minutes → seconds"). The <b>open-source repo docs</b> say the <b>default</b> is a host <b>git worktree</b>, with the container path marked <b>experimental</b>. These probably reflect different generations/configs of the app. Practically: expect Docker to be involved, but confirm the current default on install — it changes the story on how it meshes with your existing worktrees.</p>
+      </div>
+
+      <h3 class="sub">The agent engine — Claude Code &amp; Codex, your keys</h3>
+      <ul class="tidy">
+        <li>Sculptor <b>runs Claude Code</b> (the Claude CLI is a setup prerequisite) and <b>supports Codex</b> (ships a Codex output schema + terminal-agent docs). You pick model, "fast mode," and effort in Settings.</li>
+        <li><b>Bring your own credentials</b>: your existing <b>Claude Pro/K2 subscription</b> (OAuth via the Claude CLI) or an Anthropic API key — same for OpenAI/Codex. Sculptor adds no model cost; you pay your own usage.</li>
+        <li>It <b>syncs your Claude Code config into every agent</b> <span class="uv">docs-snippet</span> — slash commands, subagents, and <b>MCP servers</b> — and reads repo-level <code>.claude/</code> plus user <code>~/.claude/skills</code> and <code>~/.claude/commands</code>. You can add custom MCP servers too.</li>
+      </ul>
+
+      <h3 class="sub">Pairing Mode — the headline feature</h3>
+      <p class="desc" style="color:var(--muted)">One toggle brings a chosen agent's work into your <b style="color:var(--ink)">local repo + IDE</b>, keeping <b style="color:var(--ink)">files and git state synced both ways</b> in real time, so you run/test/edit from your normal environment. The reported mechanism is <b>Mutagen</b> <span class="uv">high-confidence</span> — a bidirectional, filesystem-watching sync with three-way merge (not a git pull, not a bind mount). The agent sees your edits live; Sculptor flags likely merge conflicts and can hand them back to the agent; your local repo stays untouched until you deliberately <b>Pull</b>. Known limit: sync lag on repos with <b>&gt;10,000 files</b>.</p>
+
+      <h3 class="sub">Git &amp; PR model</h3>
+      <div class="flowline">
+        <span class="chip">workspace = branch <code>&lt;user&gt;/&lt;slug&gt;</code></span><span class="arr">→</span>
+        <span class="chip">commit on branch</span><span class="arr">→</span>
+        <span class="chip">Create PR (uses <code>gh</code>)</span><span class="arr">→</span>
+        <span class="chip">PR vs. target branch, status tracked in-app</span>
+      </div>
+      <p class="desc" style="color:var(--muted)">Multiple agents <em>can</em> share one workspace (same working copy — so they can conflict); real parallelism-without-conflict comes from <b style="color:var(--ink)">separate workspaces</b>. Extra git skills: <code>/stack</code> (dependent workspaces stacked on the current branch) and <code>/handoff</code> (move work to a fresh agent).</p>
+
+      <h3 class="sub">Extras worth knowing</h3>
+      <div class="cards">
+        <div class="card"><h4>"Suggestions" review agent</h4><p class="desc">An always-on (toggleable) reviewer that scans agent changes for fake "tests passed," CLAUDE.md violations, abstraction breaks, etc., and can fix them in parallel. Custom LLM checks supported. This is the "grounded" in the repo's "grounded, parallel coding agents."</p></div>
+        <div class="card"><h4>Repo &amp; env config</h4><p class="desc"><code>/setup-repo</code> writes <code>.sculptor/code.md</code> (structure, <b>branch naming</b>, build/run/pre-commit), <code>testing.md</code>, <code>docs.md</code>. Secrets via global + per-repo <code>.sculptor/.env</code>. Setup commands run at workspace creation; dev-container spec pre-bakes the image in container mode.</p></div>
+        <div class="card"><h4>Status &amp; license</h4><p class="desc"><b>MIT</b>, open source, <b>free in beta</b> (pay only your LLM usage). "Experimental research preview," actively maintained (public changelog). macOS Apple Silicon + Linux; Windows via WSL. Privacy tiers: Essential / Standard / Full-contribution.</p></div>
+      </div>
+    </section>
+
+    <section id="lanes">
+      <div class="kicker">02 · Grounding</div>
+      <h2 class="sec">Your three lanes today</h2>
+      <p class="sec-lede">To apply Sculptor precisely, here's your current setup as it reads from your worktrees guide and environment. You run three parallel-work lanes — two local, one cloud.</p>
+      <div class="lanes">
+        <div class="lane local">
+          <div class="loc">◆ local · Mac</div>
+          <h4>Cursor worktrees</h4>
+          <p>One branch per Cursor window, worktrees under <code>Documents/Code/</code>, shared <code>.venv</code>/<code>.env</code> via <code>_LOCAL_FILES</code>, <code>worktree_bootstrap.sh</code> publishes the branch to origin. Human-driven feature work.</p>
+          <div class="eng"><span class="tag">you + Cursor agent</span></div>
+        </div>
+        <div class="lane cloud">
+          <div class="loc">☁ cloud · Cataclysm</div>
+          <h4>Claude Code (VM)</h4>
+          <p>Your primary lane right now — almost exclusively Claude Code running in <b>Cataclysm</b>, an <code>anthropic_cloud</code> environment (active since 2026-04-04). Sessions push branches to origin; you review at PR level and pull into a Cursor worktree. Reachable from Mac <b>and iPhone</b>.</p>
+          <div class="eng"><span class="tag">Claude Code · cloud</span></div>
+        </div>
+        <div class="lane local">
+          <div class="loc">◆ local · Mac</div>
+          <h4>Codex local worktrees</h4>
+          <p>Codex-created worktrees at <code>~/.codex/worktrees/&lt;id&gt;/fof-mono</code>, disposable, lightweight venv setup (no full pip install), <code>.codex/environments/environment.toml</code> config. Used for build/test-heavy tasks (Minecraft/Gradle) that need local execution.</p>
+          <div class="eng"><span class="tag">Codex · local</span></div>
+        </div>
+      </div>
+      <div class="band">
+        <b>Sculptor sits across the two ◆ local lanes.</b>
+        <p>It natively runs Claude Code <em>and</em> Codex in parallel isolated workspaces on your Mac — exactly what the Cursor-worktree and Codex-worktree lanes do by hand — with one UI, container isolation, and Pairing Mode back into Cursor.</p>
+      </div>
+      <div class="band cloud">
+        <b>Sculptor does not touch the ☁ Cataclysm lane.</b>
+        <p>It's a local desktop app, so it can't run or manage your Claude Code cloud sessions, and it isn't available on iPhone. Your cloud/phone flow continues unchanged; Sculptor is additive on the Mac.</p>
+      </div>
+    </section>
+
+    <section id="fit">
+      <div class="kicker">03 · The application</div>
+      <h2 class="sec">Where Sculptor fits your workflow</h2>
+      <p class="sec-lede">Concretely, mapped to what you do now — what it replaces, augments, and leaves alone.</p>
+      <div class="scroll">
+      <table>
+        <thead><tr><th>What you do today</th><th>With Sculptor</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr><td>Manually create a Cursor worktree per branch, run <code>worktree_bootstrap.sh</code>, open a window, run one agent per terminal</td><td class="s">Click "new workspace" → isolated copy on its own branch, agent runs in it; many at once in one UI</td><td><span class="verdict v-yes">replaces</span></td></tr>
+          <tr><td>Codex in its own local worktrees mode with <code>.codex</code> config for build-heavy tasks</td><td class="s">Run Codex <em>inside</em> a Sculptor workspace alongside Claude Code agents — one manager for both engines</td><td><span class="verdict v-partial">consolidates</span></td></tr>
+          <tr><td>Shared <code>.venv</code> across worktrees (fast, but agents can clobber each other's deps)</td><td class="s">Per-agent container isolation — install deps &amp; run tests without touching your machine or other agents</td><td><span class="verdict v-yes">upgrades</span></td></tr>
+          <tr><td>Get an isolated agent's branch back into your IDE to test: fetch, make/enter a worktree, bootstrap</td><td class="s">Pairing Mode toggles the agent's tree+git live into your local checkout; edit in Cursor while it runs</td><td><span class="verdict v-yes">upgrades</span></td></tr>
+          <tr><td>Open a PR by hand / from Cursor after pushing</td><td class="s">"Create PR" pushes the branch and opens a GitHub PR vs. your target branch, status tracked in-app</td><td><span class="verdict v-partial">augments</span></td></tr>
+          <tr><td>Claude Code in <b>Cataclysm cloud</b> from Mac + iPhone (your primary lane)</td><td class="s">Not addressed — Sculptor is local desktop only</td><td><span class="verdict v-no">unchanged</span></td></tr>
+          <tr><td>Reviewing agent output for quality before merge</td><td class="s">"Suggestions" reviewer flags fake-passing tests, CLAUDE.md violations, abstraction breaks; can auto-fix</td><td><span class="verdict v-yes">adds</span></td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="callout teal">
+        <h4>The clean way to think about it</h4>
+        <p>You currently split work into <b>cloud (Cataclysm)</b> for autonomous runs and <b>local (Cursor + Codex worktrees)</b> for hands-on and build-heavy work. Sculptor is a <b>manager for that local lane</b>: instead of hand-wiring worktrees and terminals, you get a board of parallel isolated agents — Claude Code or Codex — that you can pull into Cursor the moment one produces something worth touching. It's most valuable exactly when you want to run <b>several local agents on several projects at once</b> and keep them from stepping on each other.</p>
+      </div>
+    </section>
+
+    <section id="friction">
+      <div class="kicker">04 · Honest</div>
+      <h2 class="sec">Frictions with your specific setup — and how to handle them</h2>
+      <div class="cards">
+        <div class="card"><h4><span class="dot"></span> A third worktree location</h4><p class="desc">You already have <code>Documents/Code/</code> worktrees and <code>~/.codex/worktrees/</code>. Sculptor adds <code>~/.sculptor/workspaces/</code>. <b>Handle:</b> decide Sculptor is the home for a <em>class</em> of work (e.g. all local parallel agent runs) rather than mixing it with hand-made Cursor worktrees on the same branches — one branch shouldn't live in two managers at once.</p></div>
+        <div class="card"><h4><span class="dot"></span> <code>_LOCAL_FILES</code> &amp; bootstrap don't carry over</h4><p class="desc">Your shared-venv symlinks and <code>worktree_bootstrap.sh</code> are Cursor-worktree-specific. Sculptor workspaces get their environment from <b>setup commands + dev-container spec + <code>.sculptor/.env</code></b> instead. <b>Handle:</b> re-express the essentials (venv install, env vars, local-file mounts) as Sculptor setup config once via <code>/setup-repo</code>. Container isolation is arguably better than the shared venv anyway.</p></div>
+        <div class="card"><h4><span class="dot"></span> Branch naming vs. your discipline</h4><p class="desc">Sculptor auto-names branches <code>&lt;user&gt;/&lt;slug&gt;</code> and can auto-open PRs. Your <code>AGENTS.md</code> mandates descriptive <code>feature/…</code> names, one working branch per session, and an ancestry ledger. <b>Handle:</b> set branch-naming + target-branch rules in <code>.sculptor/code.md</code>, and keep "open the PR" a deliberate step (as you do now) rather than fully automatic.</p></div>
+        <div class="card"><h4><span class="dot"></span> Docker + Mac-only + beta</h4><p class="desc">Needs Docker running, Apple Silicon, and it's an experimental preview. <b>Handle:</b> treat it as an evaluation on <em>non-production</em> work first (e.g. math-quiz, a kids' app), not on the qrag production path. Keep Cataclysm as your reliable primary lane while you trial it.</p></div>
+        <div class="card"><h4><span class="dot"></span> Big-repo sync lag</h4><p class="desc">Pairing Mode reportedly lags on repos with &gt;10k files. <code>fof-mono</code> is ~1,600 tracked files, so you're well under — but if <code>node_modules</code> or data dirs leak into a workspace, sync could bog down. <b>Handle:</b> your existing <code>.gitignore</code>/data-out-of-repo hygiene already helps here.</p></div>
+        <div class="card"><h4><span class="dot"></span> Two review systems</h4><p class="desc">Sculptor's "Suggestions" overlaps with the CI/AI-review floor you're planning (Fable 5 mission 2, CodeRabbit/PR-Agent). <b>Handle:</b> let Suggestions be the fast in-loop check on the Mac; keep the CI gate as the merge gate. They're complementary, not redundant.</p></div>
+      </div>
+    </section>
+
+    <section id="try">
+      <div class="kicker">05 · Do this</div>
+      <h2 class="sec">A concrete, low-risk try-it plan</h2>
+      <div class="step"><span class="n">1</span><div class="b"><b>Install &amp; first run.</b><p>On the Mac: ensure Docker is running and the Claude CLI is installed/logged in, download Sculptor (Apple Silicon), run the wizard, point it at a clone of <code>fof-mono</code>. Run <code>gh auth login</code> if you want in-app PRs.</p></div></div>
+      <div class="step"><span class="n">2</span><div class="b"><b>Confirm the isolation model.</b><p>Check whether your version defaults to worktrees or Docker containers (the nuance flagged above), so you know how it relates to your existing worktrees. Run <code>/setup-repo</code> to capture build/run commands and branch naming in <code>.sculptor/</code>.</p></div></div>
+      <div class="step"><span class="n">3</span><div class="b"><b>Run two agents in parallel on safe work.</b><p>Spin up two workspaces on <em>non-production</em> tasks — say a Claude Code agent on a math-quiz doc/test and a Codex agent on a Minecraft/Gradle build task. This directly tests the "both engines, isolated, at once" value on your real projects.</p></div></div>
+      <div class="step"><span class="n">4</span><div class="b"><b>Exercise Pairing Mode into Cursor.</b><p>Pick the more promising agent, toggle Pairing, and confirm its branch shows up live in your Cursor window — edit a file locally and watch the agent see it. This is the make-or-break feature for your workflow.</p></div></div>
+      <div class="step"><span class="n">5</span><div class="b"><b>Decide the boundary.</b><p>If it earns its place: use Sculptor as your <b>local parallel-agent manager</b> (Claude Code + Codex on the Mac), keep <b>Cataclysm</b> for cloud/phone autonomous runs, and keep hand-made Cursor worktrees only for the branches you're personally editing. Write the boundary into <code>ai-coding-system-dev.md</code> so it's a decision, not a drift.</p></div></div>
+      <div class="callout pink" style="margin-top:20px">
+        <p style="margin:0"><b>Bottom line:</b> Sculptor is the closest off-the-shelf match to the local multi-agent workflow you've been building by hand — and it's the only one that natively runs <b>both</b> Claude Code and Codex with real isolation and a live path back into Cursor. It won't change your cloud/phone habit, and it adds a Docker dependency and a beta's rough edges. Trial it on the Mac for local parallel work; keep Cataclysm as your dependable primary lane.</p>
+      </div>
+      <p class="desc" style="color:var(--dim);font-size:12px;margin-top:14px">Accuracy note: items tagged <span class="uv">verify</span> / <span class="uv">high-confidence</span> / <span class="uv">docs-snippet</span> come from secondary sources or blog/marketing where Imbue's canonical docs blocked automated fetching. Confirm the container-vs-worktree default and the exact Pairing/MCP behavior on install, since the project changes quickly.</p>
+    </section>
+  </main>
+</div>
+<script>
+const links=[...document.querySelectorAll('nav.side a.navlink')];
+const secs=links.map(l=>document.querySelector(l.getAttribute('href'))).filter(Boolean);
+const obs=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){const id='#'+e.target.id;links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')===id));}})},{rootMargin:'-20% 0px -70% 0px'});
+secs.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

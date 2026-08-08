@@ -1,0 +1,1170 @@
+{
+  "generated_at": "2026-07-09T22:18:30-07:00",
+  "repo_root": "/Users/randytrue/Documents/Code/fof-mono",
+  "layer_meta": {
+    "worktrees": {
+      "generated_at": "2026-07-09T22:18:22-07:00",
+      "took_s": 0.42,
+      "error": null
+    },
+    "branches": {
+      "generated_at": "2026-07-09T22:18:23-07:00",
+      "took_s": 1.31,
+      "error": null
+    },
+    "apps": {
+      "generated_at": "2026-07-09T22:18:24-07:00",
+      "took_s": 0.88,
+      "error": null
+    },
+    "core": {
+      "generated_at": "2026-07-09T22:18:24-07:00",
+      "took_s": 0.27,
+      "error": null
+    },
+    "skills": {
+      "generated_at": "2026-07-09T22:18:25-07:00",
+      "took_s": 0.19,
+      "error": null
+    },
+    "specs": {
+      "generated_at": "2026-07-09T22:18:26-07:00",
+      "took_s": 0.51,
+      "error": null
+    },
+    "sessions": {
+      "generated_at": "2026-07-09T22:18:30-07:00",
+      "took_s": 4.91,
+      "error": "Cursor DB opened read-only but two composer rows were skipped after decode errors"
+    },
+    "deploy": {
+      "generated_at": "2026-07-09T22:18:30-07:00",
+      "took_s": 0.33,
+      "error": null
+    }
+  },
+  "layers": {
+    "worktrees": [
+      {
+        "path": "/Users/randytrue/Documents/Code/fof-mono",
+        "name": "fof-mono",
+        "branch": "main",
+        "head": "8f4a21c",
+        "is_current": true,
+        "missing": false,
+        "cursor_open": true,
+        "title_bar": {
+          "background": "#068102",
+          "foreground": "#ffffff"
+        },
+        "last_commit": {
+          "sha": "8f4a21c",
+          "subject": "Merge holodeck planning notes",
+          "date": "2026-07-09T20:12:05-07:00",
+          "author": "Randy True"
+        },
+        "dirty": 0,
+        "untracked": 0,
+        "ahead_main": 0,
+        "behind_main": 0,
+        "upstream": "origin/main",
+        "unpushed": 0,
+        "apps_touched": []
+      },
+      {
+        "path": "/Users/randytrue/Documents/Code/feature-holodeck-start",
+        "name": "feature-holodeck-start",
+        "branch": "feature/holodeck-commits",
+        "head": "32b9f0a",
+        "is_current": false,
+        "missing": false,
+        "cursor_open": true,
+        "title_bar": {
+          "background": "#2696d3",
+          "foreground": "#ffffff"
+        },
+        "last_commit": {
+          "sha": "32b9f0a",
+          "subject": "Add holodeck frontend and backend specs",
+          "date": "2026-07-09T22:15:44-07:00",
+          "author": "Claude Code"
+        },
+        "dirty": 2,
+        "untracked": 3,
+        "ahead_main": 4,
+        "behind_main": 1,
+        "upstream": "origin/feature/holodeck-commits",
+        "unpushed": 1,
+        "apps_touched": [
+          "holodeck"
+        ]
+      },
+      {
+        "path": "/Users/randytrue/Documents/Code/feature-web-site-transcript-pages",
+        "name": "feature-web-site-transcript-pages",
+        "branch": "feature/web-site-transcript-pages",
+        "head": "17ce3d2",
+        "is_current": false,
+        "missing": false,
+        "cursor_open": false,
+        "title_bar": {
+          "background": "#7a4a9f",
+          "foreground": "#ffffff"
+        },
+        "last_commit": {
+          "sha": "17ce3d2",
+          "subject": "Port transcript page shell to Astro",
+          "date": "2026-07-08T18:34:10-07:00",
+          "author": "Codex"
+        },
+        "dirty": 0,
+        "untracked": 0,
+        "ahead_main": 18,
+        "behind_main": 12,
+        "upstream": "origin/feature/web-site-transcript-pages",
+        "unpushed": 0,
+        "apps_touched": [
+          "qrag/web"
+        ]
+      },
+      {
+        "path": "/Users/randytrue/Documents/Code/old-autolearner-openspec",
+        "name": "old-autolearner-openspec",
+        "branch": "feature/openspec-skills",
+        "head": "0dd31fa",
+        "is_current": false,
+        "missing": true,
+        "cursor_open": false,
+        "title_bar": {
+          "background": "#4a0082",
+          "foreground": "#ffffff"
+        },
+        "last_commit": {
+          "sha": "0dd31fa",
+          "subject": "Initialize autolearner openspec store",
+          "date": "2026-07-04T10:22:59-07:00",
+          "author": "Cursor"
+        },
+        "dirty": 0,
+        "untracked": 0,
+        "ahead_main": 6,
+        "behind_main": 21,
+        "upstream": "origin/feature/openspec-skills",
+        "unpushed": null,
+        "apps_touched": [
+          "autolearner"
+        ]
+      }
+    ],
+    "branches": [
+      {
+        "name": "main",
+        "tip": "8f4a21c",
+        "subject": "Merge holodeck planning notes",
+        "date": "2026-07-09T20:12:05-07:00",
+        "author": "Randy True",
+        "local": true,
+        "remote": true,
+        "worktree": "/Users/randytrue/Documents/Code/fof-mono",
+        "ahead_main": 0,
+        "behind_main": 0,
+        "pr": null,
+        "parent": null,
+        "purpose": null,
+        "title_bar": {
+          "background": "#068102",
+          "foreground": "#ffffff"
+        },
+        "lineage": {
+          "status": "root",
+          "authoritative": true,
+          "branch": "main",
+          "parent_branch": null,
+          "fork_commit": null,
+          "fork_date": null,
+          "fork_subject": null,
+          "branch_purpose": null,
+          "record": null,
+          "errors": [],
+          "history": []
+        }
+      },
+      {
+        "name": "feature/holodeck-commits",
+        "tip": "32b9f0a",
+        "subject": "Add holodeck frontend and backend specs",
+        "date": "2026-07-09T22:15:44-07:00",
+        "author": "Claude Code",
+        "local": true,
+        "remote": true,
+        "worktree": "/Users/randytrue/Documents/Code/feature-holodeck-start",
+        "ahead_main": 4,
+        "behind_main": 1,
+        "pr": {
+          "number": 42,
+          "title": "Build holodeck control center",
+          "state": "OPEN",
+          "is_draft": false,
+          "url": "https://github.com/FocusOnFoundationsNonprofit/fof-mono/pull/42",
+          "updated_at": "2026-07-09T22:17:00-07:00"
+        },
+        "parent": {
+          "name": "main",
+          "fork_base": "5d789ab"
+        },
+        "purpose": "Build the Holodeck control center.",
+        "title_bar": {
+          "background": "#2696d3",
+          "foreground": "#ffffff"
+        },
+        "lineage": {
+          "status": "structurally-verified",
+          "authoritative": true,
+          "branch": "feature/holodeck-commits",
+          "parent_branch": "main",
+          "fork_commit": "5d789ab111111111111111111111111111111111",
+          "fork_date": "2026-07-01T12:00:00-07:00",
+          "fork_subject": "Seed Holodeck planning",
+          "branch_purpose": "Build the Holodeck control center.",
+          "record": {
+            "commit": "32b9f0a222222222222222222222222222222222",
+            "version": "2",
+            "lineage_type": "branch-start",
+            "relationship": "created-from",
+            "update_reason": "initial",
+            "lineage_id": "11111111-1111-4111-8111-111111111111",
+            "record_id": "22222222-2222-4222-8222-222222222222",
+            "review_status": null
+          },
+          "errors": [],
+          "history": []
+        }
+      },
+      {
+        "name": "feature/web-site-transcript-pages",
+        "tip": "17ce3d2",
+        "subject": "Port transcript page shell to Astro",
+        "date": "2026-07-08T18:34:10-07:00",
+        "author": "Codex",
+        "local": true,
+        "remote": true,
+        "worktree": "/Users/randytrue/Documents/Code/feature-web-site-transcript-pages",
+        "ahead_main": 18,
+        "behind_main": 12,
+        "pr": {
+          "number": 39,
+          "title": "Transcript pages on Astro",
+          "state": "OPEN",
+          "is_draft": true,
+          "url": "https://github.com/FocusOnFoundationsNonprofit/fof-mono/pull/39",
+          "updated_at": "2026-07-09T19:02:00-07:00"
+        },
+        "parent": {
+          "name": "main",
+          "fork_base": "1e53c91"
+        },
+        "purpose": "Port transcript pages to Astro.",
+        "title_bar": {
+          "background": "#7a4a9f",
+          "foreground": "#ffffff"
+        },
+        "lineage": {
+          "status": "evidence-validated",
+          "authoritative": true,
+          "branch": "feature/web-site-transcript-pages",
+          "parent_branch": "main",
+          "fork_commit": "1e53c91333333333333333333333333333333333",
+          "fork_date": "2026-06-20T09:15:00-07:00",
+          "fork_subject": "Prepare transcript page port",
+          "branch_purpose": "Port transcript pages to Astro.",
+          "record": {
+            "commit": "17ce3d2444444444444444444444444444444444",
+            "version": "1",
+            "lineage_type": "recorded-late",
+            "relationship": "created-from",
+            "update_reason": "late-migration",
+            "lineage_id": null,
+            "record_id": null,
+            "evidence_type": "first-parent-root",
+            "evidence": "The earliest branch commit has Fork-Commit as its first parent.",
+            "confidence": "high",
+            "review_status": "approved",
+            "reviewed_by": "Randy True",
+            "reviewed_at": "2026-07-30T09:48:16-07:00"
+          },
+          "errors": [],
+          "history": []
+        }
+      },
+      {
+        "name": "feature/minecraft-mod-build-local",
+        "tip": "a93bc21",
+        "subject": "Add Forge playtest matrix",
+        "date": "2026-07-07T15:49:41-07:00",
+        "author": "Codex",
+        "local": false,
+        "remote": true,
+        "worktree": null,
+        "ahead_main": 64,
+        "behind_main": 8,
+        "pr": {
+          "number": 31,
+          "title": "Forge 1.20.1 port",
+          "state": "MERGED",
+          "is_draft": false,
+          "url": "https://github.com/FocusOnFoundationsNonprofit/fof-mono/pull/31",
+          "updated_at": "2026-07-08T10:14:00-07:00"
+        },
+        "parent": null,
+        "purpose": null,
+        "title_bar": {
+          "background": "#800000",
+          "foreground": "#ffffff"
+        },
+        "lineage": {
+          "status": "pending",
+          "authoritative": false,
+          "branch": "feature/minecraft-mod-build-local",
+          "parent_branch": "main",
+          "fork_commit": "978c0bc555555555555555555555555555555555",
+          "fork_date": null,
+          "fork_subject": "Prepare Forge build matrix",
+          "branch_purpose": "Build and validate the local Forge matrix.",
+          "record": {
+            "commit": "a93bc21666666666666666666666666666666666",
+            "version": "2",
+            "lineage_type": "recorded-late",
+            "relationship": "created-from",
+            "update_reason": "late-migration",
+            "lineage_id": "33333333-3333-4333-8333-333333333333",
+            "record_id": "44444444-4444-4444-8444-444444444444",
+            "evidence_type": "first-parent-root",
+            "evidence": "The declaration awaits human approval.",
+            "confidence": "medium",
+            "review_status": "pending"
+          },
+          "errors": [],
+          "history": []
+        }
+      },
+      {
+        "name": "use/prism-sync",
+        "tip": "42cd71e",
+        "subject": "Mock rsync status for fleet matrix",
+        "date": "2026-07-06T09:21:19-07:00",
+        "author": "Cursor",
+        "local": true,
+        "remote": true,
+        "worktree": null,
+        "ahead_main": 22,
+        "behind_main": 3,
+        "pr": null,
+        "parent": null,
+        "purpose": null,
+        "title_bar": null,
+        "lineage": {
+          "status": "invalid",
+          "authoritative": false,
+          "branch": "use/prism-sync",
+          "parent_branch": "main",
+          "fork_commit": "7c91ffe777777777777777777777777777777777",
+          "fork_date": null,
+          "fork_subject": "Prepare Prism sync",
+          "branch_purpose": "Synchronize the Prism Launcher fleet.",
+          "record": {
+            "commit": "42cd71e888888888888888888888888888888888",
+            "version": "2",
+            "lineage_type": "recorded-late",
+            "relationship": "created-from",
+            "update_reason": "correction",
+            "lineage_id": "55555555-5555-4555-8555-555555555555",
+            "record_id": "66666666-6666-4666-8666-666666666666",
+            "review_status": "approved"
+          },
+          "errors": [
+            {
+              "code": "supersedes-id-mismatch",
+              "message": "Supersedes-Record-ID does not identify the predecessor."
+            }
+          ],
+          "history": []
+        }
+      },
+      {
+        "name": "feature/admin-automation-skills",
+        "tip": "6fe0cd4",
+        "subject": "Add QBO month-end skill draft",
+        "date": "2026-07-05T14:03:55-07:00",
+        "author": "Claude Code",
+        "local": false,
+        "remote": true,
+        "worktree": null,
+        "ahead_main": 7,
+        "behind_main": 15,
+        "pr": {
+          "number": 35,
+          "title": "Admin automation skills",
+          "state": "CLOSED",
+          "is_draft": false,
+          "url": "https://github.com/FocusOnFoundationsNonprofit/fof-mono/pull/35",
+          "updated_at": "2026-07-06T08:32:00-07:00"
+        },
+        "parent": null,
+        "purpose": null,
+        "title_bar": {
+          "background": "#001f3f",
+          "foreground": "#ffffff"
+        },
+        "lineage": {
+          "status": "missing",
+          "authoritative": false,
+          "branch": "feature/admin-automation-skills",
+          "parent_branch": null,
+          "fork_commit": null,
+          "fork_date": null,
+          "fork_subject": null,
+          "branch_purpose": null,
+          "record": null,
+          "errors": [],
+          "history": []
+        }
+      },
+      {
+        "name": "feature/openspec-skills",
+        "tip": "0dd31fa",
+        "subject": "Initialize autolearner openspec store",
+        "date": "2026-07-04T10:22:59-07:00",
+        "author": "Cursor",
+        "local": true,
+        "remote": true,
+        "worktree": "/Users/randytrue/Documents/Code/old-autolearner-openspec",
+        "ahead_main": 6,
+        "behind_main": 21,
+        "pr": null,
+        "parent": null,
+        "purpose": null,
+        "title_bar": {
+          "background": "#4a0082",
+          "foreground": "#ffffff"
+        },
+        "lineage": {
+          "status": "parent-ref-missing",
+          "authoritative": false,
+          "branch": "feature/openspec-skills",
+          "parent_branch": "feature/retired-parent",
+          "fork_commit": "205e4dbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "fork_date": null,
+          "fork_subject": "Prepare OpenSpec skills",
+          "branch_purpose": "Build reusable OpenSpec skills.",
+          "record": {
+            "commit": "0dd31fabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "version": "1",
+            "lineage_type": "recorded-late",
+            "relationship": "created-from",
+            "update_reason": "late-migration",
+            "review_status": "approved"
+          },
+          "errors": [
+            {
+              "code": "parent-ref-missing",
+              "message": "Declared parent ref does not exist."
+            }
+          ],
+          "history": []
+        }
+      },
+      {
+        "name": "feature/family-schedule-dashboard",
+        "tip": "b19f62a",
+        "subject": "Add weekly family schedule tab",
+        "date": "2026-07-03T16:13:42-07:00",
+        "author": "Cursor",
+        "local": false,
+        "remote": true,
+        "worktree": null,
+        "ahead_main": 3,
+        "behind_main": 4,
+        "pr": null,
+        "parent": null,
+        "purpose": null,
+        "title_bar": null,
+        "lineage": {
+          "status": "ref-diverged",
+          "authoritative": false,
+          "branch": "feature/family-schedule-dashboard",
+          "parent_branch": "main",
+          "fork_commit": "8f4a21cccccccccccccccccccccccccccccccccc",
+          "fork_date": null,
+          "fork_subject": "Merge holodeck planning notes",
+          "branch_purpose": "Build the weekly family schedule dashboard.",
+          "record": null,
+          "errors": [
+            {
+              "code": "ref-diverged",
+              "message": "Local and origin branch tips differ."
+            }
+          ],
+          "history": []
+        }
+      }
+    ],
+    "apps": [
+      {
+        "slug": "holodeck",
+        "path": "apps/holodeck",
+        "registered": true,
+        "name": "Holodeck",
+        "purpose": "Local AI-coding control center for worktrees, apps, specs, skills, sessions, and deploys",
+        "kind": "web",
+        "stage": "s1-dev",
+        "spec_stage": "openspec-core",
+        "dev_command": ".venv/bin/python3 apps/holodeck/collect.py && .venv/bin/uvicorn apps.holodeck.server:app --port 8790",
+        "port": 8790,
+        "local_url": "http://127.0.0.1:8790",
+        "test_command": ".venv/bin/python3 -m pytest apps/holodeck/tests -q",
+        "deploy": [],
+        "notes": "Frontend is static vanilla JS; backend collector runs separately.",
+        "tags": [
+          "meta",
+          "ai-coding"
+        ],
+        "has_readme": false,
+        "has_tests": true,
+        "has_agents_md": false,
+        "openspec": true,
+        "last_commit_date": "2026-07-09T22:15:44-07:00",
+        "commits_30d": 5
+      },
+      {
+        "slug": "math-quiz",
+        "path": "apps/math-quiz",
+        "registered": true,
+        "name": "Math Quiz",
+        "purpose": "Browser math quiz for kids with fluency tracking and heatmap analysis",
+        "kind": "web",
+        "stage": "s2-deployed",
+        "spec_stage": "readme-only",
+        "dev_command": ".venv/bin/python3 apps/math-quiz/tools/dev_server.py",
+        "port": 8907,
+        "local_url": "http://127.0.0.1:8907/anchor.html",
+        "test_command": "cd apps/math-quiz && npm run test:all",
+        "deploy": [],
+        "notes": null,
+        "tags": [
+          "family",
+          "education"
+        ],
+        "has_readme": true,
+        "has_tests": true,
+        "has_agents_md": true,
+        "openspec": false,
+        "last_commit_date": "2026-07-01T12:41:00-07:00",
+        "commits_30d": 12
+      },
+      {
+        "slug": "education/lesson-logger/dashboard",
+        "path": "apps/education/lesson-logger/dashboard",
+        "registered": true,
+        "name": "Lesson Dashboard",
+        "purpose": "FastAPI dashboard over lessons.db synced from Hermes",
+        "kind": "web",
+        "stage": "s2-deployed",
+        "spec_stage": "readme-only",
+        "dev_command": "cd apps/education/lesson-logger/dashboard && .venv/bin/uvicorn app:app --reload --port 8000",
+        "port": 8000,
+        "local_url": "http://localhost:8000",
+        "test_command": null,
+        "deploy": [
+          {
+            "target": "fly",
+            "name": "fof-lesson-dash",
+            "command": "cd apps/education/lesson-logger/dashboard && fly deploy -a fof-lesson-dash",
+            "url": "https://fof-lesson-dash.fly.dev"
+          }
+        ],
+        "notes": "Family schedule tab is under active iteration.",
+        "tags": [
+          "education"
+        ],
+        "has_readme": true,
+        "has_tests": false,
+        "has_agents_md": false,
+        "openspec": false,
+        "last_commit_date": "2026-07-03T16:13:42-07:00",
+        "commits_30d": 9
+      },
+      {
+        "slug": "transcription/live-transcript",
+        "path": "apps/transcription/live-transcript",
+        "registered": true,
+        "name": "Live Transcript",
+        "purpose": "Flask starter scaffold for live transcription UI",
+        "kind": "web",
+        "stage": "s0-experiment",
+        "spec_stage": "readme-only",
+        "dev_command": ".venv/bin/python3 apps/transcription/live-transcript/flask_starter/app.py",
+        "port": 8000,
+        "local_url": "http://127.0.0.1:8000",
+        "test_command": null,
+        "deploy": [],
+        "notes": "Port collides with lesson-dashboard dev; do not run both.",
+        "tags": [
+          "transcription"
+        ],
+        "has_readme": false,
+        "has_tests": false,
+        "has_agents_md": false,
+        "openspec": false,
+        "last_commit_date": "2026-06-28T11:10:00-07:00",
+        "commits_30d": 1
+      },
+      {
+        "slug": "qrag/api/qrag-llm",
+        "path": "apps/qrag/api/qrag-llm",
+        "registered": true,
+        "name": "QRAG LLM Lambda",
+        "purpose": "RAG answer generation Lambda with JWT, S3 large context, and CORS",
+        "kind": "chalice",
+        "stage": "s3-real",
+        "spec_stage": "readme-only",
+        "dev_command": null,
+        "port": null,
+        "local_url": null,
+        "test_command": ".venv/bin/python3 -m pytest apps/qrag/api/qrag-llm -q",
+        "deploy": [
+          {
+            "target": "chalice",
+            "name": "qrag-llm",
+            "command": "cd apps/qrag/api/qrag-llm && chalice deploy --stage api"
+          }
+        ],
+        "notes": "Never edit chalicelib directly; mirror from core before deploy.",
+        "tags": [
+          "qrag",
+          "aws"
+        ],
+        "has_readme": true,
+        "has_tests": true,
+        "has_agents_md": false,
+        "openspec": false,
+        "last_commit_date": "2026-06-30T08:45:02-07:00",
+        "commits_30d": 6
+      },
+      {
+        "slug": "qrag/web",
+        "path": "apps/qrag/web",
+        "registered": true,
+        "name": "QRAG Web",
+        "purpose": "Webflow custom code and local harnesses for QRAG transcript and answer surfaces",
+        "kind": "web",
+        "stage": "s1-dev",
+        "spec_stage": "readme-only",
+        "dev_command": null,
+        "port": null,
+        "local_url": null,
+        "test_command": "node web-shared/test_front-end_validation_inputs.js",
+        "deploy": [],
+        "notes": "Transcript pages are moving toward an owned web runtime.",
+        "tags": [
+          "qrag",
+          "webflow"
+        ],
+        "has_readme": false,
+        "has_tests": true,
+        "has_agents_md": false,
+        "openspec": false,
+        "last_commit_date": "2026-07-08T18:34:10-07:00",
+        "commits_30d": 8
+      },
+      {
+        "slug": "minecraft/prism-sync",
+        "path": "apps/minecraft/prism-sync",
+        "registered": true,
+        "name": "Prism Sync",
+        "purpose": "Push Prism Launcher Minecraft instances to family Macs over SSH and rsync",
+        "kind": "web",
+        "stage": "s1-dev",
+        "spec_stage": "openspec-single-spec",
+        "dev_command": "cd apps/minecraft/prism-sync && python -m server.main",
+        "port": 8770,
+        "local_url": "http://127.0.0.1:8770",
+        "test_command": ".venv/bin/python3 -m pytest apps/minecraft/prism-sync/tests -q",
+        "deploy": [],
+        "notes": null,
+        "tags": [
+          "minecraft",
+          "family"
+        ],
+        "has_readme": true,
+        "has_tests": true,
+        "has_agents_md": true,
+        "openspec": false,
+        "last_commit_date": "2026-07-06T09:21:19-07:00",
+        "commits_30d": 27
+      },
+      {
+        "slug": "autolearner",
+        "path": "apps/autolearner",
+        "registered": true,
+        "name": "Autolearner",
+        "purpose": "OpenSpec trial app for skill-building and agent planning",
+        "kind": "docs",
+        "stage": "s0-experiment",
+        "spec_stage": "openspec-strict",
+        "dev_command": null,
+        "port": null,
+        "local_url": null,
+        "test_command": null,
+        "deploy": [],
+        "notes": "OpenSpec store lives on feature/openspec-skills.",
+        "tags": [
+          "education",
+          "openspec"
+        ],
+        "has_readme": false,
+        "has_tests": false,
+        "has_agents_md": false,
+        "openspec": true,
+        "last_commit_date": "2026-07-04T10:22:59-07:00",
+        "commits_30d": 3
+      },
+      {
+        "slug": "games/robopoli",
+        "path": "apps/games/robopoli",
+        "registered": false,
+        "name": "Robopoli",
+        "purpose": "Three.js TV adventure prototype plus Python variants",
+        "kind": "web",
+        "dev_command": "cd apps/games && npx live-server robopoli",
+        "port": null,
+        "local_url": null,
+        "test_command": null,
+        "deploy": [],
+        "notes": "Auto-discovered; add registry entry when it becomes active again.",
+        "tags": [
+          "family",
+          "games"
+        ],
+        "has_readme": false,
+        "has_tests": false,
+        "has_agents_md": false,
+        "openspec": false,
+        "last_commit_date": "2026-06-22T13:02:00-07:00",
+        "commits_30d": 2
+      }
+    ],
+    "core": [
+      {
+        "module": "fileops.py",
+        "description": "File conversion and text extraction helpers shared across corpus workflows",
+        "last_commit_date": "2026-07-01T09:32:00-07:00",
+        "commits_30d": 4
+      },
+      {
+        "module": "llm.py",
+        "description": "Provider-swappable OpenAI and Anthropic wrapper functions",
+        "last_commit_date": "2026-06-29T18:40:14-07:00",
+        "commits_30d": 3
+      },
+      {
+        "module": "s3_archive.py",
+        "description": "Manifest-backed S3 archive build, upload, verify, and refresh utilities",
+        "last_commit_date": "2026-06-25T07:55:00-07:00",
+        "commits_30d": 6
+      }
+    ],
+    "skills": [
+      {
+        "category": "repo-ops",
+        "name": "create-worktree",
+        "description": "Create a safe feature worktree with git ancestry verification.",
+        "path": "skills/repo-ops/create-worktree/README.md",
+        "source": "shared"
+      },
+      {
+        "category": "repo-ops",
+        "name": "promote-to-main",
+        "description": "Extract general work from a feature branch to a main-based branch.",
+        "path": "skills/repo-ops/promote-to-main/README.md",
+        "source": "shared"
+      },
+      {
+        "category": "media",
+        "name": "youtube-transcript",
+        "description": "Download and normalize YouTube transcripts for corpus workflows.",
+        "path": "skills/media/youtube-transcript/README.md",
+        "source": "shared"
+      },
+      {
+        "category": "commands",
+        "name": "plan-review",
+        "description": "Review plan docs for cross-agent convergence readiness.",
+        "path": ".claude/commands/plan-review.md",
+        "source": "claude-command"
+      },
+      {
+        "category": "agent",
+        "name": "skill-author",
+        "description": "Author a Claude-compatible SKILL.md wrapper around a shared procedure.",
+        "path": ".claude/skills/skill-author/SKILL.md",
+        "source": "claude-skill"
+      },
+      {
+        "category": "admin",
+        "name": "qbo-month-end",
+        "description": "Guide EA through QuickBooks month-end report preparation.",
+        "path": "agents/hermes/skills/admin/qbo-month-end/SKILL.md",
+        "source": "hermes"
+      }
+    ],
+    "specs": [
+      {
+        "worktree": "/Users/randytrue/Documents/Code/feature-holodeck-start",
+        "branch": "feature/holodeck-commits",
+        "app": "holodeck",
+        "store_path": "/Users/randytrue/Documents/Code/feature-holodeck-start/apps/holodeck/openspec",
+        "spec_domains": [
+          "app"
+        ],
+        "spec_files": [
+          {
+            "domain": "app",
+            "path": "/Users/randytrue/Documents/Code/feature-holodeck-start/apps/holodeck/openspec/specs/app/spec.md"
+          }
+        ],
+        "changes": [
+          {
+            "name": "iteration-2-interactivity",
+            "path": "/Users/randytrue/Documents/Code/feature-holodeck-start/apps/holodeck/openspec/changes/iteration-2-interactivity",
+            "artifacts": [
+              "proposal",
+              "tasks",
+              "specs/app"
+            ],
+            "tasks_total": 9,
+            "tasks_done": 5
+          }
+        ],
+        "archived": [
+          {
+            "name": "2026-07-10-baseline-current-behavior",
+            "date": "2026-07-10",
+            "path": "/Users/randytrue/Documents/Code/feature-holodeck-start/apps/holodeck/openspec/changes/archive/2026-07-10-baseline-current-behavior"
+          }
+        ]
+      },
+      {
+        "worktree": "/Users/randytrue/Documents/Code/old-autolearner-openspec",
+        "branch": "feature/openspec-skills",
+        "app": "autolearner",
+        "store_path": "/Users/randytrue/Documents/Code/old-autolearner-openspec/apps/autolearner/openspec",
+        "spec_domains": [
+          "skills",
+          "lesson-plans"
+        ],
+        "spec_files": [
+          {
+            "domain": "skills",
+            "path": "/Users/randytrue/Documents/Code/old-autolearner-openspec/apps/autolearner/openspec/specs/skills/spec.md"
+          },
+          {
+            "domain": "lesson-plans",
+            "path": "/Users/randytrue/Documents/Code/old-autolearner-openspec/apps/autolearner/openspec/specs/lesson-plans/spec.md"
+          }
+        ],
+        "changes": [
+          {
+            "name": "add-skill-progress-dashboard",
+            "path": "/Users/randytrue/Documents/Code/old-autolearner-openspec/apps/autolearner/openspec/changes/add-skill-progress-dashboard",
+            "artifacts": [
+              "proposal",
+              "design",
+              "tasks",
+              "specs/skills"
+            ],
+            "tasks_total": 7,
+            "tasks_done": 3
+          }
+        ],
+        "archived": [
+          {
+            "name": "2026-07-02-bootstrap-autolearner-store",
+            "date": "2026-07-02",
+            "path": "/Users/randytrue/Documents/Code/old-autolearner-openspec/apps/autolearner/openspec/changes/archive/2026-07-02-bootstrap-autolearner-store"
+          }
+        ]
+      }
+    ],
+    "sessions": [
+      {
+        "id": "cc-holo-plan-001",
+        "origin": "operator",
+        "latest_primary_digest_title": "Holodeck dashboard plan",
+        "title": "Holodeck control center build",
+        "entrypoint": "cli",
+        "label": "Claude CLI - Fable 5",
+        "model": "Fable 5",
+        "interface": "Claude CLI",
+        "project": "/Users/randytrue/Documents/Code/feature-holodeck-start",
+        "worktree": "/Users/randytrue/Documents/Code/feature-holodeck-start",
+        "branch": "feature/holodeck-commits",
+        "started": "2026-07-09T21:54:02-07:00",
+        "last_activity": "2026-07-09T22:16:49-07:00",
+        "messages": 48,
+        "first_user": "Build the holodeck frontend and backend specs for a local dashboard.",
+        "last_user": "Delegate frontend and backend implementation to separate file-disjoint executors.",
+        "source_path": "/Users/randytrue/.claude/projects/feature-holodeck-start/cc-holo-plan-001.jsonl",
+        "platform": "claude",
+        "host": "local",
+        "remote_control": false,
+        "bridge_session_id": null
+      },
+      {
+        "id": "codex-holo-front-101",
+        "origin": "delegated",
+        "latest_primary_digest_title": "Static frontend executor",
+        "title": "Implement holodeck frontend",
+        "entrypoint": "cli",
+        "label": "Codex CLI (fable5-w-codex) - GPT 5.5 xhigh",
+        "model": "GPT 5.5",
+        "interface": "Codex CLI (fable5-w-codex)",
+        "project": "/Users/randytrue/Documents/Code/feature-holodeck-start",
+        "worktree": "/Users/randytrue/Documents/Code/feature-holodeck-start",
+        "branch": "feature/holodeck-commits",
+        "started": "2026-07-09T22:20:00-07:00",
+        "last_activity": "2026-07-09T22:34:11-07:00",
+        "messages": 27,
+        "first_user": "You are the implementation executor for Holodeck frontend. Implement the static frontend exactly against the snapshot API contract. Do not commit or push.",
+        "last_user": "Verify sample mode and report files created.",
+        "source_path": "/Users/randytrue/.codex/sessions/2026/07/09/rollout-holo-front.jsonl",
+        "platform": "codex",
+        "host": "local",
+        "remote_control": false,
+        "bridge_session_id": null
+      },
+      {
+        "id": "cursor-webflow-882",
+        "origin": "operator",
+        "latest_primary_digest_title": "Transcript page migration",
+        "title": "Transcript page Astro migration",
+        "entrypoint": "app",
+        "label": "Cursor IDE - Composer 2.5 Fast",
+        "model": "composer-2.5",
+        "interface": "Cursor IDE",
+        "project": "/Users/randytrue/Documents/Code/feature-web-site-transcript-pages",
+        "worktree": "/Users/randytrue/Documents/Code/feature-web-site-transcript-pages",
+        "branch": "feature/web-site-transcript-pages",
+        "started": "2026-07-08T17:10:00-07:00",
+        "last_activity": "2026-07-08T19:44:03-07:00",
+        "messages": 63,
+        "first_user": "Move the transcript page shell out of Webflow custom code.",
+        "last_user": "Check the Astro page against the local fixtures.",
+        "source_path": "cursor-webflow-882",
+        "platform": "cursor",
+        "host": "local",
+        "remote_control": false,
+        "bridge_session_id": null
+      },
+      {
+        "id": "codex-mathquest-022",
+        "origin": "operator",
+        "latest_primary_digest_title": "Forge playtest matrix",
+        "title": "Forge playtest matrix",
+        "entrypoint": "app",
+        "label": "Codex App - GPT 5.6 Sol high",
+        "model": "GPT 5.6 Sol",
+        "interface": "Codex App",
+        "project": "/Users/randytrue/.codex/worktrees/0013/fof-mono",
+        "worktree": null,
+        "branch": "feature/minecraft-mod-build-local",
+        "started": "2026-07-07T13:01:00-07:00",
+        "last_activity": "2026-07-07T15:51:20-07:00",
+        "messages": 81,
+        "first_user": "Audit Fabric and Forge parity for Wandering Nerd behavior.",
+        "last_user": "Update the playtest matrix with the latest Forge run.",
+        "source_path": "/Users/randytrue/.codex/sessions/2026/07/07/rollout-mathquest.jsonl",
+        "platform": "codex",
+        "host": "local",
+        "remote_control": false,
+        "bridge_session_id": null
+      },
+      {
+        "id": "cursor-prism-114",
+        "origin": "operator",
+        "latest_primary_digest_title": "Prism rsync mocks",
+        "title": "Prism sync rsync mocks",
+        "entrypoint": "app",
+        "label": "Cursor IDE - Composer 2.5",
+        "model": "composer-2.5",
+        "interface": "Cursor IDE",
+        "project": "/Users/randytrue/Documents/Code/fof-mono",
+        "worktree": "/Users/randytrue/Documents/Code/fof-mono",
+        "branch": "use/prism-sync",
+        "started": "2026-07-06T08:58:00-07:00",
+        "last_activity": "2026-07-06T09:25:31-07:00",
+        "messages": 36,
+        "first_user": "Mock SSH and rsync so the Prism Sync tests do not touch family Macs.",
+        "last_user": "Run the pytest suite and summarize failures.",
+        "source_path": "cursor-prism-114",
+        "platform": "cursor",
+        "host": "local",
+        "remote_control": false,
+        "bridge_session_id": null
+      },
+      {
+        "id": "cc-admin-034",
+        "origin": "operator",
+        "latest_primary_digest_title": "Admin skills draft",
+        "title": "Admin automation skills",
+        "entrypoint": "app",
+        "label": "Claude App - Sonnet 5",
+        "model": "Sonnet 5",
+        "interface": "Claude App",
+        "project": "/Users/randytrue/Documents/Code/fof-mono",
+        "worktree": "/Users/randytrue/Documents/Code/fof-mono",
+        "branch": "feature/admin-automation-skills",
+        "started": "2026-07-05T13:30:00-07:00",
+        "last_activity": "2026-07-05T14:11:12-07:00",
+        "messages": 29,
+        "first_user": "Draft skills for EA's recurring admin workflows.",
+        "last_user": "Keep the QBO skill procedural and non-magical.",
+        "source_path": "/Users/randytrue/.claude/projects/fof-mono/cc-admin-034.jsonl",
+        "platform": "claude",
+        "host": "local",
+        "remote_control": false,
+        "bridge_session_id": null
+      },
+      {
+        "id": "cursor-openspec-509",
+        "origin": "operator",
+        "latest_primary_digest_title": "Autolearner OpenSpec trial",
+        "title": "Autolearner OpenSpec trial",
+        "entrypoint": "app",
+        "label": "Cursor IDE - Grok 4.5 High Fast",
+        "model": "grok-4.5-high-fast",
+        "interface": "Cursor IDE",
+        "project": "/Users/randytrue/Documents/Code/old-autolearner-openspec",
+        "worktree": "/Users/randytrue/Documents/Code/old-autolearner-openspec",
+        "branch": "feature/openspec-skills",
+        "started": "2026-07-04T09:55:00-07:00",
+        "last_activity": "2026-07-04T10:25:00-07:00",
+        "messages": 22,
+        "first_user": "Initialize an OpenSpec store for the autolearner trial.",
+        "last_user": "Count tasks from tasks.md and archive the bootstrap change.",
+        "source_path": "cursor-openspec-509",
+        "platform": "cursor",
+        "host": "local",
+        "remote_control": false,
+        "bridge_session_id": null
+      },
+      {
+        "id": "codex-family-731",
+        "origin": "operator",
+        "latest_primary_digest_title": "Family schedule tab",
+        "title": "Family schedule dashboard",
+        "entrypoint": "cli",
+        "label": "Codex CLI - GPT 5.6 Sol medium",
+        "model": "GPT 5.6 Sol",
+        "interface": "Codex CLI",
+        "project": "/Users/randytrue/Documents/Code/fof-mono",
+        "worktree": "/Users/randytrue/Documents/Code/fof-mono",
+        "branch": "feature/family-schedule-dashboard",
+        "started": "2026-07-03T15:02:00-07:00",
+        "last_activity": "2026-07-03T16:17:46-07:00",
+        "messages": 41,
+        "first_user": "Add a family schedule tab to the lesson logger dashboard.",
+        "last_user": "Verify the live-refresh path after lesson edits.",
+        "source_path": "/Users/randytrue/.codex/sessions/2026/07/03/rollout-family.jsonl",
+        "platform": "codex",
+        "host": "local",
+        "remote_control": false,
+        "bridge_session_id": null
+      },
+      {
+        "id": "cc-qrag-006",
+        "origin": "operator",
+        "latest_primary_digest_title": "QRAG deploy notes",
+        "title": "QRAG deploy notes",
+        "entrypoint": "cli",
+        "label": "Claude CLI - Opus 4.8",
+        "model": "Opus 4.8",
+        "interface": "Claude CLI",
+        "project": "/Users/randytrue/Documents/Code/fof-mono",
+        "worktree": "/Users/randytrue/Documents/Code/fof-mono",
+        "branch": "main",
+        "started": "2026-07-02T11:00:00-07:00",
+        "last_activity": "2026-07-02T11:44:00-07:00",
+        "messages": 18,
+        "first_user": "Document the chalicelib mirror deploy sequence for QRAG.",
+        "last_user": "Make sure the agent instructions warn against direct chalicelib edits.",
+        "source_path": "/Users/randytrue/.claude/projects/fof-mono/cc-qrag-006.jsonl",
+        "platform": "claude",
+        "host": "local",
+        "remote_control": false,
+        "bridge_session_id": null
+      }
+    ],
+    "deploy": [
+      {
+        "surface": "fly",
+        "kind": "fly",
+        "app_slug": "education/lesson-logger/dashboard",
+        "name": "fof-lesson-dash",
+        "command": "cd apps/education/lesson-logger/dashboard && fly deploy -a fof-lesson-dash",
+        "url": "https://fof-lesson-dash.fly.dev",
+        "config_path": "apps/education/lesson-logger/dashboard/fly.toml",
+        "last_deploy": "2026-07-03T17:02:00-07:00"
+      },
+      {
+        "surface": "chalice",
+        "kind": "chalice",
+        "app_slug": "qrag/api/qrag-llm",
+        "name": "qrag-llm",
+        "command": "cd apps/qrag/api/qrag-llm && chalice deploy --stage api",
+        "url": "https://api.focusonfoundations.org/qrag",
+        "config_path": "apps/qrag/api/qrag-llm/.chalice/config.json",
+        "last_deploy": "2026-06-30T10:11:00-07:00"
+      },
+      {
+        "surface": "chalice",
+        "kind": "chalice",
+        "app_slug": "transcription/api/deepgram-callback",
+        "name": "deepgram-callback",
+        "command": "cd apps/transcription/api/deepgram-callback && chalice deploy",
+        "url": null,
+        "config_path": "apps/transcription/api/deepgram-callback/.chalice/config.json",
+        "last_deploy": "2026-06-26T14:42:00-07:00"
+      },
+      {
+        "surface": "webflow",
+        "kind": "webflow",
+        "app_slug": "qrag/web",
+        "name": "focusonfoundations.org custom code",
+        "command": null,
+        "url": "https://focusonfoundations.org",
+        "config_path": "apps/qrag/web",
+        "last_deploy": null
+      },
+      {
+        "surface": "s3",
+        "kind": "s3",
+        "app_slug": null,
+        "name": "[S3-FILES-BUCKET] archive",
+        "command": ".venv/bin/python3 -m core.s3_archive verify",
+        "url": "s3://[S3-FILES-BUCKET]",
+        "config_path": "manifests/*.manifest.jsonl",
+        "last_deploy": "2026-06-20T09:00:00-07:00"
+      },
+      {
+        "surface": "fly",
+        "kind": "fly",
+        "app_slug": "minecraft/prism-sync",
+        "name": "prism-sync-preview",
+        "command": "cd apps/minecraft/prism-sync && fly deploy -a prism-sync-preview",
+        "url": null,
+        "config_path": "apps/minecraft/prism-sync/fly.toml",
+        "last_deploy": null
+      }
+    ]
+  }
+}

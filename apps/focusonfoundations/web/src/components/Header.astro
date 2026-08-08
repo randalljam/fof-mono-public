@@ -1,0 +1,40 @@
+---
+const nav = [
+  { href: '/', label: 'Home' },
+  { href: '/demos/', label: 'Demos' },
+  { href: '/transcripts/', label: 'Transcripts' },
+];
+const currentPath = Astro.url.pathname;
+---
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/">Focus on Foundations</a>
+    <nav class="site-nav" aria-label="Main">
+      {nav.map((item) => (
+        <a
+          href={item.href}
+          aria-current={currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href)) ? 'page' : undefined}
+        >
+          {item.label}
+        </a>
+      ))}
+      <a class="auth-nav-link" id="header-auth-link" href="/account/sign-in/"
+        aria-current={currentPath.startsWith('/account') ? 'page' : undefined}>Sign in</a>
+    </nav>
+  </div>
+</header>
+<script>
+  // Cheap signed-in hint without loading the auth bundle on every page:
+  // Amplify records the last authenticated user under this localStorage key.
+  import { AUTH_CONFIG, isAuthConfigured } from '../lib/auth-config.js';
+  if (isAuthConfigured()) {
+    const marker = localStorage.getItem(
+      `CognitoIdentityServiceProvider.${AUTH_CONFIG.userPoolClientId}.LastAuthUser`
+    );
+    if (marker) {
+      const link = document.getElementById('header-auth-link');
+      link.textContent = 'Account';
+      link.href = '/account/';
+    }
+  }
+</script>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<!-- Worldview Mirror — hand-authored UI source (edit freely). Served by wvmirror/server.py,
+     which injects the per-run session token in place of __WVM_TOKEN__. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Worldview Mirror</title>
+<style>
+  :root {
+    --bg: #f7f6f3; --panel: #ffffff; --border: #e2ddd5; --ink: #2b2a27; --muted: #8a8478;
+    --accent: #2f6f8f; --accent-soft: #e8f1f5; --user-bubble: #2f6f8f; --gold: #b98a2f;
+    --diverge: #b5533c; --lean: #b98a2f; --align: #4c8a58;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.5 -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; background: var(--bg); color: var(--ink); height: 100vh; display: flex; flex-direction: column; }
+  header { display: flex; align-items: center; gap: 14px; padding: 10px 16px; background: var(--panel); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  header h1 { font-size: 17px; margin: 0 8px 0 0; font-weight: 650; }
+  header .sub { color: var(--muted); font-size: 12.5px; }
+  .knob { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); }
+  .knob select, .knob input[type=range] { accent-color: var(--accent); }
+  select { font: inherit; font-size: 13px; padding: 3px 6px; border: 1px solid var(--border); border-radius: 6px; background: #fff; color: var(--ink); max-width: 260px; }
+  #layout { flex: 1; display: flex; min-height: 0; }
+  #sidebar { width: 220px; border-right: 1px solid var(--border); background: var(--panel); display: flex; flex-direction: column; }
+  #sidebar .head { padding: 10px 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  #sidebar .head b { font-size: 13px; }
+  #threads { overflow-y: auto; flex: 1; }
+  .thread-item { padding: 9px 12px; border-bottom: 1px solid var(--border); cursor: pointer; font-size: 13px; }
+  .thread-item:hover { background: var(--accent-soft); }
+  .thread-item.active { background: var(--accent-soft); border-left: 3px solid var(--accent); padding-left: 9px; }
+  .thread-item .when { color: var(--muted); font-size: 11px; }
+  .thread-item .del { float: right; color: var(--muted); cursor: pointer; }
+  .thread-item .del:hover { color: var(--diverge); }
+  #main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  #messages { flex: 1; overflow-y: auto; padding: 18px 22px; }
+  .msg { max-width: 760px; margin: 0 auto 14px; }
+  .msg .who { font-size: 11.5px; color: var(--muted); margin-bottom: 3px; }
+  .msg .body { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; white-space: pre-wrap; }
+  .msg.user .body { background: var(--user-bubble); color: #fff; border: none; }
+  .msg .cites { margin-top: 6px; font-size: 12px; }
+  .msg .cites a, .msg .cites span.c { display: inline-block; background: var(--accent-soft); color: var(--accent); border-radius: 6px; padding: 1px 8px; margin: 2px 4px 0 0; text-decoration: none; }
+  .msg .mirror-chips { margin-top: 6px; }
+  .chip { display: inline-block; font-size: 11.5px; border-radius: 6px; padding: 1px 8px; margin: 2px 4px 0 0; color: #fff; }
+  .chip.divergent { background: var(--diverge); } .chip.leaning-apart { background: var(--lean); }
+  .chip.aligned { background: var(--align); } .chip.unknown { background: var(--muted); }
+  #composer { border-top: 1px solid var(--border); background: var(--panel); padding: 12px 22px; }
+  #composer .row { max-width: 760px; margin: 0 auto; display: flex; gap: 8px; }
+  #input { flex: 1; font: inherit; padding: 9px 12px; border: 1px solid var(--border); border-radius: 10px; resize: none; height: 64px; }
+  button { font: inherit; font-size: 13.5px; padding: 7px 14px; border: 1px solid var(--border); border-radius: 8px; background: #fff; color: var(--ink); cursor: pointer; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.danger { color: var(--diverge); }
+  button:disabled { opacity: .5; cursor: default; }
+  #disclaimer { max-width: 760px; margin: 6px auto 0; font-size: 11px; color: var(--muted); }
+  #panel { width: 390px; border-left: 1px solid var(--border); background: var(--panel); display: flex; flex-direction: column; min-width: 0; }
+  #tabs { display: flex; border-bottom: 1px solid var(--border); }
+  #tabs div { flex: 1; text-align: center; padding: 9px 0; font-size: 13px; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; }
+  #tabs div.active { color: var(--ink); border-bottom-color: var(--accent); font-weight: 600; }
+  #panel-body { flex: 1; overflow-y: auto; padding: 14px; font-size: 13px; }
+  .axis-row { margin-bottom: 14px; }
+  .axis-row .lbl { display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 2px; }
+  .axis-row .lbl b { font-weight: 600; }
+  .axis-row .poles { display: flex; justify-content: space-between; color: var(--muted); font-size: 10.5px; }
+  .track { position: relative; height: 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; margin: 2px 0; }
+  .track .mid { position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--border); }
+  .dot { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 11px; height: 11px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 2px rgba(0,0,0,.4); }
+  .dot.user { background: var(--accent); }
+  .dot.lens { background: var(--gold); border-radius: 2px; }
+  .legend { color: var(--muted); font-size: 11.5px; margin-bottom: 10px; }
+  .legend .dot { position: static; display: inline-block; transform: none; vertical-align: -1px; margin: 0 3px 0 8px; }
+  .obs { border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; }
+  .obs .meta { color: var(--muted); font-size: 11px; }
+  .obs .del { float: right; cursor: pointer; color: var(--muted); }
+  .obs .del:hover { color: var(--diverge); }
+  .section-title { font-weight: 650; font-size: 13px; margin: 14px 0 8px; }
+  .profile-card { border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; margin-bottom: 8px; cursor: pointer; }
+  .profile-card:hover { background: var(--accent-soft); }
+  .profile-card b { font-size: 13px; }
+  .profile-card .sum { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .badge { font-size: 10px; background: var(--accent-soft); color: var(--accent); border-radius: 5px; padding: 1px 6px; vertical-align: 1px; }
+  .evid a { color: var(--accent); text-decoration: none; font-size: 11.5px; }
+  .back { color: var(--accent); cursor: pointer; font-size: 12.5px; margin-bottom: 8px; display: inline-block; }
+  .muted { color: var(--muted); }
+  .spinner { color: var(--muted); font-style: italic; }
+  form.mini { border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-top: 10px; }
+  form.mini label { display: block; font-size: 12px; color: var(--muted); margin-top: 6px; }
+  form.mini input[type=text], form.mini select { width: 100%; font: inherit; font-size: 13px; padding: 5px 7px; border: 1px solid var(--border); border-radius: 6px; }
+  form.mini input[type=range] { width: 100%; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Worldview Mirror</h1>
+  <span class="sub">your worldview, reflected next to a lens worldview — nothing analyzed in secret</span>
+  <span style="flex:1"></span>
+  <span class="knob">Lens <select id="lens-select"></select></span>
+  <span class="knob">Tone <input type="range" id="tone-knob" min="1" max="5" step="1" style="width:90px"> <span id="tone-label"></span></span>
+</header>
+<div id="layout">
+  <div id="sidebar">
+    <div class="head"><b>Threads</b><button id="new-thread">+ New</button></div>
+    <div id="threads"></div>
+  </div>
+  <div id="main">
+    <div id="messages"></div>
+    <div id="composer">
+      <div class="row">
+        <textarea id="input" placeholder="What are you working through? Share a belief, a problem, a doubt..."></textarea>
+        <button class="primary" id="send">Send</button>
+      </div>
+      <div id="disclaimer">Not therapy or medical advice. In crisis, call/text 988 (US) or local emergency services. Conversations and your profile are stored only in local files on this machine; each message is sent to the OpenAI API for processing.</div>
+    </div>
+  </div>
+  <div id="panel">
+    <div id="tabs">
+      <div data-tab="mirror" class="active">Mirror</div>
+      <div data-tab="profile">Profile</div>
+      <div data-tab="atlas">Atlas</div>
+    </div>
+    <div id="panel-body"></div>
+  </div>
+</div>
+<script>
+const TOKEN = "__WVM_TOKEN__";
+const S = { state: null, thread: null, tab: "mirror", atlas: null, atlasView: { mode: "list", profile: null }, busy: false };
+async function api(path, opts = {}) {
+  opts.headers = Object.assign({ "X-WVM-Token": TOKEN, "Content-Type": "application/json" }, opts.headers || {});
+  const res = await fetch(path, opts);
+  if (!res.ok) throw new Error((await res.json().catch(() => ({}))).detail || res.statusText);
+  return res.json();
+}
+const el = id => document.getElementById(id);
+const esc = s => (s || "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function axisById(id) { return S.state.axes.find(a => a.id === id) || {}; }
+
+// ---- header knobs ----
+function renderKnobs() {
+  const sel = el("lens-select");
+  sel.innerHTML = S.state.profiles.map(p => `<option value="${p.id}">${esc(p.label)}${p.cited_from_graph ? " ★" : ""}</option>`).join("");
+  sel.value = S.thread ? S.thread.settings.lens : S.state.defaults.lens;
+  el("tone-knob").value = S.thread ? S.thread.settings.tone : S.state.defaults.tone;
+  el("tone-label").textContent = S.state.tones.find(t => t.level == el("tone-knob").value).label;
+}
+el("tone-knob").oninput = () => { el("tone-label").textContent = S.state.tones.find(t => t.level == el("tone-knob").value).label; };
+
+// ---- threads ----
+function renderThreads() {
+  el("threads").innerHTML = S.state.threads.map(t =>
+    `<div class="thread-item ${S.thread && S.thread.id === t.id ? "active" : ""}" data-id="${t.id}">
+       <span class="del" data-del="${t.id}" title="Delete thread">×</span>${esc(t.title)}<div class="when">${t.updated.replace("T", " ")} · ${t.messages} msgs</div></div>`).join("")
+    || `<div class="thread-item muted">No threads yet — say something.</div>`;
+  el("threads").querySelectorAll(".thread-item[data-id]").forEach(node => node.onclick = async e => {
+    if (e.target.dataset.del) { await api("/api/threads/" + e.target.dataset.del, { method: "DELETE" }); if (S.thread && S.thread.id === e.target.dataset.del) S.thread = null; await refreshThreads(); renderMessages(); return; }
+    S.thread = await api("/api/threads/" + node.dataset.id);
+    renderThreads(); renderKnobs(); renderMessages();
+  });
+}
+async function refreshThreads() { S.state.threads = (await api("/api/threads")).threads; renderThreads(); }
+el("new-thread").onclick = () => { S.thread = null; renderThreads(); renderKnobs(); renderMessages(); };
+
+// ---- chat ----
+function citeHtml(c) {
+  const label = esc((c.label || c.id).slice(0, 60));
+  return c.url ? `<a href="${c.url}" target="_blank" title="${esc(c.id)}">▶ ${label}</a>` : `<span class="c" title="${esc(c.id)}">${label}</span>`;
+}
+function renderMessages() {
+  const box = el("messages");
+  const msgs = S.thread ? S.thread.messages : [];
+  box.innerHTML = msgs.map(m => {
+    const meta = m.meta || {};
+    const cites = (meta.citations || []).map(citeHtml).join("");
+    const chips = (meta.mirror || []).map(r => `<span class="chip ${r.alignment}" title="you ${r.user_position} vs lens ${r.lens_position}">${esc(r.axis_label)}: ${r.alignment.replace("-", " ")}</span>`).join("");
+    return `<div class="msg ${m.role}"><div class="who">${m.role === "user" ? "You" : "Mirror"} · ${m.date.replace("T", " ")}</div>
+      <div class="body">${esc(m.content)}</div>${cites ? `<div class="cites">${cites}</div>` : ""}${chips ? `<div class="mirror-chips">${chips}</div>` : ""}</div>`;
+  }).join("") || `<div class="msg"><div class="body">Welcome. This tool helps you articulate your own worldview and see it next to a lens worldview (default: David Deutsch's deep optimism, fully cited to his interviews and books).<br><br>Everything inferred about you lands in the <b>Profile</b> tab — visible, editable, deletable. Set the tone knob to how hard you want to be challenged, and swap the lens to see other worldviews respond. Start with a problem you're actually working on.</div></div>`;
+  if (S.busy) box.insertAdjacentHTML("beforeend", `<div class="msg"><div class="spinner">thinking…</div></div>`);
+  box.scrollTop = box.scrollHeight;
+}
+async function send() {
+  const text = el("input").value.trim();
+  if (!text || S.busy) return;
+  S.busy = true; el("send").disabled = true; renderMessages();
+  try {
+    const res = await api("/api/chat", { method: "POST", body: JSON.stringify({
+      thread_id: S.thread ? S.thread.id : null, message: text,
+      tone: parseInt(el("tone-knob").value), lens: el("lens-select").value }) });
+    S.thread = res.thread; S.state.profile = res.profile; el("input").value = "";
+    await refreshThreads();
+  } catch (err) { alert("Error: " + err.message); }
+  S.busy = false; el("send").disabled = false;
+  renderMessages(); renderPanel();
+}
+el("send").onclick = send;
+el("input").addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } });
+
+// ---- right panel ----
+document.querySelectorAll("#tabs div").forEach(t => t.onclick = () => {
+  document.querySelectorAll("#tabs div").forEach(x => x.classList.remove("active"));
+  t.classList.add("active"); S.tab = t.dataset.tab; renderPanel();
+});
+function track(userPos, lensPos) {
+  const pct = v => ((v + 2) / 4 * 100).toFixed(1) + "%";
+  return `<div class="track"><div class="mid"></div>
+    ${lensPos !== null && lensPos !== undefined ? `<div class="dot lens" style="left:${pct(lensPos)}" title="lens ${lensPos}"></div>` : ""}
+    ${userPos !== null && userPos !== undefined ? `<div class="dot user" style="left:${pct(userPos)}" title="you ${userPos}"></div>` : ""}</div>`;
+}
+async function renderPanel() {
+  const body = el("panel-body");
+  if (S.tab === "mirror") {
+    const lens = el("lens-select").value || S.state.defaults.lens;
+    const data = await api("/api/compare?lens=" + encodeURIComponent(lens));
+    body.innerHTML = `<div class="legend">Comparing you with <b>${esc(data.lens.label)}</b><span class="dot user"></span> you <span class="dot lens"></span> lens</div>` +
+      (data.rows.length ? data.rows.map(r => `
+        <div class="axis-row">
+          <div class="lbl"><b>${esc(r.axis_label)}</b><span class="chip ${r.alignment}">${r.delta !== null ? "Δ " + r.delta : r.user_position === null ? "you: no data" : "lens: no position"}</span></div>
+          ${track(r.user_position, r.lens_position)}
+          <div class="poles"><span>${esc(r.pole_neg)}</span><span>${esc(r.pole_pos)}</span></div>
+          ${r.lens_summary ? `<div class="muted" style="font-size:11.5px">${esc(r.lens_summary)}</div>` : ""}
+        </div>`).join("")
+      : `<p class="muted">Nothing to compare yet — share some beliefs in the chat, or set positions directly in the Profile tab.</p>`);
+  }
+  if (S.tab === "profile") {
+    const data = await api("/api/profile");
+    const positions = data.positions;
+    const posRows = S.state.axes.filter(a => positions[a.id]).map(a => `
+      <div class="axis-row"><div class="lbl"><b>${esc(a.label)}</b><span class="muted">${positions[a.id].position > 0 ? "+" : ""}${positions[a.id].position} · ${positions[a.id].basis}</span></div>
+      ${track(positions[a.id].position, null)}
+      <div class="poles"><span>${esc(a.pole_neg.label)}</span><span>${esc(a.pole_pos.label)}</span></div></div>`).join("");
+    const obs = data.profile.observations.slice().reverse().map(o => `
+      <div class="obs"><span class="del" data-obs="${o.id}" title="Delete">×</span>
+        ${esc(o.belief)}<div class="meta">${esc(axisById(o.axis).label || o.axis)} ${o.position > 0 ? "+" : ""}${o.position} · conf ${o.confidence} · ${o.source} · ${o.date.slice(0, 10)}</div>
+        ${o.quote ? `<div class="meta">"${esc(o.quote)}"</div>` : ""}</div>`).join("");
+    body.innerHTML = `<div class="legend">Everything the Mirror believes about you. Yours to edit or erase — stored only in <code>data/profiles/</code> on this machine.</div>
+      <div class="section-title">Positions</div>${posRows || `<p class="muted">No positions yet.</p>`}
+      <div class="section-title">Observed beliefs (${data.profile.observations.length})</div>${obs || `<p class="muted">None yet.</p>`}
+      <form class="mini" id="axis-form"><b style="font-size:12.5px">Set a position directly</b>
+        <label>Axis</label><select id="axis-pick">${S.state.axes.map(a => `<option value="${a.id}">${esc(a.label)}</option>`).join("")}</select>
+        <label>Position <span id="axis-val">0.0</span> (−2 … +2)</label><input type="range" id="axis-pos" min="-2" max="2" step="0.1" value="0">
+        <div style="margin-top:8px"><button type="submit" class="primary">Set</button> <button type="button" id="axis-clear">Clear override</button></div></form>
+      <div style="margin-top:12px"><button class="danger" id="wipe-profile">Delete entire profile</button></div>`;
+    body.querySelectorAll(".obs .del").forEach(d => d.onclick = async () => { await api("/api/profile/observation/" + d.dataset.obs, { method: "DELETE" }); renderPanel(); });
+    el("axis-pos").oninput = () => el("axis-val").textContent = el("axis-pos").value;
+    el("axis-form").onsubmit = async e => { e.preventDefault(); await api("/api/profile/axis", { method: "POST", body: JSON.stringify({ axis: el("axis-pick").value, position: parseFloat(el("axis-pos").value) }) }); renderPanel(); };
+    el("axis-clear").onclick = async () => { await api("/api/profile/axis", { method: "POST", body: JSON.stringify({ axis: el("axis-pick").value, position: null }) }); renderPanel(); };
+    el("wipe-profile").onclick = async () => { if (confirm("Delete your whole worldview profile? This cannot be undone.")) { await api("/api/profile", { method: "DELETE" }); renderPanel(); } };
+  }
+  if (S.tab === "atlas") {
+    if (!S.atlas) S.atlas = await api("/api/atlas");
+    if (S.atlasView.mode === "profile") {
+      const p = S.atlas.profiles.find(x => x.id === S.atlasView.profile);
+      body.innerHTML = `<span class="back" id="atlas-back">← all worldviews</span>
+        <h3 style="margin:4px 0">${esc(p.label)} ${p.cited_from_graph ? '<span class="badge">cited from graph</span>' : '<span class="badge">research-seeded</span>'}</h3>
+        <p class="muted">${esc(p.summary)}</p>
+        ${p.variants ? `<p class="muted" style="font-size:12px"><b>Variants:</b> ${esc(p.variants)}</p>` : ""}
+        <div class="muted" style="font-size:12px"><b>Sources:</b> ${p.sources.map(s => `<a class="evid" href="${s.url}" target="_blank">${esc(s.title)}</a>`).join(" · ")}</div>
+        <div class="section-title">Positions</div>` +
+        p.positions.map(pos => { const a = axisById(pos.axis); return `
+          <div class="axis-row"><div class="lbl"><b>${esc(a.label)}</b><span class="muted">${pos.position > 0 ? "+" : ""}${pos.position}</span></div>
+          ${track(null, pos.position)}
+          <div class="poles"><span>${esc(a.pole_neg.label)}</span><span>${esc(a.pole_pos.label)}</span></div>
+          <div class="muted" style="font-size:11.5px">${esc(pos.summary)}</div>
+          <div class="evid">${(pos.evidence || []).map(ev => ev.url ? `<a href="${ev.url}" target="_blank">${esc(ev.title || ev.url)}</a>` : `<span class="c" title="${esc(ev.note || "")}">${esc(ev.node)}</span>`).join(" · ")}</div></div>`; }).join("");
+      el("atlas-back").onclick = () => { S.atlasView = { mode: "list", profile: null }; renderPanel(); };
+    } else {
+      body.innerHTML = `<div class="legend">The Worldview Atlas: ${S.atlas.axes.length} axes, ${S.atlas.profiles.length} worldview profiles. Swap any of them in as the chat lens.</div>
+        <div class="section-title">Worldviews</div>` +
+        S.atlas.profiles.map(p => `<div class="profile-card" data-p="${p.id}"><b>${esc(p.label)}</b> ${p.cited_from_graph ? '<span class="badge">cited from graph</span>' : ""}<div class="sum">${esc(p.summary.slice(0, 150))}…</div></div>`).join("") +
+        `<div class="section-title">Axes</div>` +
+        S.atlas.axes.map(a => `<div class="axis-row"><div class="lbl"><b>${esc(a.label)}</b></div>
+          <div class="poles"><span>${esc(a.pole_neg.label)}</span><span>${esc(a.pole_pos.label)}</span></div>
+          <div class="muted" style="font-size:11.5px">${esc(a.question)}</div></div>`).join("");
+      body.querySelectorAll(".profile-card").forEach(c => c.onclick = () => { S.atlasView = { mode: "profile", profile: c.dataset.p }; renderPanel(); });
+    }
+  }
+}
+el("lens-select").onchange = () => { if (S.tab === "mirror") renderPanel(); };
+
+// ---- boot ----
+(async function boot() {
+  S.state = await api("/api/state");
+  renderKnobs(); renderThreads(); renderMessages(); renderPanel();
+})().catch(err => { document.body.innerHTML = "<p style='padding:2em'>Failed to start: " + esc(err.message) + "</p>"; });
+</script>
+</body>
+</html>

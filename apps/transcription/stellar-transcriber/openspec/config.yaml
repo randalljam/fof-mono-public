@@ -1,0 +1,31 @@
+schema: spec-driven
+context: |
+  App: Stellar Transcriber.
+  App stage: S1-dev.
+  Spec stage: openspec-single-spec.
+  OpenSpec convention: use one capability named "app" for this early-stage baseline; split only if the living spec becomes too large or independently change-controlled behavior emerges.
+  Tech stack: Python command-line scripts under apps/transcription/stellar-transcriber/scripts, JSON config under config/, markdown reference reports under references/, shared behavior in core/denovo.py, core/transcript_eval.py, core/transcribe.py, and core/llm.py.
+  Runtime convention: run app scripts from the monorepo root with .venv/bin/python3 so imports resolve against the shared core/ package.
+  Data convention: source transcript data and generated eval outputs live under gitignored data/ paths. The app reads committed S3 manifests and may download selected transcript files from s3://[S3-FILES-BUCKET], but must not run s3_archive build/refresh as part of normal app workflows.
+  Transcript convention: raw machine transcript suffixes include _nova2gen and _dgwhspm; human references include _qafixed, _vrb, and _cemanual; draft outputs use _draftds, _draftls, _draftdd, and _draftld.
+  Evaluation convention: config/eval-corpora.json defines corpus profiles, normalization policies, reference suffix priority, eval suffixes, proper-name extraction method, and composite score weights.
+  Current baseline scope: describe observable behavior already present in scripts, config, docs, references, and tests. Do not include roadmap items or desired fixes in the living spec.
+
+# Project context (optional)
+# This is shown to AI when creating artifacts.
+# Add your tech stack, conventions, style guides, domain knowledge, etc.
+# Example:
+#   context: |
+#     Tech stack: TypeScript, React, Node.js
+#     We use conventional commits
+#     Domain: e-commerce platform
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours

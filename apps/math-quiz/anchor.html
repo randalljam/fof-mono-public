@@ -1,0 +1,546 @@
+<!-- START OF FILE anchor.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Math Fluency — Quick Check</title>
+  <link rel="icon" href="icons/favicon-anchor.svg" type="image/svg+xml">
+  <!-- sql.js (CDN, mirrors the other pages; e2e routes this to a local copy). -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
+  <!-- Confetti for the targeted-practice graduation reward (same as math_quiz; e2e routes it locally). -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <!-- Pure DB functions (createTables / importSessionData). No page bootstrap. -->
+  <script src="math_utils.js"></script>
+  <!-- Shared fluency rubric + the problem-list generator (Generate by fluency). -->
+  <script src="fluency_core.js?v=20260728a"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; color: #222; }
+    .wrap { max-width: 640px; margin: 0 auto; padding: 24px; }
+    h1 { font-size: 1.4rem; }
+    .card { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 24px; margin-top: 16px; overflow-wrap: anywhere; }
+    .hidden { display: none; }
+    input[type=text], input[type=number], select { font-size: 1.1rem; padding: 8px 10px; border: 1px solid #bbb; border-radius: 6px; }
+    button { font-size: 1rem; padding: 10px 18px; margin-right: 8px; background: #2196f3; color: #fff; border: none; border-radius: 6px; cursor: pointer; touch-action: manipulation; }
+    button:hover { background: #1976d2; }
+    button.secondary { background: #607d8b; }
+    /* The in-quiz annotation buttons — deliberately different colors. */
+    button.skipflag { background: #f57c00; }
+    button.skipflag:hover { background: #ef6c00; }
+    button.flagprev { background: #00897b; }
+    button.flagprev:hover { background: #00796b; }
+    button.lightbulb { background: #0288d1; font-size: 1.3rem; font-weight: 700; }
+    button.lightbulb:hover { background: #0277bd; }
+    #anchor-problem { font-size: 3rem; text-align: center; margin: 16px 0; letter-spacing: 2px; line-height: 1.2; min-height: 1.2em; }
+    #anchor-answer { font-size: 2rem; width: 160px; text-align: center; display: block; margin: 0 auto; }
+    #anchor-feedback { height: 2.8rem; font-size: 2.6rem; text-align: center; margin-top: 4px; line-height: 1; }
+    #anchor-quiz-main.hidden { display: none !important; }
+    #anchor-keypad.hidden { display: none; }
+    /* Enter button below the problem box (shown only when auto-submit is off). The .hidden
+       re-assert outranks the ID rule so show()/hide() (which toggle .hidden) still work. */
+    #anchor-enter { display: block; margin: 8px auto 0; font-size: 1.1rem; padding: 10px 28px; }
+    #anchor-enter.hidden { display: none; }
+    /* Go gate: full-card overlay so the quiz layout (problem slot, answer box, keypad) is
+       already in place; the learner taps the center square to reveal the first problem. */
+    #anchor-quiz { position: relative; }
+    #anchor-go-overlay {
+      position: absolute; inset: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: center;
+      background: transparent;
+      border-radius: 8px;
+    }
+    #anchor-go-overlay.hidden { display: none; }
+    #anchor-go {
+      width: 168px; height: 168px; margin: 0; padding: 0;
+      font-size: 2.4rem; font-weight: 700; line-height: 1;
+      border: none; border-radius: 18px; cursor: pointer; touch-action: manipulation;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+    }
+    #anchor-go:active { transform: translateY(1px); }
+    /* Wrong-answer correction panel: correct answer + Flag / Continue / Continue&insert.
+       The flag pop-out is absolutely positioned so opening it never shifts the layout. */
+    #anchor-correction { position: relative; text-align: center; margin-top: 8px; }
+    #anchor-correction-answer { font-size: 1.3rem; color: #c62828; font-weight: 600; margin-bottom: 10px; }
+    /* The flag reasons sit inline in the panel (not a pop-out) so they show alongside Continue. */
+    #anchor-flag-menu { margin: 8px auto 0; width: 260px; max-width: 100%; background: #fff; border: 1px solid #bbb; border-radius: 8px; padding: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.12); text-align: left; }
+    #anchor-flag-menu label { display: block; font-size: 0.95rem; }
+    #anchor-flag-comment { width: 100%; box-sizing: border-box; margin-top: 6px; }
+    #anchor-feedback.correct { color: #2e7d32; }
+    #anchor-progress { text-align: center; color: #666; margin-top: 14px; }
+    #anchor-teach { text-align: center; margin: 10px auto 12px; padding: 12px; border: 1px solid #b3d4ff; border-radius: 8px; background: #f0f7ff; max-width: 520px; }
+    #anchor-teach-visual svg { width: 100%; max-width: 440px; height: auto; display: block; margin: 0 auto; }
+    .anchor-teach-divider { border-top: 1px solid #c7d7ea; max-width: 440px; margin: 10px auto; }
+    .keypad { max-width: 300px; margin: 18px auto 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .keypad button { font-size: 1.3rem; padding: 14px 0; background: #eceff1; color: #222; border: 1px solid #cfd8dc; border-radius: 8px; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    .keypad button:hover { background: #cfd8dc; }
+    .keypad button.big { background: #e3f2fd; }
+    .keypad button.op { background: #607d8b; color: #fff; }
+    .muted { color: #666; font-size: 0.9rem; }
+    /* Reserve the name-status line's height so showing it on blur doesn't shift
+       the layout (which would move the Start button mid-click). */
+    #anchor-name-status { min-height: 1.2rem; }
+    .anchor-name-combobox {
+      position: relative;
+      display: inline-flex;
+      align-items: stretch;
+      max-width: 100%;
+      vertical-align: top;
+    }
+    .anchor-name-combobox-form { display: inline; margin: 0; padding: 0; }
+    .anchor-name-row { margin: 0 0 1em; }
+    .anchor-name-combobox input {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      min-width: 12rem;
+      margin: 0;
+    }
+    .anchor-name-combobox-toggle {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border: 1px solid #bbb;
+      border-left: none;
+      background: #fff;
+      color: #444;
+      padding: 0 10px;
+      margin: 0;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .anchor-name-combobox-toggle:hover { background: #f5f5f5; }
+    .anchor-name-combobox-menu {
+      position: absolute;
+      top: calc(100% + 2px);
+      left: 0;
+      min-width: 100%;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      background: #fff;
+      border: 1px solid #888;
+      border-radius: 6px;
+      max-height: 14rem;
+      overflow-y: auto;
+      z-index: 100;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    }
+    .anchor-name-combobox-menu:not(.hidden) { display: block; }
+    .anchor-name-combobox-menu li {
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+    .anchor-name-combobox-menu li:hover { background: #e3f2fd; }
+    .anchor-name-combobox-menu li.muted { cursor: default; }
+    #anchor-upload { white-space: pre-wrap; }
+    .weak-list { columns: 3; font-family: monospace; margin-top: 8px; }
+    /* Tablet touch screens (e.g. iPad): slightly larger keypad targets. */
+    @media (pointer: coarse) and (min-width: 700px) {
+      .keypad { max-width: 360px; gap: 10px; }
+      .keypad button { font-size: 1.45rem; padding: 18px 0; }
+    }
+    /* Phone (portrait/narrow): bigger in-quiz UI — tweak the --mq-* vars below. */
+    @media (max-width: 699px) {
+      body.in-quiz {
+        --mq-wrap-pad: 8px;
+        --mq-card-pad: 12px;
+        --mq-problem: 3.75rem;       /* default 3rem  (+25%) */
+        --mq-answer: 2.5rem;         /* default 2rem  (+25%) */
+        --mq-answer-width: 200px;    /* default 160px (+25%) */
+        --mq-feedback: 3.25rem;      /* default 2.6rem (+25%) */
+        --mq-key-font: 2.75rem;      /* digit size inside each key */
+        --mq-key-pad: 24px;          /* vertical padding (top + bottom each) */
+        --mq-key-min-h: 80px;        /* minimum key height — main lever for tall keys */
+        --mq-key-gap: 10px;          /* default 8px */
+        --mq-key-max: 100%;          /* default 300px — use full card width */
+        --mq-action-font: 1.1rem;    /* skip / flag / quit buttons only */
+        --mq-action-pad-y: 12px;     /* default 10px */
+        --mq-quiz-top-offset: 2.5rem; /* shift quiz down (~½ problem height); tweak for notch/status bar */
+      }
+      body.in-quiz .wrap {
+        padding: var(--mq-wrap-pad);
+        padding-top: calc(var(--mq-wrap-pad) + var(--mq-quiz-top-offset));
+      }
+      body.in-quiz #anchor-quiz.card { padding: var(--mq-card-pad); margin-top: 8px; }
+      body.in-quiz h1,
+      body.in-quiz #anchor-problem-list-editor { display: none; }
+      body.in-quiz #anchor-problem { font-size: var(--mq-problem); margin: 10px 0; }
+      body.in-quiz #anchor-answer { font-size: var(--mq-answer); width: var(--mq-answer-width); }
+      body.in-quiz #anchor-feedback { font-size: var(--mq-feedback); height: 3.4rem; }
+      body.in-quiz .keypad { max-width: var(--mq-key-max); gap: var(--mq-key-gap); margin-top: 12px; }
+      /* #anchor-keypad — not #anchor-quiz button — or action-button rule below wins on specificity. */
+      body.in-quiz #anchor-keypad button {
+        font-size: var(--mq-key-font);
+        padding: var(--mq-key-pad) 0;
+        min-height: var(--mq-key-min-h);
+        line-height: 1;
+        margin-right: 0;
+      }
+      body.in-quiz #anchor-correction button,
+      body.in-quiz #anchor-quiz > p button {
+        font-size: var(--mq-action-font);
+        padding: var(--mq-action-pad-y) 16px;
+      }
+      body.in-quiz #anchor-go { width: 210px; height: 210px; font-size: 3rem; border-radius: 22px; }
+    }
+    /* Kid landing: big name buttons + the mode pop-up. */
+    #anchor-landing { text-align: center; }
+    .landing-names { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; margin: 14px 0 6px; }
+    .landing-name {
+      color: #fff; border: none; border-radius: 16px; cursor: pointer;
+      font-size: 2rem; font-weight: 700; padding: 26px 44px; min-width: 170px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.18);
+    }
+    .landing-name:active { transform: translateY(1px); }
+    /* Cycle through a few solid colors so each kid button reads as its own target. */
+    .landing-name:nth-child(7n+1) { background: #ec407a; }
+    .landing-name:nth-child(7n+2) { background: #43a047; }
+    .landing-name:nth-child(7n+3) { background: #1e88e5; }
+    .landing-name:nth-child(7n+4) { background: #fb8c00; }
+    .landing-name:nth-child(7n+5) { background: #8e24aa; }
+    .landing-name:nth-child(7n+6) { background: #00897b; }
+    .landing-name:nth-child(7n+7) { background: #6d4c41; }
+    .landing-name.landing-clone-target { outline: 3px solid #1565c0; outline-offset: 3px; }
+    .landing-name.landing-clone-source { outline: 3px solid #2e7d32; outline-offset: 3px; opacity: 1; }
+    #landing-clone-panel {
+      margin: 12px auto 4px; max-width: 420px; padding: 14px 16px;
+      background: #e3f2fd; border: 1px solid #90caf9; border-radius: 12px; text-align: center;
+    }
+    #landing-clone-panel.hidden { display: none; }
+    #landing-clone-panel p { margin: 0 0 10px; color: #0d47a1; line-height: 1.35; }
+    #landing-clone-panel .landing-clone-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    #landing-clone-panel .landing-clone-actions button {
+      border: none; border-radius: 10px; cursor: pointer; font-size: 1.05rem; font-weight: 600;
+      padding: 12px 16px; color: #fff;
+    }
+    #landing-clone-continue { background: #546e7a; }
+    #landing-clone-run { background: #2e7d32; }
+    #landing-clone-run:disabled { background: #bdbdbd; cursor: not-allowed; }
+    #landing-clone-cancel { background: #78909c; }
+    #anchor-kid-modal {
+      position: fixed; inset: 0; background: rgba(0,0,0,.45);
+      display: flex; align-items: center; justify-content: center; z-index: 50;
+    }
+    /* ID specificity beats .hidden, so re-assert display:none when hidden. */
+    #anchor-kid-modal.hidden { display: none; }
+    #anchor-kid-modal .modal-card {
+      background: #fff; border-radius: 14px; padding: 22px 26px; max-width: 360px;
+      width: calc(100% - 40px); text-align: center; box-shadow: 0 8px 30px rgba(0,0,0,.3);
+    }
+    .kid-mode-btn {
+      display: block; width: 100%; margin: 10px 0; padding: 18px; border: none;
+      border-radius: 12px; font-size: 1.3rem; font-weight: 600; color: #fff;
+      background: #1976d2; cursor: pointer;
+    }
+    .kid-mode-btn:active { transform: translateY(1px); }
+    .kid-quick-quiz { margin: 14px 0 4px; }
+    .kid-quick-quiz-label { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+    .kid-quick-ops { display: flex; gap: 10px; justify-content: center; }
+    .kid-quick-op {
+      flex: 1; padding: 18px 0; border: none; border-radius: 12px;
+      font-size: 1.8rem; font-weight: 700; color: #fff; background: #2e7d32; cursor: pointer;
+    }
+    .kid-quick-op:active { transform: translateY(1px); }
+    .kid-quick-op:disabled { background: #bdbdbd; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <!-- Targeted-practice graduation sound (same file as the math quiz "correct" sound). -->
+  <audio id="correct-sound" src="sounds/old-horn-honking-ballhupe.mp3" preload="auto"></audio>
+  <div class="wrap">
+    <h1>Let's get fluent in arithmetic!</h1>
+
+    <div id="anchor-landing" class="card">
+      <p style="font-size:1.15rem;margin-top:0">Who's practicing?</p>
+      <div class="landing-names" id="landing-names"><!-- filled from /api/folder-users for the source folder --></div>
+      <div id="landing-clone-panel" class="hidden">
+        <p id="landing-clone-msg">Clone another learner's file into yours, or continue with your current file. Tap a name above to choose who to clone from.</p>
+        <div class="landing-clone-actions">
+          <button type="button" id="landing-clone-continue">Continue with my file</button>
+          <button type="button" id="landing-clone-run" disabled>Clone selected file</button>
+          <button type="button" id="landing-clone-cancel">Cancel</button>
+        </div>
+      </div>
+      <p id="landing-status" class="muted" style="min-height:1.2em;color:#c62828"></p>
+      <p style="margin-top:16px"><button type="button" id="landing-other" class="secondary">Other…</button></p>
+    </div>
+
+    <div id="anchor-kid-modal" class="hidden">
+      <div class="modal-card">
+        <p id="kid-modal-title" style="font-size:1.2rem;font-weight:600;margin-top:0">What do you want to do?</p>
+        <button type="button" id="kid-mode-feast" class="kid-mode-btn" style="background:#f9a825;color:#1a1a1a">Fluency feast</button>
+        <button type="button" id="kid-mode-targeted" class="kid-mode-btn">Targeted practice</button>
+        <button type="button" id="kid-mode-visual" class="kid-mode-btn" style="background:#00838f">Targeted ten frames</button>
+        <button type="button" id="kid-mode-list" class="kid-mode-btn" style="background:#7b1fa2">Problem list</button>
+        <div class="kid-quick-quiz">
+          <div class="kid-quick-quiz-label">Quick quiz</div>
+          <div class="kid-quick-ops">
+            <button type="button" id="kid-quick-add" class="kid-quick-op" aria-label="Addition quick quiz">+</button>
+            <button type="button" id="kid-quick-sub" class="kid-quick-op" aria-label="Subtraction quick quiz">&minus;</button>
+            <button type="button" id="kid-quick-mul" class="kid-quick-op" aria-label="Multiplication quick quiz">&times;</button>
+          </div>
+        </div>
+        <p id="kid-modal-status" class="muted" style="min-height:1.2em;color:#c62828"></p>
+        <p style="margin-bottom:0"><button type="button" id="kid-modal-back" class="secondary">Back</button></p>
+      </div>
+    </div>
+
+    <div id="anchor-setup" class="card hidden">
+      <p>Answer as fast as you can but no stress :)</p>
+      <div class="anchor-name-row">
+        <form class="anchor-name-combobox-form" autocomplete="off" onsubmit="return false">
+          <span class="anchor-name-combobox">
+            <input type="text" id="anchor-username" name="learner-pick" placeholder="Your name"
+              autocomplete="off" autocapitalize="words" spellcheck="false" readonly
+              data-lpignore="true" data-1p-ignore data-bwignore="true" data-form-type="other"
+              aria-autocomplete="list" aria-controls="anchor-username-menu" aria-expanded="false" role="combobox">
+            <button type="button" id="anchor-username-toggle" class="anchor-name-combobox-toggle" tabindex="-1" aria-label="Show all learners" title="Show all learners">&#9662;</button>
+            <ul id="anchor-username-menu" class="anchor-name-combobox-menu hidden" role="listbox"></ul>
+          </span>
+        </form>
+      </div>
+      <p class="muted" id="anchor-source-mode-row">
+        <label><input type="radio" name="anchor-source-mode" id="anchor-mode-continue" value="continue" checked> Continue latest file</label>
+        <label><input type="radio" name="anchor-source-mode" id="anchor-mode-new" value="new"> Start new file</label>
+      </p>
+      <p class="muted">
+        <label>Source folder:
+          <input type="text" id="anchor-source-folder" value="_data/tlkids" autocomplete="off" style="width: 16rem">
+        </label>
+        <button type="button" id="anchor-select-source-folder" class="secondary">Select source folder</button>
+      </p>
+      <p class="muted">
+        <label>Destination:
+          <select id="anchor-destination">
+            <option value="source" selected>source</option>
+            <option value="test">test</option>
+          </select>
+        </label>
+      </p>
+      <p class="muted hidden" id="anchor-clone-from-row">
+        <label>Clone from:
+          <select id="anchor-clone-from"></select>
+        </label>
+        <button type="button" id="anchor-clone-run" class="secondary">Clone</button>
+      </p>
+      <p class="muted hidden" id="anchor-clone-preview"></p>
+      <p class="muted hidden" id="anchor-clone-status"></p>
+      <p class="muted" id="anchor-test-description-row">
+        <label>Test description:
+          <input type="text" id="anchor-test-description" placeholder="short label (e.g. iPad keypad)" autocomplete="off" style="width: 15rem">
+        </label>
+      </p>
+      <p id="anchor-name-status" class="muted"></p>
+      <p class="muted">
+        <label><input type="checkbox" id="anchor-show-fluency-percent" checked> Show % fluent on the end screen</label>
+        <span class="muted">— start → end fluency readout (saved to this file)</span>
+      </p>
+      <p class="muted">Include:
+        <label><input type="checkbox" id="op-add" checked> Addition</label>
+        <label><input type="checkbox" id="op-sub"> Subtraction</label>
+        <label><input type="checkbox" id="op-mul"> Multiplication</label>
+        &nbsp;·&nbsp;
+        <label><input type="checkbox" id="anchor-autosubmit" checked> Auto-submit</label>
+      </p>
+      <p class="muted">
+        <label>Feedback delay (seconds):
+          <input type="number" id="anchor-feedback-delay" value="0.3" step="0.05" min="0" style="width: 5rem">
+        </label>
+        <span class="muted">— flash before the next problem (dev control)</span>
+      </p>
+      <p class="muted">
+        Problem source:
+        <select id="anchor-problem-list-file">
+          <option value="__internal__" disabled>Use internal (none in this file)</option>
+          <option value="">Auto problems</option>
+          <option value="__targeted__">Targeted practice</option>
+          <option value="__visual__">Visual practice (ten-frames)</option>
+        </select>
+      </p>
+      <div id="anchor-internal-lists" class="muted hidden" style="border:1px solid #cfd8dc;border-radius:6px;padding:8px 10px;margin-top:6px;background:#f7fbff"></div>
+      <div id="anchor-targeted-config" class="muted hidden" style="border:1px solid #ffd9b3;border-radius:6px;padding:8px 10px;margin-top:6px;background:#fff7f0">
+        <p style="margin-top:0">Type up to 5 <strong>target problems</strong> (e.g. <code>3+6</code>), worked one at a time in order. Each covers both orientations (<code>3+6</code> = <code>6+3</code>); the rest of the problems are random filler (edit the filler list below). Edits save automatically.</p>
+        <p>
+          <input type="text" id="anchor-target-1" class="anchor-target" autocomplete="off" style="width:4.5rem">
+          <input type="text" id="anchor-target-2" class="anchor-target" autocomplete="off" style="width:4.5rem">
+          <input type="text" id="anchor-target-3" class="anchor-target" autocomplete="off" style="width:4.5rem">
+          <input type="text" id="anchor-target-4" class="anchor-target" autocomplete="off" style="width:4.5rem">
+          <input type="text" id="anchor-target-5" class="anchor-target" autocomplete="off" style="width:4.5rem">
+        </p>
+        <p>
+          <label>Graduate after
+            <input type="number" id="anchor-target-streak" value="3" min="1" max="9" style="width:3.5rem"> fast-correct
+          </label>
+        </p>
+        <p>
+          <label>Fast threshold
+            <input type="number" id="anchor-target-fastms" value="2000" min="200" max="60000" step="100" style="width:5rem"> (milliseconds)
+          </label>
+          <label style="margin-left:12px">Percent target
+            <input type="number" id="anchor-target-percent" value="50" min="1" max="100" style="width:4rem"> %
+          </label>
+        </p>
+        <p id="anchor-targeted-status" class="muted" style="margin-bottom:0"></p>
+      </div>
+      <div id="anchor-visual-config" class="muted hidden" style="border:1px solid #b3d4ff;border-radius:6px;padding:8px 10px;margin-top:6px;background:#f0f7ff">
+        <p style="margin-top:0">Type up to 5 <strong>ten-frame targets</strong> (e.g. <code>8+3</code>). The equation comes first; the ten-frame is shown only after the lightbulb or a wrong answer. Edits save automatically.</p>
+        <p>
+          <input type="text" id="anchor-vtarget-1" class="anchor-vtarget" autocomplete="off" style="width:4.5rem">
+          <input type="text" id="anchor-vtarget-2" class="anchor-vtarget" autocomplete="off" style="width:4.5rem">
+          <input type="text" id="anchor-vtarget-3" class="anchor-vtarget" autocomplete="off" style="width:4.5rem">
+          <input type="text" id="anchor-vtarget-4" class="anchor-vtarget" autocomplete="off" style="width:4.5rem">
+          <input type="text" id="anchor-vtarget-5" class="anchor-vtarget" autocomplete="off" style="width:4.5rem">
+        </p>
+        <p>
+          <label>Fast threshold
+            <input type="number" id="anchor-visual-fastms" value="2000" min="200" max="60000" step="100" style="width:5rem"> (milliseconds)
+          </label>
+        </p>
+        <p>
+          <label>Retrievals to clear
+            <input type="number" id="anchor-visual-clears" value="2" min="1" max="5" style="width:3.5rem">
+          </label>
+        </p>
+        <p id="anchor-visual-status" class="muted" style="margin-bottom:0"></p>
+      </div>
+      <p class="muted">
+        <label>Replicates:
+          <select id="anchor-problem-list-replicates">
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </label>
+        <label><input type="checkbox" id="anchor-problem-list-randomize"> Randomize list order</label>
+      </p>
+      <p id="anchor-problem-list-status" class="muted"></p>
+      <div id="anchor-auto-only">
+        <p class="muted">
+          <label><input type="checkbox" id="anchor-hardfirst" checked> Hard facts first</label>
+          <label><input type="checkbox" id="anchor-autorevert" checked> Auto-revert to easy first</label>
+        </p>
+        <p class="muted"><label><input type="checkbox" id="anchor-continue-if-fluent"> Continue if fluent (skip prompt, continue to 100%)</label></p>
+      </div>
+      <p class="muted"><label><input type="checkbox" id="anchor-practice-enabled"> Warm-up: practice entering numbers first</label></p>
+      <p><button id="anchor-start">Start</button></p>
+      <p id="anchor-returning" class="muted hidden"></p>
+      <p id="anchor-error" class="muted" style="color:#c62828"></p>
+    </div>
+
+    <div id="anchor-quiz" class="card hidden">
+      <div id="anchor-quiz-main" style="display:flex;align-items:center;justify-content:center;gap:18px">
+        <!-- Left: target-rings progress (targeted practice only). -->
+        <div id="anchor-target-rings" class="hidden" style="flex:0 0 auto;width:96px"></div>
+        <div style="flex:0 1 auto;min-width:0">
+          <div id="anchor-problem">—</div>
+          <input type="number" id="anchor-answer" inputmode="none" autocomplete="off">
+          <!-- Submit button directly below the problem box — shown only when auto-submit is off
+               (the keypad has no Enter key). -->
+          <button id="anchor-enter" class="hidden">Enter</button>
+          <div id="anchor-feedback"></div>
+          <!-- After a target graduates: confetti + sound, then wait on this Continue button. -->
+          <button id="anchor-grad-continue" class="hidden" style="margin-top:8px">Continue</button>
+        </div>
+        <!-- Right: reward burst (placeholder; confetti + sound fire on a graduation). -->
+        <div id="anchor-reward-burst" class="hidden" style="flex:0 0 auto;width:96px;font-size:3rem;text-align:center"></div>
+      </div>
+      <div id="anchor-teach" class="hidden">
+        <div id="anchor-teach-visual"></div>
+        <button id="anchor-teach-done" class="hidden">Got it</button>
+      </div>
+      <div id="anchor-correction" class="hidden">
+        <div id="anchor-correction-answer" class="hidden"></div>
+        <div id="anchor-flag-menu" class="hidden">
+          <div id="anchor-flag-reasons"></div>
+          <input type="text" id="anchor-flag-comment" placeholder="Other / comment (optional)" autocomplete="off">
+        </div>
+        <button id="anchor-correct-flag" class="secondary">⚑ Flag</button>
+        <button id="anchor-correct-continue">Continue</button>
+        <button id="anchor-correct-insert" class="secondary">Continue &amp; insert</button>
+      </div>
+      <div id="anchor-keypad" class="keypad"></div>
+      <p style="text-align:center;margin-top:10px">
+        <button id="anchor-lightbulb" class="lightbulb hidden" aria-label="Show ten-frames" title="Show ten-frames">💡</button>
+        <button id="anchor-skip-flag" class="skipflag">Skip &amp; flag</button>
+        <button id="anchor-flag-previous" class="flagprev">Flag previous</button>
+        <button id="anchor-pause" class="secondary">Pause</button>
+      </p>
+      <p style="text-align:center;margin-top:14px">
+        <button id="anchor-quit-save" class="secondary">Quit &amp; save</button>
+        <button id="anchor-quit-abandon" class="secondary">Quit &amp; abandon</button>
+        <button id="anchor-practice-skip" class="secondary hidden">Skip to start quiz</button>
+      </p>
+      <div id="anchor-progress" style="margin-top:8px"></div>
+      <div id="anchor-order" class="muted" style="text-align:center;margin-top:6px"></div>
+      <!-- Go gate: covers the card until the learner taps Go! — layout underneath stays put. -->
+      <div id="anchor-go-overlay" class="hidden">
+        <button type="button" id="anchor-go">Go!</button>
+      </div>
+    </div>
+
+    <div id="anchor-pause-panel" class="card hidden" style="text-align:center">
+      <p style="font-size:1.3rem">Paused</p>
+      <p>
+        <button id="anchor-pause-continue">Continue (same problem)</button>
+        <button id="anchor-pause-skip" class="secondary">Continue &amp; skip</button>
+      </p>
+    </div>
+
+    <div id="anchor-practice-done" class="card hidden">
+      <p>Nice — you've got the hang of the keypad.</p>
+      <button id="anchor-practice-ready">Ready to start quiz</button>
+      <button id="anchor-practice-continue" class="secondary">Continue to practice entering</button>
+    </div>
+
+    <div id="anchor-prompt" class="card hidden">
+      <p id="anchor-prompt-text"></p>
+      <button id="anchor-continue">Continue to 100%</button>
+      <button id="anchor-stop" class="secondary">Stop here</button>
+    </div>
+
+    <div id="anchor-guardrail" class="card hidden">
+      <p id="anchor-guardrail-text"></p>
+      <button id="anchor-guardrail-end">End session</button>
+      <button id="anchor-guardrail-continue" class="secondary">Continue anyway</button>
+    </div>
+
+    <div id="anchor-summary" class="card hidden">
+      <h2 id="anchor-summary-title"></h2>
+      <p id="anchor-summary-body"></p>
+      <p><button type="button" id="anchor-do-another">Do another quiz</button></p>
+      <p id="anchor-fluency-readout" class="hidden" style="font-size:1.2em"></p>
+      <div id="anchor-weak" class="weak-list"></div>
+      <pre id="anchor-file-info" class="muted" style="white-space:pre-wrap"></pre>
+      <p id="anchor-upload" class="muted"></p>
+      <p>
+        <button id="anchor-retry-upload" class="secondary hidden">Retry upload</button>
+      </p>
+    </div>
+
+    <!-- Single "target filler" list editor — random non-target problems for targeted practice.
+         Shown only when "Targeted practice" is the problem source. Auto-saves to the per-user file. -->
+    <div id="anchor-filler-editor" class="muted hidden" style="margin-top:18px;border:1px solid #ffd9b3;border-radius:6px;padding:10px 12px;background:#fff7f0">
+      <div style="font-weight:600">Target filler list <span class="muted" style="font-weight:400">— random non-target problems mixed into each burst (one per line; always kept)</span></div>
+      <textarea id="anchor-filler-text" rows="6" autocomplete="off" spellcheck="false" style="width:100%;box-sizing:border-box;margin-top:6px;font-family:monospace;overflow:hidden;resize:vertical" placeholder="0 + 1&#10;3 + 3&#10;6 + 6"></textarea>
+      <div id="anchor-filler-status" class="muted"></div>
+    </div>
+
+    <!-- Secure filler list for visual practice — known facts mixed between retrievals. -->
+    <div id="anchor-visual-filler-editor" class="muted hidden" style="margin-top:18px;border:1px solid #b3d4ff;border-radius:6px;padding:10px 12px;background:#f0f7ff">
+      <div style="font-weight:600">Secure filler list <span class="muted" style="font-weight:400">— known facts mixed between retrievals</span></div>
+      <textarea id="anchor-visual-filler-text" rows="6" autocomplete="off" spellcheck="false" style="width:100%;box-sizing:border-box;margin-top:6px;font-family:monospace;overflow:hidden;resize:vertical" placeholder="0 + 8&#10;1 + 6&#10;5 + 5"></textarea>
+      <div id="anchor-visual-filler-status" class="muted"></div>
+    </div>
+
+    <!-- Collapsible problem-list editor (shared with the analysis page) — setup-only;
+         hidden on the kid landing, revealed by "Other…" / ?setup=1. -->
+    <div id="anchor-problem-list-editor" class="hidden" style="margin-top:18px"></div>
+
+    <p id="anchor-dev-tools" class="hidden" style="text-align:center;margin-top:24px">
+      <button id="anchor-load-analysis" class="secondary">Load for analysis</button>
+    </p>
+  </div>
+
+  <script type="module" src="anchor.js"></script>
+</body>
+</html>
+<!-- END OF FILE anchor.html -->

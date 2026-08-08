@@ -1,0 +1,380 @@
+<!-- START OF FILE webflow-cms-template-van11y-accordion.html -->
+
+<!-- ================ put in Head of page Custom Code  ================ -->
+<script>
+    var fileInfo = 'webflow-cms-template-van11y-accordion  1-18 1114 change questions to be closed by default and add config';
+    console.log('HTML File loaded: ', fileInfo);
+</script>
+
+<!-- Include Marked.js -->
+<script
+    src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"
+    onload="console.log('Marked js library loaded successfully')"
+    onerror="console.error('Failed to load Marked js library')">
+</script>
+
+<!-- Include Van11y Accessible Accordion -->
+<script 
+    defer
+    src="https://unpkg.com/van11y-accessible-accordion-aria/dist/van11y-accessible-accordion-aria.min.js" 
+    onload="
+        console.log('Van11y Accordion library loaded successfully');
+        var myAccordion = van11yAccessibleAccordionAria();
+        myAccordion.attach();
+    "
+    onerror="console.error('Failed to load Van11y Accordion library')">
+</script>
+
+<!-- Include CSS styles -->
+<style>
+    /* Minimal required styles for the accordion */
+    .minimalist-accordion__panel[aria-hidden="true"] {
+      display: none;
+    }
+
+    .minimalist-accordion__header {
+      cursor: pointer;
+      display: block;
+      background: none;
+      border: 0;
+      line-height: 1.8462;
+      margin: 0;
+      padding: 0.25em 0;
+      text-align: left;
+      width: 100%;
+      font-weight: normal;
+      outline: none;
+      position: relative;
+      padding-left: 1.5em;
+    }
+
+    .minimalist-accordion__header::before {
+      content: '>';
+      display: inline-block;
+      margin-right: 0.5em;
+      transform: rotate(0deg);
+    }
+
+    [aria-expanded="true"].minimalist-accordion__header::before {
+      transform: rotate(90deg);
+      transform-origin: 50% 50%;
+    }
+
+    /* Target the actual button elements that Van11y creates */
+    .js-accordion__header[role="tab"] {
+      position: relative;
+      padding-left: 0em;
+      margin-bottom: 0.2em;
+      line-height: 1.2;
+      font-weight: bold;
+    }
+
+    /* Level-specific styles targeting Van11y's rendered buttons */
+    .level-1 > .js-accordion__header[role="tab"] {
+      color: #0a4503; /* Green */
+      font-size: 20px;
+    }
+
+    .level-2 > .js-accordion__header[role="tab"] {
+      color: #c42f1e; /* Red */
+      font-size: 18px;
+    }
+
+    .level-3 > .js-accordion__header[role="tab"] {
+      color: #3222e2; /* Blue */
+      font-size: 16px;
+    }
+
+    .level-4 > .js-accordion__header[role="tab"] {
+      color: black; /* Black */
+      font-size: 14px; /* 14px font */
+      font-weight: bold; /* Bold */
+    }
+
+    /* Panel styles */
+    .js-accordion__panel {
+      margin-top: 0;
+      margin-bottom: 2.4em;
+      padding-top: 0;
+    }
+
+    /* Adjust paragraph spacing within panels */
+    .js-accordion__panel p {
+      margin-top: 0.2em;
+      margin-bottom: 0.6em;
+    }
+
+    /* THESE PROBABLY SHOULD BE FIXED AT SOME POINT */
+    /* Level-specific header margins LEAVE ZERO FOR NOW - ABSOLUTE IF NON-ZERO*/
+    .level-1 > .js-accordion__header[role="tab"] { margin-left: 0em; }
+    .level-2 > .js-accordion__header[role="tab"] { margin-left: 0em; }
+    .level-3 > .js-accordion__header[role="tab"] { margin-left: 0em; }
+    .level-4 > .js-accordion__header[role="tab"] { margin-left: 0em; }
+
+    /* Panel margins with subheadings THESE ARE NOT WORKING CORRECTLY */
+    .js-accordion__panel.level-1.has-subheadings { margin-left: 60em; }
+    .js-accordion__panel.level-2.has-subheadings { margin-left: 60em; }
+    .js-accordion__panel.level-3.has-subheadings { margin-left: 60em; }
+    .js-accordion__panel.level-4.has-subheadings { margin-left: 60em; }
+
+    /* Panel margins with content only RELATIVE TO ITS HEADING */
+    .js-accordion__panel.level-1.has-content { margin-left: 1.7em; }
+    .js-accordion__panel.level-2.has-content { margin-left: 1.5em; }
+    .js-accordion__panel.level-3.has-content { margin-left: 1.3em; }
+    .js-accordion__panel.level-4.has-content { margin-left: 1.1em; }
+</style>
+<!-- ================ END of Head of page Custom Code  ================ -->
+
+
+<!-- ================ put in Body of page Custom Code ================ -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Configuration settings
+        const ACCORDION_CONFIG = {
+        LEVEL1_DEFAULT_OPEN: true,           // Always show level 1
+        LEVEL2_QA_DEFAULT_OPEN: true,        // Show "Questions and Answers" section
+        QUESTIONS_DEFAULT_OPEN: false         // When true, shows level 3 under Q&A. When false, keeps them collapsed
+      };
+      console.log('DOMContentLoaded event fired');
+
+      // Create a custom renderer
+      var renderer = new marked.Renderer();
+      console.log('Marked renderer created');
+
+      // Override the link rendering function to open links in a new tab
+      renderer.link = function (href, title, text) {
+        var link = marked.Renderer.prototype.link.call(this, href, title, text);
+        return link.replace('<a', '<a target="_blank"');
+      };
+
+      // Set options for marked
+      var markedOptions = {
+        renderer: renderer,
+        breaks: true, // Enable processing of single line breaks
+      };
+
+      // Function to process content
+      function renderMarkdownContent(divId) {
+        console.log('renderMarkdownContent called with divId:', divId);
+        
+        var contentDiv = document.getElementById(divId);
+        if (!contentDiv) {
+          console.error('Content div not found:', divId);
+          return;
+        }
+        console.log('Content div found:', contentDiv.outerHTML.substring(0, 100) + '...');
+
+        var content = contentDiv.getAttribute('markdown-attr');
+        console.log('Markdown content retrieved:', content ? 'Content exists' : 'No content');
+        
+        if (!content) {
+          console.error('No markdown content found in div:', divId);
+          return;
+        }
+
+        // Ensure line breaks are properly represented
+        content = content.replace(/<<NL>>/g, '\n');
+
+        // Render the markdown content
+        var htmlContent = marked.parse(content, markedOptions);
+
+        console.log('Markdown parsed to HTML, length:', htmlContent.length);
+        
+        // Process the markdown content and generate the accordion
+        var accordionContent = processContentToAccordion(htmlContent);
+        console.log('Accordion content generated');
+
+        // Set the contentDiv innerHTML to the accordion content
+        contentDiv.innerHTML = '';
+        contentDiv.appendChild(accordionContent);
+        console.log('Accordion content appended to DOM');
+      }
+
+      // Function to determine if a heading should be open by default based on its level, text and path
+      function shouldOpenHeading(level, headerText, headingPath) {
+          if (level === 1) {
+              return ACCORDION_CONFIG.LEVEL1_DEFAULT_OPEN;
+          } else if (level === 2) {
+              // Open level 2 headings that start with 'Questions and Answers'
+              if (headerText.trim().startsWith('Questions and Answers')) {
+                  return ACCORDION_CONFIG.LEVEL2_QA_DEFAULT_OPEN;
+              } else {
+                  return false; // Keep other level 2 headings closed
+              }
+          } else if (level === 3) {
+              // Open level 3 headings under a level 2 'Questions and Answers' heading
+              if (headingPath[1] && headingPath[1].trim().startsWith('Questions and Answers')) {
+                  return ACCORDION_CONFIG.QUESTIONS_DEFAULT_OPEN;
+              } else {
+                  return false;
+              }
+          } else {
+              // Keep all other headings closed
+              return false;
+          }
+      }
+
+      // Function to process the content and create nested accordions
+      function processContentToAccordion(htmlContent) {
+        // Define the maximum heading level for nesting
+        const MAX_HEADING_LEVEL = 4; // Updated to include H4
+
+        // Parse the HTML string into DOM nodes
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(htmlContent, 'text/html');
+        console.log('Starting accordion creation with parsed HTML content');
+
+        var children = Array.from(doc.body.childNodes);
+        var index = 0;
+
+        // Stack to keep track of accordion containers and their levels
+        var stack = [];
+
+        // Heading path to keep track of heading hierarchy
+        var headingPath = [];
+
+        // Create the root accordion container
+        var rootAccordion = document.createElement('div');
+        rootAccordion.className = 'js-accordion';
+        rootAccordion.setAttribute('data-accordion-prefix-classes', 'minimalist');
+        stack.push({ container: rootAccordion, level: 0 });
+
+        while (index < children.length) {
+          var node = children[index];
+
+          if (node.nodeType === Node.ELEMENT_NODE && /^H[1-4]$/.test(node.tagName)) { // Updated to include H4
+            var level = parseInt(node.tagName.substring(1));
+            var headerText = node.innerHTML;
+
+            console.log('Creating new header:', {
+              tagName: node.tagName,
+              level: level,
+              content: node.innerHTML
+            });
+
+            // Adjust the stack based on the current heading level
+            while (stack.length > 0 && level <= stack[stack.length - 1].level) {
+              stack.pop();
+            }
+
+            // If the stack is empty, default to rootAccordion
+            if (stack.length === 0) {
+              console.warn(`No parent found for level ${level}. Defaulting to root accordion.`);
+              stack.push({ container: rootAccordion, level: 0 });
+            }
+
+            // The current parent accordion
+            var parentAccordion = stack[stack.length - 1].container;
+
+            // Keep track of heading hierarchy
+            headingPath[level - 1] = headerText;
+            headingPath = headingPath.slice(0, level);
+
+            // Decide whether to open this heading
+            var isOpened = shouldOpenHeading(level, headerText, headingPath);
+
+            // Create header element
+            var header = document.createElement('div');
+            header.className = 'js-accordion__header';
+            header.classList.add('level-' + level);
+            header.innerHTML = headerText;
+            header.setAttribute('data-level', level);
+
+            // Set 'data-accordion-opened' attribute if the heading should be open
+            if (isOpened) {
+              header.setAttribute('data-accordion-opened', 'true');
+            }
+
+            parentAccordion.appendChild(header);
+
+            // Create panel element
+            var panel = document.createElement('div');
+            panel.className = 'js-accordion__panel minimalist-accordion__panel';
+            panel.classList.add('level-' + level);
+
+            parentAccordion.appendChild(panel);
+
+            if (level < MAX_HEADING_LEVEL) {
+              // Create a new nested accordion for potential sub-headings
+              var nestedAccordion = document.createElement('div');
+              nestedAccordion.className = 'js-accordion';
+              nestedAccordion.setAttribute('data-accordion-prefix-classes', 'minimalist');
+
+              panel.appendChild(nestedAccordion);
+
+              // Only add has-subheadings if we know there are actual subheadings
+              var nextNode = children[index + 1];
+              if (nextNode && /^H[1-4]$/.test(nextNode.tagName)) {
+                panel.classList.add('has-subheadings');
+              } else {
+                panel.classList.add('has-content');
+              }
+
+              stack.push({ container: nestedAccordion, level: level });
+            } else {
+              // For the maximum heading level, do not create a nested accordion
+              panel.classList.add('has-content');
+              stack.push({ container: panel, level: level });
+            }
+
+            index++;
+          } else {
+            // Non-heading content
+            if (stack.length === 0) {
+              console.warn('Content found outside of any headers:', node.textContent);
+              index++;
+              continue;
+            }
+
+            var currentItem = stack[stack.length - 1];
+            var currentContainer = currentItem.container;
+            var currentLevel = currentItem.level;
+
+            if (currentLevel < MAX_HEADING_LEVEL) {
+              // Current container is a nested accordion; append to its last panel
+              var lastPanel = currentContainer.querySelector('.js-accordion__panel.minimalist-accordion__panel:last-child');
+              if (lastPanel) {
+                lastPanel.appendChild(node.cloneNode(true));
+                console.log('Adding content to current nested panel:', {
+                  nodeType: node.nodeType,
+                  parentPanelClassName: lastPanel.className || 'no class',
+                  content: node.textContent ? node.textContent.substring(0, 100) + '...' : 'Empty or non-text node'
+                });
+              } else {
+                // No nested panel exists; append directly to the current container's panel
+                currentContainer.appendChild(node.cloneNode(true));
+                console.log('Adding content directly to current panel (no nested panel found):', {
+                  nodeType: node.nodeType,
+                  currentContainerClassName: currentContainer.className || 'no class',
+                  content: node.textContent ? node.textContent.substring(0, 100) + '...' : 'Empty or non-text node'
+                });
+              }
+            } else {
+              // Current container is a panel (maximum level); append content directly
+              currentContainer.appendChild(node.cloneNode(true));
+              console.log('Adding content to maximum level panel:', {
+                nodeType: node.nodeType,
+                currentContainerClassName: currentContainer.className || 'no class',
+                content: node.textContent ? node.textContent.substring(0, 100) + '...' : 'Empty or non-text node'
+              });
+            }
+
+            index++;
+          }
+        }
+
+        // Handle any remaining content if necessary
+        console.log('Accordion creation completed');
+        return rootAccordion;
+      }
+
+
+
+      // Render Transcript Content
+      console.log('About to call renderMarkdownContent');
+      renderMarkdownContent('markdown-id'); // The div element ID that has the custom attribute linked to the CMS text field with preprocessed markdown
+    });
+</script>
+<!-- ================ END of Body of page Custom Code  ================ -->
+
+<!-- END OF FILE webflow-cms-template-van11y-accordion.html -->

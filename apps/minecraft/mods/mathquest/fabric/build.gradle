@@ -1,0 +1,103 @@
+// Root build script. Defines aggregate tasks (buildAll, deployAll, cleanAll) that fan out to
+// the selected target subprojects. Configure once here; per-target details live in
+// targets/<target>/build.gradle.
+
+allprojects {
+    group = project.findProperty('maven_group') ?: 'com.kidgames'
+    version = project.findProperty('mod_version') ?: '0.0.0'
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        it.options.release = 21
+        it.options.encoding = 'UTF-8'
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    tasks.matching { it.name == 'processResources' }.configureEach {
+        from(rootProject.file('../../../../math-quiz/tools')) {
+            include 'anchor_store.py'
+            include 'session_ingest.py'
+            include 'fluency_feast_bridge.mjs'
+            into 'mathquest-tools'
+        }
+        from(rootProject.file('../../../../math-quiz')) {
+            include 'fluency_core.js'
+            include 'math_utils.js'
+            into 'mathquest-tools'
+        }
+    }
+}
+
+// Aggregate task: build every selected target. Use:
+//   ./gradlew buildAll                                    # all enabled targets
+//   ./gradlew buildAll -Ptargets=fabric-1.21.11           # one target
+//   ./gradlew buildAll -Ptargets=fabric-1.21.11,fabric-26.1.2
+//
+// For iterative work on a single target, prefer the standard form:
+//   ./gradlew :targets:fabric-1.21.11:build
+tasks.register('buildAll') {
+    group = 'mathquest'
+    description = 'Builds every selected target (filter via -Ptargets=...)'
+    def selected = (gradle.ext.has('selectedTargets') ? gradle.ext.selectedTargets : []) as List
+    selected.each { name ->
+        dependsOn ":targets:${name}:build"
+    }
+    doFirst {
+        println "[MathQuest] Building targets: ${selected.join(', ')}"
+    }
+}
+
+tasks.register('cleanAll') {
+    group = 'mathquest'
+    description = 'Cleans every selected target'
+    def selected = (gradle.ext.has('selectedTargets') ? gradle.ext.selectedTargets : []) as List
+    selected.each { name ->
+        dependsOn ":targets:${name}:clean"
+    }
+    dependsOn 'clean'
+}
+
+// Lists which targets the current invocation will build. Useful when debugging selection.
+tasks.register('listTargets') {
+    group = 'mathquest'
+    description = 'Prints the targets selected for this build invocation'
+    doLast {
+        def selected = (gradle.ext.has('selectedTargets') ? gradle.ext.selectedTargets : []) as List
+        println "Selected targets:"
+        selected.each { println "  - ${it}" }
+        println ""
+        println "Filter with: -Ptargets=name1,name2  (or omit to build all enabled)"
+    }
+}
+
+// NOTE: per-target archive naming lives in each target's build.gradle (see
+// `tasks.withType(AbstractArchiveTask).configureEach { archiveVersion = ... }`). A previous
+// commit added a `tasks.named('remapJar') { ... }` block here, but `remapJar` is a Loom
+// subproject task — it doesn't exist on the root project, so that block failed every build
+// (`Task with name 'remapJar' not found in root project`). Keep target-archive naming in
+// the targets, not at root.
+
+tasks.register('generateNerdTexture', JavaExec) {
+    description = 'Generate the Wandering Nerd texture PNG from the base villager texture'
+    classpath = files(rootProject.file('../tools'))
+    mainClass = 'GenerateNerdTexture'
+    args = [
+        rootProject.file('../tools/villager_base.png').toString(),
+        rootProject.file('shared/src/main/resources/assets/mathquest/textures/entity/wandering_nerd.png').toString()
+    ]
+    inputs.file rootProject.file('../tools/villager_base.png')
+    inputs.file rootProject.file('../tools/GenerateNerdTexture.java')
+    outputs.file rootProject.file('shared/src/main/resources/assets/mathquest/textures/entity/wandering_nerd.png')
+}
+

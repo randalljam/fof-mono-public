@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Personal Monorepo Template x fof-mono</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161d29; --panel2:#1c2634;
+    --border:#243040; --border2:#2f3d50;
+    --ink:#e6edf3; --muted:#9aa7b6; --dim:#6d7b8c;
+    --accent:#58a6ff; --green:#7ee787; --gold:#f0c674; --pink:#ff7b9c;
+    --violet:#bc8cff; --teal:#39d3c3; --red:#ff6b6b;
+    --shadow:0 8px 30px rgba(0,0,0,.4);
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:linear-gradient(180deg,#0b0f16,#0d1117 420px);color:var(--ink);font-family:var(--sans);line-height:1.55;font-size:15px}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  code{font-family:var(--mono);background:#0b1220;border:1px solid var(--border);border-radius:5px;padding:1px 5px;font-size:.86em;color:#cde3ff}
+  h1,h2,h3,h4{line-height:1.25;margin:0}
+  .layout{display:grid;grid-template-columns:260px 1fr;max-width:1420px;margin:0 auto}
+  nav.side{position:sticky;top:0;height:100vh;overflow-y:auto;padding:26px 16px 40px;border-right:1px solid var(--border);background:rgba(10,14,20,.66);backdrop-filter:blur(6px)}
+  nav.side .brand{font-weight:800;font-size:16px;letter-spacing:.4px}
+  nav.side .brand span{color:var(--gold)}
+  nav.side .sub{color:var(--dim);font-size:11.5px;margin:4px 0 22px;font-family:var(--mono)}
+  nav.side a.navlink{display:block;color:var(--muted);padding:7px 11px;border-radius:8px;font-size:13.5px;margin:2px 0;border:1px solid transparent}
+  nav.side a.navlink:hover{background:var(--panel);color:var(--ink);text-decoration:none}
+  nav.side a.navlink.active{background:var(--panel2);color:#fff;border-color:var(--border2)}
+  nav.side a.navlink .n{color:var(--dim);font-family:var(--mono);font-size:11px;margin-right:8px}
+  nav.side .foot{margin-top:26px;color:var(--dim);font-size:11px;border-top:1px solid var(--border);padding-top:14px}
+  main{padding:34px 44px 120px;min-width:0}
+  section{margin-bottom:66px;scroll-margin-top:20px}
+  .eyebrow{font-family:var(--mono);color:var(--gold);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+  .hero h1{font-size:38px;margin:10px 0 6px;letter-spacing:-.5px}
+  .hero .lede{color:var(--muted);font-size:17px;max-width:850px}
+  .meta{margin-top:16px;color:var(--dim);font-family:var(--mono);font-size:12px}
+  h2.sec{font-size:26px;margin-bottom:6px;letter-spacing:-.3px}
+  .sec-lede{color:var(--muted);max-width:880px;margin-bottom:22px}
+  h3.sub{font-size:18px;margin:30px 0 12px;color:#fff;border-left:3px solid var(--gold);padding-left:10px}
+  .kicker{color:var(--gold);font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:18px 0}
+  .stat{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+  .stat .num{font-size:28px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums}
+  .stat .lbl{color:var(--muted);font-size:12.5px;margin-top:3px}
+  .stat .lbl b{color:var(--green);font-weight:600}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px 18px 16px;position:relative;transition:.15s}
+  .card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow)}
+  .card h4{font-size:15.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .card .desc{color:var(--muted);font-size:13.5px;margin:8px 0}
+  .card .kv{font-size:13px;margin-top:8px}
+  .card .kv b{color:var(--teal);font-weight:600}
+  .card ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:13px}
+  .card li{margin:4px 0}
+  .card b{color:var(--ink)}
+  .pill{font-family:var(--mono);font-size:10.5px;padding:2px 8px;border-radius:20px;border:1px solid var(--border2);color:var(--muted);white-space:nowrap}
+  .p-template{color:var(--gold);border-color:#a83}
+  .p-fof{color:var(--green);border-color:#2b5}
+  .p-borrow{color:var(--accent);border-color:#357}
+  .p-gap{color:var(--pink);border-color:#a35}
+  .tag{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:6px;background:#0b1220;border:1px solid var(--border);color:var(--dim)}
+  .callout{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-left:4px solid var(--gold);border-radius:10px;padding:16px 20px;margin:16px 0}
+  .callout.green{border-left-color:var(--green)}
+  .callout.blue{border-left-color:var(--accent)}
+  .callout.pink{border-left-color:var(--pink)}
+  .callout h4{font-size:15px;margin-bottom:6px}
+  .callout p{margin:6px 0;color:var(--muted);font-size:14px}
+  .callout b{color:var(--ink)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:980px){.two,.three{grid-template-columns:1fr}.layout{grid-template-columns:1fr}nav.side{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border)}main{padding:24px}}
+  ul.tidy{margin:8px 0;padding-left:20px;color:var(--muted);font-size:14px}
+  ul.tidy li{margin:5px 0}
+  ul.tidy b{color:var(--ink);font-weight:600}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{color:var(--dim);font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:1px}
+  tr:hover td{background:var(--panel)}
+  td .s{font-family:var(--mono);font-size:12.5px;color:#cde3ff}
+  .scroll{overflow-x:auto;border:1px solid var(--border);border-radius:10px}
+  .flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0}
+  .flow .chip{font-family:var(--mono);font-size:12px;background:#0b1220;border:1px solid var(--border2);border-radius:7px;padding:5px 11px;color:#cde3ff}
+  .flow .chip.hot{border-color:var(--gold);color:var(--gold)}
+  .flow .arr{color:var(--dim)}
+  .filterbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0 20px;position:sticky;top:0;background:rgba(13,17,23,.92);backdrop-filter:blur(6px);padding:12px 0;z-index:5;border-bottom:1px solid var(--border)}
+  .fbtn{font-family:var(--mono);font-size:12px;padding:6px 12px;border-radius:20px;border:1px solid var(--border2);background:var(--panel);color:var(--muted);cursor:pointer;transition:.12s}
+  .fbtn:hover{color:#fff;border-color:var(--gold)}
+  .fbtn.active{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
+  #search{flex:1;min-width:190px;background:var(--panel);border:1px solid var(--border2);border-radius:20px;padding:7px 14px;color:var(--ink);font-family:var(--sans);font-size:13px;outline:none}
+  #search:focus{border-color:var(--gold)}
+  .count{color:var(--dim);font-family:var(--mono);font-size:11.5px}
+  .hidden{display:none!important}
+  .rail{display:grid;gap:11px}
+  .step{display:flex;gap:12px;align-items:flex-start;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+  .step .n{font-family:var(--mono);color:#111;background:var(--gold);border-radius:7px;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex:none}
+  .step .b b{color:#fff}
+  .step .b p{margin:3px 0 0;color:var(--muted);font-size:13.5px}
+  .axis{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}
+  .axisbox{background:#0b1220;border:1px solid var(--border);border-radius:12px;padding:16px}
+  .axisbox .label{font-family:var(--mono);font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+  .axisbox .big{font-size:17px;font-weight:800;color:#fff}
+  .axisbox p{color:var(--muted);font-size:13.5px;margin:7px 0 0}
+  .choice{background:var(--panel);border:1px solid var(--border2);border-radius:12px;padding:18px 20px}
+  .choice .opts{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}
+  .cbtn{font-size:12.5px;padding:6px 12px;border-radius:20px;border:1px solid var(--border2);background:#0b1220;color:var(--muted);cursor:pointer}
+  .cbtn:hover{color:#fff;border-color:var(--gold)}
+  .cbtn.on{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
+  .result{background:#0b1220;border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+  .result .big{font-weight:800;color:#fff}
+  .result .why{color:var(--muted);font-size:13.5px;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="side">
+    <div class="brand">vault <span>x fof-mono</span></div>
+    <div class="sub">comparison artifact · 2026-07-10</div>
+    <a class="navlink active" href="#overview"><span class="n">00</span>Verdict</a>
+    <a class="navlink" href="#template"><span class="n">01</span>The Template</a>
+    <a class="navlink" href="#fof"><span class="n">02</span>Your System</a>
+    <a class="navlink" href="#compare"><span class="n">03</span>Compare / Contrast</a>
+    <a class="navlink" href="#openspec"><span class="n">04</span>OpenSpec Layer</a>
+    <a class="navlink" href="#holodeck"><span class="n">05</span>Holodeck Layer</a>
+    <a class="navlink" href="#borrow"><span class="n">06</span>Borrow List</a>
+    <a class="navlink" href="#moves"><span class="n">07</span>Next Moves</a>
+    <div class="foot">
+      Static site, no build step.<br><br>
+      Sources: <a href="https://github.com/jxnl/personal-monorepo-template">jxnl/personal-monorepo-template</a>, local <code>AGENTS.md</code>, <code>skills/openspec/</code>, autolearner OpenSpec store, and the <code>feature/holodeck-start</code> worktree.
+    </div>
+  </nav>
+
+  <main>
+    <section id="overview" class="hero">
+      <div class="eyebrow">Review · personal monorepo template</div>
+      <h1>The template is a clean vault. Your repo is becoming a software factory control plane.</h1>
+      <p class="lede">Jason Liu's <a href="https://github.com/jxnl/personal-monorepo-template">personal-monorepo-template</a> is a compact Codex memory vault: projects, experiments, people notes, skills, onboarding, loops, and durable context. Your monorepo has converged on the same thesis - context belongs in files, not chat - but at a larger and more operational layer: real applications, branch discipline, shared skills, platform wrappers, S3/data rules, OpenSpec stores, and holodeck as the cross-worktree dashboard.</p>
+      <div class="stats">
+        <div class="stat"><div class="num">5</div><div class="lbl">template root concepts</div></div>
+        <div class="stat"><div class="num">15</div><div class="lbl">template Codex skills</div></div>
+        <div class="stat"><div class="num">22</div><div class="lbl">shared repo skills here</div></div>
+        <div class="stat"><div class="num">5</div><div class="lbl"><b>OpenSpec</b> skills here</div></div>
+        <div class="stat"><div class="num">8</div><div class="lbl">holodeck snapshot layers</div></div>
+        <div class="stat"><div class="num">18</div><div class="lbl">holodeck registry entries</div></div>
+      </div>
+      <div class="callout green">
+        <h4>The short verdict</h4>
+        <p>Do not replace your repo structure with the template. Steal its <b>personal vault primitives</b>: first-run onboarding, people notes, project packets, goal/result files, daily check-ins, and write-like-me bootstrap. Keep your current monorepo shape for apps and engineering. Let OpenSpec own behavior contracts, let skills own repeatable procedures, and let holodeck become the dashboard over both.</p>
+      </div>
+      <p class="meta">Generated 2026-07-10 · interactive: filter the pattern cards in section 06 and use the decision picker in section 07.</p>
+    </section>
+
+    <section id="template">
+      <div class="kicker">01 · What Jason's template is</div>
+      <h2 class="sec">A personal Codex vault, not an app monorepo</h2>
+      <p class="sec-lede">The template is deliberately small. It gives Codex a stable place to look before acting and a stable place to write approved memory afterward.</p>
+      <div class="two">
+        <div class="card">
+          <h4><span class="pill p-template">TEMPLATE</span> Root layout</h4>
+          <ul>
+            <li><code>projects/</code> for long-lived work.</li>
+            <li><code>experiments/</code> for short spikes.</li>
+            <li><code>people/</code> for collaborators and agents.</li>
+            <li><code>.codex/skills/</code> for repo-local procedures.</li>
+            <li><code>templates/</code> for repeatable project notes.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4><span class="pill p-template">TEMPLATE</span> Operating posture</h4>
+          <p class="desc">The root <code>AGENTS.md</code> tells assistants to read project context, keep durable state on disk, update canonical files after approval, ask before side effects, and prefer concrete work over abstract planning.</p>
+          <p class="kv"><b>Best use:</b> personal assistant memory, project tracking, people context, recurring monitors, and writing-style capture.</p>
+        </div>
+      </div>
+      <h3 class="sub">The most valuable idea</h3>
+      <div class="callout">
+        <p>It treats the repo itself as <b>shared memory</b>. The onboarding skill says to scan connected tools, propose durable notes, ask approval, and write those notes into the vault. That is the same design philosophy as your skills and plans, but it is more explicit about people, check-ins, and assistant-style life/work operations.</p>
+      </div>
+    </section>
+
+    <section id="fof">
+      <div class="kicker">02 · What your repo has become</div>
+      <h2 class="sec">An apps-centric monorepo with agent infrastructure bolted into the beams</h2>
+      <p class="sec-lede">Your repo is not just a vault. It is a working portfolio: apps, shared Python, deployed surfaces, data rules, AI harnesses, branch ledgers, reusable skills, and now formal behavior specs.</p>
+      <div class="cards">
+        <div class="card"><h4><span class="pill p-fof">FOF</span> Applications</h4><p class="desc">The repo is organized under <code>apps/</code>, with shared code in <code>core/</code>. It contains real app surfaces: QRAG, math quiz, Minecraft tooling, education lesson logger, voice/TTS, transcription, autolearner, and more.</p></div>
+        <div class="card"><h4><span class="pill p-fof">FOF</span> Skills</h4><p class="desc">Shared skills live in <code>skills/</code>, with provenance headers and platform wrappers in places like <code>agents/hermes/skills/</code>. They encode procedures agents can run again later.</p></div>
+        <div class="card"><h4><span class="pill p-fof">FOF</span> Branch discipline</h4><p class="desc"><code>AGENTS.md</code> is much heavier than the template because your real risk is branch confusion across local/cloud agents, worktrees, PRs, and user-local Cursor state.</p></div>
+        <div class="card"><h4><span class="pill p-fof">FOF</span> Data boundaries</h4><p class="desc">S3-backed bulk data, gitignored <code>data/</code> directories, PII cautions, manifest rules, and Chalice mirror rules are domain-specific machinery the template does not need.</p></div>
+        <div class="card"><h4><span class="pill p-fof">FOF</span> OpenSpec</h4><p class="desc">The new OpenSpec layer gives opted-in apps living behavior specs and archived change intent. Autolearner is the trial app; holodeck, math-quiz, and other branches now have baseline stores.</p></div>
+        <div class="card"><h4><span class="pill p-fof">FOF</span> Holodeck</h4><p class="desc">Holodeck aggregates worktrees, branches, apps, core modules, skills, OpenSpec stores, sessions, and deploy surfaces into a local dashboard. This is a control plane, not just memory.</p></div>
+      </div>
+    </section>
+
+    <section id="compare">
+      <div class="kicker">03 · Compare and contrast</div>
+      <h2 class="sec">Same thesis, different altitude</h2>
+      <p class="sec-lede">Both systems answer "where should the assistant look, and where should durable context go?" The template answers at the personal assistant level. Your repo answers at the software production level.</p>
+      <div class="scroll">
+      <table>
+        <thead><tr><th>Dimension</th><th>Template</th><th>fof-mono</th><th>Judgment</th></tr></thead>
+        <tbody>
+          <tr><td><b>Primary job</b></td><td>Shared-memory vault for Codex Assistant.</td><td>Application monorepo plus AI-coding operating system.</td><td>Keep separate mental models: assistant memory vs production workbench.</td></tr>
+          <tr><td><b>Unit of organization</b></td><td class="s">projects/, experiments/, people/</td><td class="s">apps/, core/, skills/, plans/</td><td>Do not force people/project notes into <code>apps/</code>; add a light personal layer only if useful.</td></tr>
+          <tr><td><b>Procedure reuse</b></td><td><code>.codex/skills/</code> for repo-local Codex skills.</td><td><code>skills/</code> as platform-agnostic source of truth, plus Claude/Hermes wrappers.</td><td>Your skills architecture is more mature; template skills are a source to mine, not a replacement.</td></tr>
+          <tr><td><b>Durable state</b></td><td><code>README.md</code>, <code>GOAL.md</code>, <code>RESULT.md</code>, people notes.</td><td>Plans, app READMEs, AGENTS files, skill histories, OpenSpec stores, holodeck snapshot.</td><td>Borrow <code>GOAL.md</code>/<code>RESULT.md</code> where a project lacks a clean mission/closeout surface.</td></tr>
+          <tr><td><b>Human workflow</b></td><td>Onboarding, monitors, people, writing style, check-ins.</td><td>Voice-dictated feature work, agent branch discipline, convergence planning, mission closeout.</td><td>The template is better at assistant/life ops; your repo is better at software ops.</td></tr>
+          <tr><td><b>Machine readability</b></td><td>Mostly markdown conventions and skills.</td><td>OpenSpec validation, task checkboxes, holodeck collectors, registry fields, branch ledger.</td><td>Your new layers are moving beyond docs into queryable state.</td></tr>
+          <tr><td><b>Risk model</b></td><td>Secrets, side effects, stale data, shared writes.</td><td>All of that plus branch history, S3/PII, deployment, generated artifacts, multi-worktree drift.</td><td>Your heavier guardrails are justified; do not simplify them down to template level.</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <section id="openspec">
+      <div class="kicker">04 · New OpenSpec work</div>
+      <h2 class="sec">OpenSpec is the missing behavior-contract layer</h2>
+      <p class="sec-lede">The template has project packets and goals. OpenSpec adds something stricter: current behavior specs, proposed delta specs, validation, task progress, and archived intent.</p>
+      <div class="flow">
+        <span class="chip">explore</span><span class="arr">&rarr;</span>
+        <span class="chip hot">propose</span><span class="arr">&rarr;</span>
+        <span class="chip hot">apply</span><span class="arr">&rarr;</span>
+        <span class="chip">sync / verify</span><span class="arr">&rarr;</span>
+        <span class="chip hot">archive</span>
+      </div>
+      <div class="cards">
+        <div class="card"><h4>Repo-authored skills <span class="tag">5</span></h4><p class="desc"><code>opsx-explore</code>, <code>opsx-propose</code>, <code>opsx-apply</code>, <code>opsx-archive</code>, and the new <code>opsx-bootstrap</code> composite for baselining existing apps.</p></div>
+        <div class="card"><h4>Workflow-first specs</h4><p class="desc">Autolearner's baseline spec starts with user workflows, then maps those workflows to requirements. This makes specs readable to Randy before they become machine-checkable artifacts.</p></div>
+        <div class="card"><h4>Staged adoption</h4><p class="desc">The OpenSpec guide splits app life stage (<code>s0-experiment</code> through <code>s3-real</code>) from spec machinery (<code>readme-only</code> through <code>openspec-strict</code>). That prevents ceremony from swallowing early experiments.</p></div>
+        <div class="card"><h4>Roadmap companion</h4><p class="desc"><code>ROADMAP.md</code> holds intended-but-unbuilt behavior. OpenSpec holds current behavior and proposed changes. That separation is cleaner than the template's general project README alone.</p></div>
+      </div>
+      <div class="callout blue">
+        <h4>The core upgrade over the template</h4>
+        <p>The template can remember that a project exists and what the goal is. OpenSpec can tell an agent what the app currently promises, what is being changed, which tasks are done, and when that change became the new baseline.</p>
+      </div>
+    </section>
+
+    <section id="holodeck">
+      <div class="kicker">05 · Holodeck branch</div>
+      <h2 class="sec">Holodeck turns memory into an interface</h2>
+      <p class="sec-lede">On <code>feature/holodeck-start</code>, holodeck is already the local command center: it collects a privacy-conscious snapshot and serves a vanilla dashboard over it.</p>
+      <div class="three">
+        <div class="axisbox"><div class="label">Snapshot layers</div><div class="big">8 collectors</div><p>worktrees, branches, apps, core, skills, specs, sessions, deploy.</p></div>
+        <div class="axisbox"><div class="label">Registry model</div><div class="big">stage + spec_stage + tags</div><p>Curated app facts now include life stage, spec stage, commands, ports, deploys, notes, and tags.</p></div>
+        <div class="axisbox"><div class="label">Spec integration</div><div class="big">Cross-worktree OpenSpec scan</div><p>The specs collector scans <code>apps/*/openspec</code> stores across known worktrees and reports domains, active changes, task counts, and archives.</p></div>
+      </div>
+      <h3 class="sub">Why this matters in the comparison</h3>
+      <div class="callout green">
+        <p>Jason's template is a place for Assistant to write memory. Holodeck is a place for you to <b>see the state of the machine</b>: dirty worktrees, branch drift, app readiness, OpenSpec adoption, active spec changes, recent sessions, deploy surfaces, and missing metadata. That is the natural next layer for a pure-AI-coder workflow.</p>
+      </div>
+    </section>
+
+    <section id="borrow">
+      <div class="kicker">06 · Pattern catalog</div>
+      <h2 class="sec">What to steal, what to skip</h2>
+      <p class="sec-lede">Filter these patterns by action. "Borrow" means adapt into your system. "Keep yours" means your existing approach is stronger. "Skip" means the template is solving a smaller problem.</p>
+      <div class="filterbar">
+        <button class="fbtn active" data-f="all">All</button>
+        <button class="fbtn" data-f="borrow">Borrow</button>
+        <button class="fbtn" data-f="keep">Keep Yours</button>
+        <button class="fbtn" data-f="skip">Skip</button>
+        <button class="fbtn" data-f="watch">Watch</button>
+        <input id="search" type="search" placeholder="Search patterns..." />
+        <span class="count" id="count"></span>
+      </div>
+      <div class="cards" id="catalog">
+        <div class="card item" data-kind="borrow" data-text="onboarding assistant first meeting connectors plugins people projects checkins"><h4><span class="pill p-borrow">BORROW</span> Assistant onboarding</h4><p class="desc">The template's onboarding skill is more explicit about first-run assistant setup: scan context, ask focused questions, identify plugin gaps, propose monitors, and write memory only after approval.</p><p class="kv"><b>Adapt as:</b> a Randy onboarding / session-start skill that can populate holodeck registry gaps and people/project notes.</p></div>
+        <div class="card item" data-kind="borrow" data-text="people notes collaborators agents ea family context"><h4><span class="pill p-borrow">BORROW</span> <code>people/</code> notes</h4><p class="desc">Your repo knows apps and agents better than people. A light <code>people/</code> layer could capture collaborators, family users, EA workflows, and communication preferences without polluting app docs.</p></div>
+        <div class="card item" data-kind="borrow" data-text="goal result mission closeout project packets"><h4><span class="pill p-borrow">BORROW</span> <code>GOAL.md</code> / <code>RESULT.md</code></h4><p class="desc">For long-running projects, these are cleaner than chat memory. They pair well with your existing mission-closeout skill and OpenSpec archives.</p></div>
+        <div class="card item" data-kind="borrow" data-text="write like me slack email style skill"><h4><span class="pill p-borrow">BORROW</span> Write-like-me bootstrap</h4><p class="desc">This is not core engineering, but it fits your Hermes/EA direction: create a reusable writing posture from approved authored messages, with strict approval gates.</p></div>
+        <div class="card item" data-kind="keep" data-text="skills platform agnostic provenance wrappers hermes claude cursor"><h4><span class="pill p-fof">KEEP YOURS</span> Skill architecture</h4><p class="desc">Your <code>skills/</code> source-of-truth model, provenance headers, and platform wrappers are more mature than a Codex-only <code>.codex/skills/</code> folder.</p></div>
+        <div class="card item" data-kind="keep" data-text="branch discipline worktrees git safety cloud local agents"><h4><span class="pill p-fof">KEEP YOURS</span> Branch safety rules</h4><p class="desc">The template's safety rules are right for a vault. Your branch/worktree/cloud-agent hazards require the heavier rules in <code>AGENTS.md</code>.</p></div>
+        <div class="card item" data-kind="keep" data-text="openspec delta specs archive validation behavior contracts"><h4><span class="pill p-fof">KEEP YOURS</span> OpenSpec layer</h4><p class="desc">The template's project docs do not replace specs. OpenSpec is now your route to "approve the spec, not the code."</p></div>
+        <div class="card item" data-kind="keep" data-text="holodeck dashboard control center registry collectors specs sessions deploy"><h4><span class="pill p-fof">KEEP YOURS</span> Holodeck control plane</h4><p class="desc">This is the part the template does not attempt: live cross-worktree inventory with apps, specs, skills, sessions, and deploy surfaces.</p></div>
+        <div class="card item" data-kind="skip" data-text="root vault replace monorepo apps projects experiments"><h4><span class="pill p-gap">SKIP</span> Re-rooting around <code>projects/</code></h4><p class="desc">Your app-centric monorepo convention is already settled. Adding <code>projects/</code> as the primary root would fight <code>apps/</code>, <code>core/</code>, and deployment reality.</p></div>
+        <div class="card item" data-kind="skip" data-text="codex only skills local platform"><h4><span class="pill p-gap">SKIP</span> Codex-only skill placement</h4><p class="desc">The template assumes Codex is the main consumer. Your system uses Cursor, Claude Code, Codex, Hermes, and future wrappers, so procedures should stay platform-agnostic first.</p></div>
+        <div class="card item" data-kind="watch" data-text="recurring monitors loops daily checkins holodeck"><h4><span class="pill p-template">WATCH</span> Recurring monitors</h4><p class="desc">The template's 9 AM / 4 PM check-ins are useful, but your better implementation target is holodeck: recurring collector refresh, app/status digest, and branch-risk summary.</p></div>
+        <div class="card item" data-kind="watch" data-text="simple html artifact reports repo snapshot"><h4><span class="pill p-template">WATCH</span> Simple HTML artifacts</h4><p class="desc">The template has a skill for information-first HTML artifacts. Your repo snapshot style already proves the pattern; formalizing a local version would make future reports easier.</p></div>
+      </div>
+    </section>
+
+    <section id="moves">
+      <div class="kicker">07 · Practical recommendation</div>
+      <h2 class="sec">Adopt the vault ideas as a thin layer, not a new architecture</h2>
+      <p class="sec-lede">The right synthesis is additive: keep apps, skills, OpenSpec, and holodeck as the core. Add selected personal-vault files only where they improve human/assistant memory.</p>
+      <div class="choice">
+        <h3 class="sub" style="margin-top:0">Decision picker: where should a piece of context live?</h3>
+        <div class="opts">
+          <button class="cbtn on" data-choice="behavior">Current app behavior</button>
+          <button class="cbtn" data-choice="roadmap">Intended future work</button>
+          <button class="cbtn" data-choice="procedure">Repeatable procedure</button>
+          <button class="cbtn" data-choice="person">Person/collaborator context</button>
+          <button class="cbtn" data-choice="status">Cross-worktree status</button>
+        </div>
+        <div class="result" id="decision">
+          <div class="big">Put it in OpenSpec.</div>
+          <div class="why">Current behavior belongs in <code>apps/&lt;app&gt;/openspec/specs/</code>. If the behavior is changing, create a delta under <code>changes/&lt;change&gt;/</code>, then archive it when complete.</div>
+        </div>
+      </div>
+      <h3 class="sub">Recommended sequence</h3>
+      <div class="rail">
+        <div class="step"><span class="n">1</span><div class="b"><b>Keep the existing monorepo architecture.</b><p>Do not move app work into a template-style <code>projects/</code> root. The app-centric structure and shared <code>core/</code> layer are still right.</p></div></div>
+        <div class="step"><span class="n">2</span><div class="b"><b>Mine the template skills.</b><p>Port the useful ideas - onboarding, simple HTML artifacts, write-like-me, goal/result closeout - into <code>skills/</code> using your provenance/header conventions.</p></div></div>
+        <div class="step"><span class="n">3</span><div class="b"><b>Let OpenSpec and ROADMAP split present vs future.</b><p>Current behavior goes into living specs. Aspirations, voice-memo ideas, and Now/Next/Later stay in app roadmaps until they become an <code>opsx-propose</code> change.</p></div></div>
+        <div class="step"><span class="n">4</span><div class="b"><b>Promote holodeck to the home screen.</b><p>It should show branch/worktree risk, app stage, spec stage, active changes, recent sessions, deploy surfaces, and missing registry metadata.</p></div></div>
+        <div class="step"><span class="n">5</span><div class="b"><b>Add a light personal-memory lane only when needed.</b><p>If people notes and assistant check-ins become useful, add them as a separate memory layer and have holodeck index them. Do not let them blur app specs or engineering docs.</p></div></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const links=[...document.querySelectorAll('.navlink[href^="#"]')];
+const sections=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+function onScroll(){
+  let current=sections[0]?.id;
+  for(const sec of sections){
+    if(sec.getBoundingClientRect().top<120) current=sec.id;
+  }
+  links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+current));
+}
+document.addEventListener('scroll',onScroll,{passive:true});
+onScroll();
+
+const buttons=[...document.querySelectorAll('.fbtn')];
+const cards=[...document.querySelectorAll('.item')];
+const search=document.getElementById('search');
+const count=document.getElementById('count');
+let active='all';
+function applyFilter(){
+  const q=(search.value||'').toLowerCase().trim();
+  let shown=0;
+  cards.forEach(card=>{
+    const kind=card.dataset.kind;
+    const text=(card.dataset.text+' '+card.textContent).toLowerCase();
+    const okKind=active==='all'||kind===active;
+    const okSearch=!q||text.includes(q);
+    const show=okKind&&okSearch;
+    card.classList.toggle('hidden',!show);
+    if(show) shown++;
+  });
+  count.textContent=shown+' shown';
+}
+buttons.forEach(btn=>btn.addEventListener('click',()=>{
+  buttons.forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  active=btn.dataset.f;
+  applyFilter();
+}));
+search.addEventListener('input',applyFilter);
+applyFilter();
+
+const decisionText={
+  behavior:['Put it in OpenSpec.','Current behavior belongs in <code>apps/&lt;app&gt;/openspec/specs/</code>. If the behavior is changing, create a delta under <code>changes/&lt;change&gt;/</code>, then archive it when complete.'],
+  roadmap:['Put it in <code>ROADMAP.md</code>.','Unbuilt ideas should not pollute the living spec. Keep them in Now / Next / Later or an idea inbox until they graduate into <code>opsx-propose</code>.'],
+  procedure:['Put it in <code>skills/</code>.','If an agent should repeat it later, make it a skill with provenance, guardrails, and clear invocation rules. Add platform wrappers only after the shared procedure is stable.'],
+  person:['Put it in a personal-memory lane.','This is the template idea worth borrowing: collaborators, agents, communication preferences, and recurring check-in context deserve a durable note that is not an app spec.'],
+  status:['Put it in holodeck.','Cross-worktree status, app stage, spec stage, branch drift, sessions, deploy metadata, and missing registry fields belong in the snapshot/dashboard layer.']
+};
+document.querySelectorAll('.cbtn').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.cbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  const [big,why]=decisionText[btn.dataset.choice];
+  document.getElementById('decision').innerHTML='<div class="big">'+big+'</div><div class="why">'+why+'</div>';
+}));
+</script>
+</body>
+</html>

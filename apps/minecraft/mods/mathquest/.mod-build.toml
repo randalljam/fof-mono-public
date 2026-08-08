@@ -1,0 +1,26 @@
+# Build-and-deploy manifest for MathQuest. Consumed by
+# minecraft/mods/build-and-deploy.py. Format documented in
+# minecraft/mods/CLAUDE.md.
+
+# Default target when invoked without --target. Matches the historical default in
+# the legacy mathquest/build-and-deploy.sh.
+default_target = "fabric-26.1.2"
+
+# Client deploy goes to Prism instances named "<Loader> <mc-version> <suffix>".
+# Use prism_instance_suffix_by_target for one or more suffixes per target (list).
+# Targets not listed fall back to prism_instance_suffix (single string).
+prism_instance_suffix = "MathQuest"
+
+[prism_instance_suffix_by_target]
+"fabric-26.1.2" = ["MathQuest"]
+"forge-1.20.1" = ["MathQuest", "MathQuest Cataclysm", "MathQuest Cataclysm MP", "Ice and Fire"]
+
+# Dedicated-server deploy: per-target paths (see build-and-deploy.py).
+# Fabric and Forge jars must not share one mods/ folder.
+[extra_deploy_paths_by_target]
+"fabric-26.1.2" = ["~/Documents/Code/mathquest-server/mods"]
+"forge-1.20.1" = ["~/Documents/Code/mathquest-server-forge/mods"]
+
+# When building/deploying Forge, also build/deploy Fabric primary (lockstep version → correct server folders).
+[companion_targets_by_target]
+"forge-1.20.1" = ["fabric-26.1.2"]

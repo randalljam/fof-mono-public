@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Test of Integrated Chatbot</title>
+    <link
+        href="https://fonts.googleapis.com/css?family=Lato:300,400,700|Poppins:300,regular,500,600,700,800|Inter:regular"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            padding: 20px;
+        }
+
+        textarea,
+        button {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+        }
+
+        #messagesArea {
+            background: #f1f1f1;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        #markdownContent div {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 5px;
+        }
+
+        button {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Local Chatbot Test</h2>
+    <p>Insert any description here.</p>
+    <div>
+        <textarea id="userInput" placeholder="Input text here" style="height: 50px; box-sizing: border-box;"></textarea>
+        <button id="submitButton">Submit</button>
+    </div>
+    <div id="messagesArea">Messages will appear here</div>
+
+    <!-- Additional section for Markdown Content -->
+    <div id="markdownContent">
+        <h3>Markdown Heading <button onclick="toggleContent('content1')">Toggle</button></h3>
+        <div id="content1" style="display:none;">
+            <!-- Markdown content will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('submitButton').addEventListener('click', function () {
+            const userInput = document.getElementById('userInput').value;
+            const markdownHtml = marked(userInput);
+            document.getElementById('content1').innerHTML = markdownHtml;
+            document.getElementById('content1').style.display = 'block'; // You can start it as hidden if you prefer
+        });
+
+        function toggleContent(id) {
+            const element = document.getElementById(id);
+            if (element.style.display === 'none') {
+                element.style.display = 'block';
+            } else {
+                element.style.display = 'none';
+            }
+        }
+    </script>
+
+    <!-- Ensure this points to your JavaScript file -->
+    <script src="webflow_bot-test.js"></script>
+</body>
+
+</html>

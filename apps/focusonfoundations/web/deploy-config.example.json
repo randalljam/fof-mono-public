@@ -1,0 +1,15 @@
+{
+  "staging": {
+    "bucketName": "REPLACE_AFTER_CDK_DEPLOY",
+    "distributionId": "REPLACE_AFTER_CDK_DEPLOY",
+    "siteUrls": ["https://staging.focusonfoundations.org"]
+  },
+  "production": {
+    "bucketName": "REPLACE_AFTER_CDK_DEPLOY",
+    "distributionId": "REPLACE_AFTER_CDK_DEPLOY",
+    "siteUrls": [
+      "https://focusonfoundations.org",
+      "https://www.focusonfoundations.org"
+    ]
+  }
+}

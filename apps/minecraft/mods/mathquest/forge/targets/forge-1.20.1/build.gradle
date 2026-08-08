@@ -1,0 +1,96 @@
+// Forge build for Minecraft 1.20.1 — minimal playable singleplayer (Milestone 1).
+
+plugins {
+    id 'net.minecraftforge.gradle' version "${forgegradle_version}.+"
+    id 'org.spongepowered.mixin' version '0.7.+'
+    id 'maven-publish'
+}
+
+base {
+    archivesName = "${project.archives_base_name}-forge"
+}
+
+tasks.withType(AbstractArchiveTask).configureEach {
+    archiveVersion = "${project.version}-mc${project.minecraft_version}"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 17
+    options.encoding = 'UTF-8'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = [
+                'src/main/java',
+                rootProject.file('../fabric/common/src/main/java'),
+            ]
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+}
+
+minecraft {
+    mappings channel: 'official', version: project.minecraft_version
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                mathquest { source sourceSets.main }
+            }
+        }
+    }
+}
+
+mixin {
+    add sourceSets.main, 'mathquest.refmap.json'
+    config 'mathquest.mixins.json'
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    implementation 'org.xerial:sqlite-jdbc:3.49.1.0'
+    jarJar(group: 'org.xerial', name: 'sqlite-jdbc', version: '[3.49.1.0,)') {
+        jarJar.ranged(it, '[3.49.1.0,)')
+    }
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('META-INF/mods.toml') {
+        expand 'version': project.version
+    }
+}
+
+jar {
+    manifest {
+        attributes([
+            'Specification-Title'     : 'mathquest',
+            'Specification-Vendor'    : 'KidGames',
+            'Specification-Version'   : '1',
+            'Implementation-Title'    : 'mathquest',
+            'Implementation-Version'  : project.version,
+            'Implementation-Vendor'   : 'KidGames',
+            'MixinConfigs'            : 'mathquest.mixins.json'
+        ])
+    }
+}
+
+test {
+    useJUnitPlatform()
+    dependsOn 'jarJar'
+}

@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Math Quiz — Old vs New (anchor) Comparison &amp; Integration Plan</title>
+<style>
+  :root{
+    --old:#b26a00; --old-bg:#fff8ec; --old-bd:#f0d9af;
+    --new:#1565c0; --new-bg:#eef5fd; --new-bd:#bcd9f7;
+    --ink:#1f2733; --muted:#5b6675; --line:#e2e6ec; --bg:#f4f6f9; --card:#fff;
+    --ok:#2e7d32; --warn:#c77700; --stop:#c62828; --accent:#5b35c0;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+       color:var(--ink);background:var(--bg);line-height:1.55;font-size:15.5px}
+  a{color:var(--new);text-decoration:none}
+  a:hover{text-decoration:underline}
+  code{background:#eef1f5;border:1px solid #e1e6ec;border-radius:4px;padding:1px 5px;
+       font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86em}
+  .layout{display:flex;max-width:1240px;margin:0 auto;gap:28px;padding:0 22px}
+  nav{position:sticky;top:0;align-self:flex-start;height:100vh;overflow:auto;
+      width:228px;flex:0 0 228px;padding:26px 0 40px;font-size:13.5px}
+  nav h4{margin:18px 0 6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  nav a{display:block;color:var(--muted);padding:4px 10px;border-radius:6px;border-left:2px solid transparent}
+  nav a:hover{background:#fff;color:var(--ink);text-decoration:none}
+  main{flex:1 1 auto;min-width:0;padding:26px 0 120px}
+  header.hero{background:linear-gradient(135deg,#10243e,#1565c0);color:#fff;border-radius:16px;
+       padding:30px 34px;margin-bottom:26px;box-shadow:0 8px 30px rgba(16,36,62,.18)}
+  header.hero h1{margin:0 0 8px;font-size:27px;line-height:1.2}
+  header.hero p{margin:6px 0 0;opacity:.93;max-width:74ch}
+  header.hero code{background:none;border:none;padding:0;font-size:inherit}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .pill{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);
+        border-radius:999px;padding:3px 12px;font-size:12.5px}
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;
+          padding:24px 28px;margin:0 0 22px;box-shadow:0 1px 2px rgba(20,40,70,.04)}
+  section>h2{margin:0 0 4px;font-size:21px;display:flex;align-items:center;gap:10px}
+  section>h2 .n{font-size:13px;color:#fff;background:var(--accent);border-radius:8px;
+       width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 26px}
+  .lead{color:var(--muted);margin:2px 0 18px;max-width:84ch}
+  h3{margin:22px 0 8px;font-size:16.5px}
+  ul,ol{margin:8px 0 8px;padding-left:22px}
+  li{margin:4px 0}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:860px){.grid2{grid-template-columns:1fr}nav{display:none}}
+  .col{border-radius:12px;padding:16px 18px;border:1px solid}
+  .col.old{background:var(--old-bg);border-color:var(--old-bd)}
+  .col.new{background:var(--new-bg);border-color:var(--new-bd)}
+  .col h3{margin-top:0;display:flex;align-items:center;gap:8px}
+  .tag{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+       padding:2px 8px;border-radius:6px;color:#fff}
+  .tag.old{background:var(--old)} .tag.new{background:var(--new)}
+  figure{margin:0}
+  .shots{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:860px){.shots{grid-template-columns:1fr}}
+  .shot{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fbfcfe}
+  .shot img{width:100%;display:block}
+  .shot figcaption{padding:8px 12px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);background:#fff}
+  .shot figcaption b{color:var(--ink)}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}
+  th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#f7f9fc;font-size:12.5px;letter-spacing:.02em;color:var(--muted)}
+  td.dim{color:var(--muted)}
+  tr td:first-child{font-weight:600;width:23%}
+  .b{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;border:1px solid}
+  .b.ok{color:var(--ok);border-color:#bfe0c0;background:#eef8ef}
+  .b.warn{color:var(--warn);border-color:#f0dcb0;background:#fdf6e7}
+  .b.stop{color:var(--stop);border-color:#f0c2c2;background:#fdeeee}
+  .b.new{color:var(--new);border-color:var(--new-bd);background:var(--new-bg)}
+  .b.old{color:var(--old);border-color:var(--old-bd);background:var(--old-bg)}
+  .callout{border-left:4px solid var(--accent);background:#f7f4fe;border-radius:0 10px 10px 0;
+           padding:12px 16px;margin:14px 0}
+  .callout.warn{border-color:var(--warn);background:#fdf7ea}
+  .callout.q{border-color:var(--new);background:var(--new-bg)}
+  .callout b{display:block;margin-bottom:2px}
+  .timeline{position:relative;margin:14px 0 4px;padding-left:26px}
+  .timeline:before{content:"";position:absolute;left:7px;top:4px;bottom:4px;width:2px;background:var(--line)}
+  .ev{position:relative;margin:0 0 16px}
+  .ev:before{content:"";position:absolute;left:-23px;top:4px;width:14px;height:14px;border-radius:50%;
+       border:3px solid #fff;box-shadow:0 0 0 1.5px var(--line)}
+  .ev.p1:before{background:#8a8f98} .ev.p2:before{background:var(--old)} .ev.p3:before{background:var(--new)}
+  .ev h4{margin:0 0 2px;font-size:15px}
+  .ev .when{font-size:12.5px;color:var(--muted)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+  .chip{font-size:12px;background:#eef1f5;border:1px solid #e1e6ec;border-radius:999px;padding:2px 10px;color:var(--muted)}
+  .phase{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:10px 0;background:#fcfdff}
+  .phase h4{margin:0 0 4px;display:flex;align-items:center;gap:8px;font-size:15.5px}
+  .q-list{counter-reset:q}
+  .q-item{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:10px 0;background:#fff}
+  .q-item h4{margin:0 0 4px;font-size:15px}
+  .q-item .rec{font-size:13.5px;color:var(--muted);margin-top:6px}
+  .q-item .rec b{color:var(--ink)}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;font-size:12.5px;color:var(--muted)}
+  footer{color:var(--muted);font-size:13px;text-align:center;padding:10px 0 60px}
+  .small{font-size:13px;color:var(--muted)}
+  .kbd{font-family:ui-monospace,Menlo,monospace;background:#eceff3;border:1px solid #dfe3e9;border-bottom-width:2px;border-radius:5px;padding:0 6px}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav>
+  <h4>Report</h4>
+  <a href="#summary">Executive summary</a>
+  <a href="#timeline">Three periods of work</a>
+  <a href="#visual">Visual comparison</a>
+  <a href="#arch">Architecture &amp; features</a>
+  <a href="#storage">Storage: JSON → SQLite</a>
+  <a href="#model">Fluency model</a>
+  <a href="fluency.html">↳ Fluency report (current + proposals)</a>
+  <a href="#learners">Real-learner findings</a>
+  <a href="#modality">Presentation &amp; input</a>
+  <h4>Forward</h4>
+  <a href="#plan">Integration plan</a>
+  <a href="#control">Control-panel idea</a>
+  <a href="#questions">Decisions (resolved)</a>
+  <a href="#log">Change log</a>
+  <a href="#appendix">Appendix</a>
+</nav>
+
+<main>
+<header class="hero">
+  <h1>Math Quiz — Old vs New (“anchor”) Comparison &amp; Integration Plan</h1>
+  <p>A side-by-side of the <b>old quiz</b> (<code>math_quiz.html</code>, JSON storage) and the <b>new fast-fluency
+     “anchor” path</b> (<code>anchor.html</code>, per-user SQLite), plus a plan for folding the recent work back into the
+     mature three-part app (quiz + fluency + analysis). Living document — updated as we iterate.</p>
+  <div class="meta">
+    <span class="pill">Branch: <b>feature/math-quiz-compare-report</b></span>
+    <span class="pill">Off: feature/math-quiz-goal</span>
+    <span class="pill">Created 2026-06-16</span>
+    <span class="pill">Decisions Q1–Q7 resolved 2026-06-16</span>
+  </div>
+</header>
+
+<div class="callout" style="margin:0 0 22px">
+  <b>Now canonical: integrated SPEC + PLAN</b>
+  The durable definitions and the sequenced roadmap have moved into two living docs:
+  <a href="../SPEC.md"><code>docs/SPEC.md</code></a> (what the app is — rubric, principles, data model) and
+  <a href="../PLAN.md"><code>docs/PLAN.md</code></a> (what to build next — phases, tasks, decision log).
+  This report is the screenshotted comparison + the snapshot of the decisions that seeded them.
+</div>
+
+<!-- ===================== SUMMARY ===================== -->
+<section id="summary">
+  <h2><span class="n">★</span> Executive summary</h2>
+  <p class="lead">Three distinct build periods produced two coexisting surfaces. They don’t conflict — the new work is
+     purely additive scaffolding — but they have not yet been merged into one product.</p>
+  <div class="grid2">
+    <div class="col old">
+      <h3><span class="tag old">Old</span> The mature app</h3>
+      <ul>
+        <li><b>Three pages:</b> <code>math_quiz.html</code> (quiz), <code>math_fluency.html</code> (fact-by-fact tracker),
+            <code>math_analysis.html</code> (heatmap + flag review).</li>
+        <li><b>Storage:</b> session <b>JSON</b> in browser <code>localStorage</code> + download; dashboards rebuild an
+            in-memory DB from those JSON sessions on every load.</li>
+        <li><b>Strengths:</b> complete loop (collect → track → analyze), flag/notes workflow, multi-session history,
+            well-tested.</li>
+        <li><b>Built by:</b> Randy (original) + CT/CT (fluency + flags + analysis).</li>
+      </ul>
+    </div>
+    <div class="col new">
+      <h3><span class="tag new">New</span> The anchor direction</h3>
+      <ul>
+        <li><b>One page:</b> <code>anchor.html</code> — “demonstrate you’re fluent in ~2 minutes,” keypad-first,
+            warm-up, glitch tolerance, predictive vs. thorough mastery.</li>
+        <li><b>Storage:</b> per-user <b>SQLite</b> (sql.js), auto-persisted to IndexedDB, exported as <code>.sqlite</code>
+            files; a <b>write-mode switch</b> keeps JSON as optional interchange.</li>
+        <li><b>Engine:</b> DOM-free modules (<code>engine/</code>) + a deterministic simulation + adaptive selector,
+            proven by tests before any UI.</li>
+        <li><b>Built by:</b> Randy + cloud agent (this June’s “goal” thread).</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout">
+    <b>The core task ahead</b>
+    Integrate the new assess/practice engine, SQLite store, and addition categorization model into the proven three-page app —
+    moving from one-shot “anchor” demonstrations toward <b>real, ongoing fluency tracking with adaptive problem
+    selection</b> (within and across sessions), usable on a kid’s iPad today.
+  </div>
+  <div class="callout warn">
+    <b>Two snags already surfaced (addressed below)</b>
+    (1) “One SQLite file per user” is drifting into <b>one file per session</b> — see <a href="#storage">Storage</a>.
+    (2) The <b>cloud coding agent can’t see local run data</b> (real trials happen on a laptop/iPad; the agent runs in an
+    ephemeral VM) — see <a href="#storage">the data-access gap</a>.
+  </div>
+</section>
+
+<!-- ===================== TIMELINE ===================== -->
+<section id="timeline">
+  <h2><span class="n">1</span> Three periods of work</h2>
+  <p class="lead">Imported into <code>fof-mono</code> on 2026-06-03 from the external <code>math-quiz</code> repo
+     (47 commits; contributors CT &amp; Randy True), then extended here.</p>
+  <div class="timeline">
+    <div class="ev p1">
+      <h4>Period 1 — Randy’s original <span class="b old">JSON</span></h4>
+      <div class="when">Fall 2024</div>
+      <p class="small">The core browser quiz: configurable arithmetic, problem presentation, answer entry, session JSON,
+         sound effects. The foundation everything else builds on.</p>
+    </div>
+    <div class="ev p2">
+      <h4>Period 2 — CT (CT): fluency + analysis + flags</h4>
+      <div class="when">~Nov 2025 → Jan 2026 (part-time)</div>
+      <p class="small">Added the <b>fluency tracker</b> (<code>math_fluency.html</code>), the <b>analysis dashboard</b>
+         (<code>math_analysis.html</code>: response-time heatmap, per-problem drill-down), problem <b>flagging/filtering</b>,
+         duplicate handling, and an “I don’t know” flow. Randy later did a thorough review/cleanup pass (P1–P8 fixes,
+         documented in <code>docs/code-reviews_2025-12_CT-work/</code> and <code>2026-06-11_math-quiz-review.md</code>).</p>
+      <div class="chips"><span class="chip">math_fluency.html</span><span class="chip">math_analysis.html</span>
+        <span class="chip">flags + filters</span><span class="chip">heatmap</span></div>
+    </div>
+    <div class="ev p3">
+      <h4>Period 3 — Recent “goal” thread: anchor + SQLite + engine <span class="b new">SQLite</span></h4>
+      <div class="when">2026-06-14 → 2026-06-16 (this branch)</div>
+      <p class="small">A high-level “goal” run produced: an <b>adaptive selector</b> + <b>deterministic simulation</b> over
+         learner profiles; an explicit <b>assess vs practice</b> mode framing; the <b>anchor page</b> (fast fluency
+         demonstration with keypad, warm-up, glitch tolerance); a <b>per-user SQLite store</b> + IndexedDB persistence +
+         write-mode switch; the <b>addition categorization</b> model (canonical vs expanded); a local <b>dev server</b> for S3 upload; and a
+         <code>combine_sqlite.py</code> merge tool. First <b>real-learner</b> runs (G1, G2) captured 2026-06-15.</p>
+      <div class="chips"><span class="chip">anchor.html / .js</span><span class="chip">engine/</span>
+        <span class="chip">simulation/</span><span class="chip">segmentation</span><span class="chip">dev_server.py</span>
+        <span class="chip">combine_sqlite.py</span></div>
+    </div>
+  </div>
+  <p class="small">Source docs: <code>2026-06-14_adaptive-and-profiles-goal.md</code> ·
+     <code>2026-06-15_assess-practice-modes-spec-and-plan.md</code> ·
+     <code>2026-06-15_guinea-pig-findings.md</code> · <code>single_digit_addition_categorization.md</code>.</p>
+</section>
+
+<!-- ===================== VISUAL ===================== -->
+<section id="visual">
+  <h2><span class="n">2</span> Visual comparison</h2>
+  <p class="lead">Captured headless from the live pages (hermetic local server; CDN libs served from
+     <code>tests/node_modules</code>). The new page is keypad-first and self-explaining; the old page is a configurable
+     assessment with audio/speech options.</p>
+
+  <h3><span class="tag old">Old</span> <code>math_quiz.html</code> — configurable assessment</h3>
+  <div class="shots">
+    <figure class="shot"><img src="screenshots/01_old_welcome.png" alt="Old welcome screen">
+      <figcaption><b>1 · Welcome.</b> Preset/name picker; Download / Clear / Go-to-Analysis. Entry point into the loop.</figcaption></figure>
+    <figure class="shot"><img src="screenshots/03_old_settings.png" alt="Old settings screen">
+      <figcaption><b>2 · Settings.</b> Note + <b>Read Aloud</b>, <b>Speech Recognition</b>, <b>Auto-submit</b> — modality
+        options already explored here.</figcaption></figure>
+    <figure class="shot"><img src="screenshots/04_old_problem.png" alt="Old problem screen">
+      <figcaption><b>3 · A problem.</b> “Problem 1 of N”, free-type answer box, “I don’t know”, End Quiz. No on-screen
+        keypad.</figcaption></figure>
+    <figure class="shot"><img src="screenshots/02_old_presets.png" alt="Old preset select">
+      <figcaption><b>4 · Presets.</b> Quick test sizes / custom configuration before starting.</figcaption></figure>
+  </div>
+
+  <h3 style="margin-top:24px"><span class="tag new">New</span> <code>anchor.html</code> — fast fluency check</h3>
+  <div class="shots">
+    <figure class="shot"><img src="screenshots/05_anchor_setup.png" alt="Anchor setup card">
+      <figcaption><b>1 · Setup.</b> One card: name, operation checkboxes (Addition default), auto-submit, big-number keys,
+        hard-first, auto-revert, warm-up. Self-describing.</figcaption></figure>
+    <figure class="shot"><img src="screenshots/06_anchor_warmup.png" alt="Anchor warm-up keypad">
+      <figcaption><b>2 · Warm-up.</b> Practice entering numbers on the keypad first (kept in a separate
+        <code>WarmupAttempts</code> table; excluded from timing).</figcaption></figure>
+    <figure class="shot"><img src="screenshots/07_anchor_quiz.png" alt="Anchor quiz keypad">
+      <figcaption><b>3 · Quiz.</b> Big problem, on-screen calculator keypad, Skip, live progress, <b>HF</b> order
+        indicator, Quit&nbsp;&amp;&nbsp;save / abandon.</figcaption></figure>
+    <figure class="shot"><img src="screenshots/08_anchor_summary.png" alt="Anchor fluent summary">
+      <figcaption><b>4 · Conclusion.</b> “Fluent ✅ … demonstrated on N% coverage … total time … momentary slips,” saved as
+        a per-run <code>.sqlite</code>.</figcaption></figure>
+  </div>
+  <div class="legend">
+    <span><span class="b old">Old</span> JSON · 3 pages · free-type entry · audio/speech modalities</span>
+    <span><span class="b new">New</span> SQLite · 1 page · keypad entry · warm-up + glitch tolerance + mastery prompt</span>
+  </div>
+</section>
+
+<!-- ===================== ARCHITECTURE ===================== -->
+<section id="arch">
+  <h2><span class="n">3</span> Architecture &amp; feature comparison</h2>
+  <p class="lead">What each surface does and how it’s built. “New” items are additive — none replaced old files
+     (the branch diff vs <code>main</code> is all insertions).</p>
+  <table>
+    <thead><tr><th>Dimension</th><th>Old — <code>math_quiz.html</code> &amp; dashboards</th><th>New — <code>anchor.html</code> + engine</th></tr></thead>
+    <tbody>
+      <tr><td>Primary purpose</td>
+        <td class="dim">Configurable practice/assessment; collect sessions; review later in dashboards.</td>
+        <td class="dim">Demonstrate fluency fast; explicit <b>assess</b> mode, with <b>practice</b> mode designed in.</td></tr>
+      <tr><td>Pages / scope</td>
+        <td class="dim">3 pages: quiz, fluency tracker, analysis heatmap.</td>
+        <td class="dim">1 page (anchor) + DOM-free <code>engine/</code> + <code>simulation/</code>; no dashboard yet.</td></tr>
+      <tr><td>Answer entry</td>
+        <td class="dim">Free-type box; optional speech recognition; read-aloud.</td>
+        <td class="dim">On-screen calculator <b>keypad</b> (default), optional big-number keys; physical typing works.</td></tr>
+      <tr><td>Problem selection</td>
+        <td class="dim">Preset/random within configured range; no adaptivity.</td>
+        <td class="dim"><b>Curated hard-first plan</b> (addition) + adaptive selector; auto-revert to easy on struggle.</td></tr>
+      <tr><td>Fluency logic</td>
+        <td class="dim"><code>evaluateFluencyStatus</code> (gray/red/yellow/green/blue) computed in the fluency page.</td>
+        <td class="dim">Same logic, reused DOM-free; plus <b>predictive</b> &amp; <b>thorough</b> mastery determinations.</td></tr>
+      <tr><td>Glitch / slip handling</td>
+        <td class="dim">None — every attempt counts as-is.</td>
+        <td class="dim"><b>Re-deliver-and-confirm</b>: a slow/wrong first try is re-asked later; if fast then, the slip is
+          discarded. Warm-up discard of first ~2.</td></tr>
+      <tr><td>Storage</td>
+        <td class="dim">Session <b>JSON</b> in <code>localStorage</code> + downloads.</td>
+        <td class="dim">Per-user <b>SQLite</b> (sql.js) in IndexedDB + <code>.sqlite</code> export; JSON optional via
+          write-mode switch.</td></tr>
+      <tr><td>Modality settings recorded</td>
+        <td class="dim">Audio/speech/auto-submit are session settings.</td>
+        <td class="dim">Operation, auto-submit, keypad mode, order mode logged; <b>device/modality capture is a gap</b>
+          (see Q). </td></tr>
+      <tr><td>Tests</td>
+        <td class="dim">Unit (vm) + real-DB unit + Playwright E2E for the three pages.</td>
+        <td class="dim">Adds selector/simulation/assess-flow/segmentation/store/reevaluate unit tests + anchor E2E.
+          <code>npm run test:all</code> green.</td></tr>
+      <tr><td>Deploy target</td>
+        <td class="dim">Copy/paste into Webflow custom-code blocks.</td>
+        <td class="dim">Local only now (static server, or <code>dev_server.py</code> for S3 upload); no auth/deploy yet.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===================== STORAGE ===================== -->
+<section id="storage">
+  <h2><span class="n">4</span> Storage: JSON → SQLite (and the two snags)</h2>
+  <p class="lead">The deliberate move from session JSON to a per-user SQLite database — why it’s better, where it’s
+     drifting, and the cloud/local data-access gap.</p>
+
+  <div class="grid2">
+    <div class="col old">
+      <h3><span class="tag old">Old</span> Session JSON</h3>
+      <ul>
+        <li>One JSON blob per session in <code>localStorage</code> (<code>math_session_*.json</code>), plus a downloadable file.</li>
+        <li>Dashboards rebuild an in-memory sql.js DB from <em>all</em> stored JSON on each load.</li>
+        <li><b>Good:</b> dead simple, human-readable, the shared format other front-ends (Minecraft mod) already emit.</li>
+        <li><b>Limits:</b> no single canonical per-learner store; cross-session querying means re-importing everything;
+          easy to lose individual files.</li>
+      </ul>
+    </div>
+    <div class="col new">
+      <h3><span class="tag new">New</span> Per-user SQLite</h3>
+      <ul>
+        <li>Tables <code>Users</code>, <code>Sessions</code>, <code>ProblemAttempts</code>, <code>WarmupAttempts</code>,
+          <code>ModeEvents</code> — every trial with operands, answer, correctness, <code>response_time_ms</code>, flags.</li>
+        <li>Computed <b>in-memory</b> (sql.js) for speed; auto-persisted to <b>IndexedDB</b> keyed by username; manual
+          <code>.sqlite</code> export/import as the cross-device escape hatch.</li>
+        <li>Evaluation is <b>not</b> stored — fluency is recomputed from raw attempts, so the algorithm can change and old
+          captures re-score (<code>reevaluate.mjs</code>, static re-eval).</li>
+        <li><b>Write-mode switch:</b> <code>sqlite-only</code> (dev default) | <code>json+sqlite</code> | <code>json-only</code>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <b>Snag 1 — “one file per user” is drifting to “one file per session.”</b>
+    The anchor page currently saves <b>each run as its own</b> <code>anchor_&lt;name&gt;_&lt;timestamp&gt;.sqlite</code>
+    (and uploads it to S3), while <em>also</em> appending to a cumulative per-user store in IndexedDB. So both already
+    exist — the design intent (one queryable file per learner) just isn’t the file that leaves the device.
+    <br><br>
+    <b>Reconciliation (recommended):</b> treat the per-run <code>.sqlite</code> as an <b>immutable capture / transport
+    artifact</b> (perfect for handing a single trial to the cloud agent), and keep the <b>per-user database as the
+    canonical store</b>, assembled by merging captures. The merge tool already exists:
+    <code>tools/combine_sqlite.py</code> (schema-aware, canonical-schema selection, tested). The workflow becomes
+    <em>capture per run → combine into per-user DB → re-evaluate</em>.
+  </div>
+
+  <div class="callout warn">
+    <b>Snag 2 — the cloud agent can’t see local run data.</b>
+    Real trials happen on a laptop/iPhone/iPad; the cloud coding agent runs in an <b>ephemeral VM</b> with no access to
+    your local IndexedDB or filesystem. That’s exactly why per-run <code>.sqlite</code> files + the
+    <code>dev_server.py</code> → <b>S3</b> upload path exist: they get a concrete capture off the device to somewhere the
+    agent (or you) can pull it. Note S3 target is <code>[S3-BUCKET]</code> (the PII bucket) — appropriate for real-kid
+    captures; keep it out of <code>[S3-FILES-BUCKET]</code> and git. <b>Open question:</b> standardize a “drop a capture where the
+    agent can fetch it” loop (see <a href="#questions">Q5</a>).
+  </div>
+
+  <h3>Data-flow, end to end</h3>
+  <table>
+    <thead><tr><th>Stage</th><th>Old</th><th>New</th></tr></thead>
+    <tbody>
+      <tr><td>Capture</td><td class="dim">Append problem to in-memory session object.</td>
+        <td class="dim">Insert attempt row into per-run + per-user SQLite.</td></tr>
+      <tr><td>Persist</td><td class="dim">JSON → localStorage + manual download.</td>
+        <td class="dim">DB → IndexedDB autosave + <code>.sqlite</code> export (+ optional S3 via dev server).</td></tr>
+      <tr><td>Aggregate</td><td class="dim">Dashboard re-imports all JSON each load.</td>
+        <td class="dim"><code>combine_sqlite.py</code> merges captures into the per-user DB.</td></tr>
+      <tr><td>Evaluate</td><td class="dim">Fluency computed on the dashboard.</td>
+        <td class="dim">Recomputed from raw attempts (static re-eval) — algorithm-swappable.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===================== MODEL ===================== -->
+<section id="model">
+  <h2><span class="n">5</span> The fluency model (new work)</h2>
+  <p class="lead">The conceptual machinery behind the anchor — and the shared vocabulary for adaptive selection going
+     forward. Canonical definitions now live in <a href="../SPEC.md"><code>docs/SPEC.md</code></a>.</p>
+
+  <div class="callout">
+    <b>Fluency ≠ accuracy (core principle).</b>
+    <b>Accuracy</b> = is it correct? <b>Fluency</b> = correct <em>and</em> immediate <em>and</em> effortless — known
+    cold, no cognitive load, no intermediate strategy (a fluent solver doesn’t do <code>8×6</code> as
+    <code>8×5+8</code>). <b>Accuracy is table stakes, not the headline metric</b> — the goal is to move past “gets them
+    all right” to “knows them cold,” so the primary signal is <b>automaticity (speed)</b> with accuracy as the rubric’s
+    floor. The app is <b>not designed around accuracy</b>: auto-submit accepts only the correct answer. Wrong entries are
+    still labeled, but accuracy isn’t what the product optimizes.
+  </div>
+
+  <h3>The rubric: red → yellow → green → blue</h3>
+  <p class="small">One stoplight-plus scale for fluency, applied at <b>three levels</b> — whole <b>operation</b>,
+     <b>category</b> within an operation (the categorization buckets), and <b>individual problem</b> (with full
+     cross-session history). Thresholds are <b>adjustable &amp; level-appropriate</b> (not a fixed 2 s).</p>
+  <table>
+    <thead><tr><th>Status</th><th>Meaning</th><th>Signature</th></tr></thead>
+    <tbody>
+      <tr><td><span class="b stop">red</span></td><td class="dim">Really doesn’t know it.</td>
+        <td class="dim">Makes errors, or so effortful it’s effectively unknown. <b>Accuracy floor</b> — below the accuracy bar ⇒ red.</td></tr>
+      <tr><td><span class="b warn">yellow</span></td><td class="dim">Kind of knows it — <b>not fluent</b>.</td>
+        <td class="dim">Accurate on nearly all (odd slip aside) but slow/effortful; may use strategies. Needs practice.</td></tr>
+      <tr><td><span class="b ok">green</span></td><td class="dim">Fluent / near-fluent.</td>
+        <td class="dim">Fast + correct recently; not yet enough data for permanent — keep collecting/practicing.</td></tr>
+      <tr><td><span class="b new">blue</span></td><td class="dim">Permanent — “in ice.”</td>
+        <td class="dim">Green sustained across sessions; known cold, unlikely to be lost.</td></tr>
+    </tbody>
+  </table>
+  <p class="small"><b>red↔yellow boundary = accuracy</b>; <b>yellow→green→blue = automaticity</b> (speed + durability).
+     <i>Code reconciliation:</i> current <code>evaluateFluencyStatus</code> uses <code>gray</code> for low accuracy and
+     <code>red</code> for very-slow; the canonical rubric folds <code>gray</code> into red — a PLAN Phase-A task.</p>
+
+  <h3>Single-digit addition categorization</h3>
+  <p class="small">Facts partition into five non-overlapping categories by the smaller addend, with a named hard subset.
+     Count each commutative pair once in the <b>canonical</b> set (<code>smaller + larger</code>) → <b>55</b> problems;
+     the <b>expanded</b> set adds turn-around complements → <b>100</b> problems total. Source:
+     <code>single_digit_addition_categorization.md</code> → <code>engine/addition_segmentation.mjs</code>.</p>
+  <table>
+    <thead><tr><th>Category</th><th>Canonical</th><th>Expanded</th><th>Pattern / note</th></tr></thead>
+    <tbody>
+      <tr><td>Add Zero</td><td>10</td><td>19</td><td class="dim"><code>0 + n</code> — easiest</td></tr>
+      <tr><td>Add One</td><td>9</td><td>17</td><td class="dim"><code>1 + n</code>, from <code>1+1</code></td></tr>
+      <tr><td>Add Two</td><td>8</td><td>15</td><td class="dim"><code>2 + n</code>, from <code>2+2</code></td></tr>
+      <tr><td>Doubles</td><td>7</td><td>7</td><td class="dim"><code>n + n</code>, <code>3+3</code>…<code>9+9</code></td></tr>
+      <tr><td>Tough 21</td><td>21</td><td>30</td><td class="dim">remaining non-double facts, addends 3–9 — the deliberate-practice set</td></tr>
+      <tr><td><b>Hardest Six</b></td><td>6</td><td>12</td><td class="dim">subset of Tough 21, both addends ≥ 6, not doubles
+        (<code>6+7,6+8,6+9,7+8,7+9,8+9</code> canonical; expanded adds <code>7+6…9+8</code>) — overlearn last</td></tr>
+      <tr><td><b>Total</b></td><td>55</td><td>100</td><td class="dim">Hardest Six counted inside Tough 21, not extra</td></tr>
+    </tbody>
+  </table>
+  <p class="small"><b>Canonical vs expanded:</b> canonical = one orientation per fact (<code>3+4</code>); expanded adds the
+     turn-around complement (<code>4+3</code>); doubles are symmetric in both sets. The anchor plan administers Hardest Six in
+     <b>both</b> orientations. <b>Easy vs hard:</b> a fact is <em>hard</em> iff <code>max(a,b) ≥ 6</code>. The selector
+     weights hard facts <code>3×</code>. The same categorization will likely be reused for multiplication.</p>
+
+  <div class="grid2">
+    <div>
+      <h3>Two modes</h3>
+      <ul>
+        <li><b>assess</b> — learn about the learner fast (broad, hard-weighted, predetermined order).</li>
+        <li><b>practice</b> — deliver value in <b>batches (default 10)</b> with a known:unknown <b>mix (default 50/50)</b>,
+          reassessing between batches, not per problem.</li>
+        <li>Mode is a first-class flag, logged with transitions in <code>ModeEvents</code>.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Two mastery verdicts</h3>
+      <ul>
+        <li><b>Predictive (fast/short)</b> — infer mastery from a partial, hard-weighted sample → the anchor’s
+          “stop here vs continue” prompt.</li>
+        <li><b>Thorough (complete)</b> — every in-scope fact attempted, correct, within <code>mastery_ms</code> → the
+          “continue to 100%” certification.</li>
+      </ul>
+    </div>
+  </div>
+  <h3>Profile ladder (top-down)</h3>
+  <p class="small">Built from the fluent “anchor” down, so the architecture stays general: 1) totally fluent (anchor) ·
+     2) nearly fluent, a few sticky facts · 3) mid-learning with day-to-day variability · 4) early beginner (0–5
+     addition). Expected to grow to 5–10 profiles; G1/G2 below are real candidates.</p>
+</section>
+
+<!-- ===================== LEARNERS ===================== -->
+<section id="learners">
+  <h2><span class="n">6</span> Real-learner findings (G1, G2)</h2>
+  <p class="lead">First two real-kid anchor runs, 2026-06-15. The headline reshapes priorities for the integration.</p>
+  <div class="callout">
+    <b>Headline: accuracy and speed are different signals, and the tool currently merges them.</b>
+    Both kids clearly <em>know</em> the facts (G1 96% correct addition; G2 99% correct multiplication) but answer in
+    ~2.5–4 s, so the adult-calibrated <b>2 s “fast” bar rates them “not fluent” almost everywhere</b>. At a 4 s bar they
+    look 57% / 71% fast.
+  </div>
+  <div class="grid2">
+    <div class="col old" style="background:#fff;border-color:var(--line)">
+      <h3>G1 — addition</h3>
+      <ul class="small">
+        <li>90 problems, ~6m45s; 86/90 correct (<b>96%</b>), 0 skips.</li>
+        <li>Median 3.5 s; only <b>8% ≤ 2 s</b>, but 38% ≤ 3 s, 57% ≤ 4 s.</li>
+        <li>Hard-first start <b>auto-reverted to easy-first</b> after 3 slow hards (worked as designed).</li>
+        <li>Re-asking every correct-but-slow fact ≈ <b>doubled</b> the run (42 facts → 90 problems).</li>
+      </ul>
+    </div>
+    <div class="col new" style="background:#fff;border-color:var(--line)">
+      <h3>G2 — multiplication</h3>
+      <ul class="small">
+        <li>93 problems, ~6m10s; 92/93 correct (<b>99%</b>), 0 skips.</li>
+        <li>Median 2.7 s; 22% ≤ 2 s, 52% ≤ 3 s, 71% ≤ 4 s.</li>
+        <li><b>All 55</b> facts, hard-first throughout — multiplication has <b>no curated plan</b>, so it ran the full
+          shuffled set (a marathon).</li>
+        <li>Slowest = classic hard products (<code>5×7, 6×7, 7×8, 7×9</code>).</li>
+      </ul>
+    </div>
+  </div>
+  <h3>Implications for integration</h3>
+  <ul>
+    <li><b>Level-appropriate speed thresholds</b> (a “developing” preset ~3.5–4 s), not a fixed adult 2 s.</li>
+    <li><b>One rubric, accuracy as the floor</b> — G1/G2 are <span class="b warn">yellow</span>/<span class="b ok">green</span>
+      (accurate but not yet automatic), <em>not</em> <span class="b stop">red</span>. Accuracy is table stakes; the
+      headline signal is automaticity. (Resolves the old “two axes” idea — see <a href="#model">rubric</a>.)</li>
+    <li><b>Stop re-asking correct-but-slow during assessment</b> (or cap it) to halve session length.</li>
+    <li><b>Curated plans for ×/−</b>, like addition, so non-addition runs aren’t 90+ problems.</li>
+    <li><b>Auto-revert on accuracy, not slowness</b>; handle long pauses (8–31 s) as breaks, not thinking time.</li>
+    <li><b>Turn G1/G2 into simulation profiles</b> — “accurate-but-slow” regression cases for the threshold changes.</li>
+  </ul>
+</section>
+
+<!-- ===================== MODALITY ===================== -->
+<section id="modality">
+  <h2><span class="n">7</span> Presentation &amp; input modalities</h2>
+  <p class="lead">Both versions explored how problems are shown and answers entered. Converging on a touchscreen-keypad
+     path for real kids.</p>
+  <table>
+    <thead><tr><th>Modality</th><th>Where</th><th>Trade-off</th></tr></thead>
+    <tbody>
+      <tr><td>Read aloud (TTS)</td><td class="dim">Old (Read Problems Aloud)</td>
+        <td class="dim">Helps pre-readers; pairs cleanly with audio annotation idea; adds latency to “presentation”.</td></tr>
+      <tr><td>Speech recognition (ASR)</td><td class="dim">Old (flagged “may be buggy”)</td>
+        <td class="dim">Hands-free entry, but recognition errors muddy timing/correctness; fragile.</td></tr>
+      <tr><td>Free-type entry</td><td class="dim">Old</td>
+        <td class="dim">Fast for fluent typists; not great for young kids; needs a keyboard.</td></tr>
+      <tr><td><b>On-screen keypad</b></td><td class="dim">New (anchor, default)</td>
+        <td class="dim">Calculator block; two-digit = two presses (low cognitive load); optional big-number keys.</td></tr>
+      <tr><td>Auto-submit</td><td class="dim">Both</td>
+        <td class="dim">Accept once digit count is reached — no Enter; RT captured before the confirm flash.</td></tr>
+      <tr><td>Warm-up entry</td><td class="dim">New</td>
+        <td class="dim">Familiarize with the keypad first; separates “can they enter it” from “do they know it”.</td></tr>
+    </tbody>
+  </table>
+  <p class="small"><b>Direction:</b> iPad touchscreen + on-screen keypad for real learners (testable on a kid’s device
+     today). <b>Deferred idea:</b> record session audio synchronized to the problem timeline so a learner can annotate
+     “I blanked there” — ground truth for glitch vs. real deviation.</p>
+  <div class="callout q">
+    <b>Modality capture gap</b>
+    Device + presentation/input settings aren’t yet recorded per session in a structured way. To compare modalities
+    rigorously, add a <code>modality</code> record (device, read-aloud?, input method, keypad mode) to the session/DB —
+    see <a href="#questions">Q4</a>.
+  </div>
+</section>
+
+<!-- ===================== PLAN ===================== -->
+<section id="plan">
+  <h2><span class="n">8</span> Integration plan</h2>
+  <p class="lead">Fold the new engine + SQLite + categorization into the proven three-page app, oriented around real
+     ongoing tracking with adaptive selection. Each phase ends with <code>npm run test:all</code> green.</p>
+
+  <div class="phase">
+    <h4><span class="b new">A</span> Recalibrate the fluency verdict (highest leverage)</h4>
+    <p class="small">Act on G1/G2: configurable, level-appropriate speed thresholds; report <b>accuracy and speed as two
+      axes</b>; stop/cap re-asks of correct-but-slow facts during assessment. Add G1/G2 as simulation profiles so the
+      change is regression-tested. <em>Mostly engine + eval; low UI risk.</em></p>
+  </div>
+  <div class="phase">
+    <h4><span class="b new">B</span> Unify storage on the per-user SQLite store</h4>
+    <p class="small">Make the <b>per-user DB canonical</b>; per-run <code>.sqlite</code> = capture/transport. Wire
+      <code>combine_sqlite.py</code> into a <em>capture → combine → re-evaluate</em> loop. Add an importer from the old
+      session-JSON into the same store so historical sessions and the Minecraft-format feed unify. Keep the write-mode
+      switch.</p>
+  </div>
+  <div class="phase">
+    <h4><span class="b new">C</span> Curated plans for subtraction &amp; multiplication</h4>
+    <p class="small">Apply the addition categorization pattern (canonical + expanded) to <code>×</code> and <code>−</code> so those runs are
+      curated (not 90+ -problem marathons). Likely reuse the same category scheme for multiplication.</p>
+  </div>
+  <div class="phase">
+    <h4><span class="b new">D</span> Bring the dashboards onto the new data + adaptive engine</h4>
+    <p class="small">Render the per-fact <b>fluency grid/heatmap</b> on the live page (extract
+      <code>prepareFluencyDatasets</code> from the fluency page’s bootstrap), reading the SQLite store. Then wire the
+      explicit <b>mode machine + batched practice</b> into the main quiz UI, with adaptive selection within and across
+      sessions.</p>
+  </div>
+  <div class="phase">
+    <h4><span class="b new">E</span> Real-use hardening</h4>
+    <p class="small">Long-pause handling, actionable “facts to practice” (surface the slowest/hardest, capped), prominent
+      operation labeling, kid-length sessions. Grow profiles to 5–10. Decide deploy story (Webflow vs. local-first on
+      device).</p>
+  </div>
+  <p class="small"><b>Sequencing rationale:</b> A unblocks honest verdicts for the kids already using it; B makes the data
+     durable and mergeable across cloud/local; C removes the marathon; D delivers the always-on tracking + adaptivity
+     that is the real goal; E is polish for sustained real use.</p>
+</section>
+
+<!-- ===================== CONTROL PANEL ===================== -->
+<section id="control">
+  <h2><span class="n">9</span> Control-panel idea (operator-in-the-loop)</h2>
+  <p class="lead">A facilitator view alongside a live learner run.</p>
+  <ul>
+    <li><b>Live analysis:</b> while a real learner answers, show the operator a real-time <b>heatmap + roll-up</b>
+      (per-fact status, accuracy/speed axes, flags) for the in-progress session.</li>
+    <li><b>Queue control:</b> let the operator <b>feed/populate the upcoming-problem queue</b> by category (Add Zero …
+      Hardest Six; hard products), overriding or steering the adaptive selector mid-session.</li>
+    <li><b>Why it fits:</b> the selector already exposes tiers/weights and the categorization gives clean category handles;
+      the live page already tracks per-attempt data. The control panel is a thin operator surface over both.</li>
+    <li><b>Build note:</b> natural to add in Phase D once the grid is rendering from the SQLite store; start read-only
+      (observe), then add queue-injection.</li>
+  </ul>
+</section>
+
+<!-- ===================== QUESTIONS ===================== -->
+<section id="questions">
+  <h2><span class="n">10</span> Decisions (resolved 2026-06-16)</h2>
+  <p class="lead">All seven open questions are decided; the durable versions live in
+     <a href="../SPEC.md"><code>SPEC.md</code></a> and the work items in <a href="../PLAN.md"><code>PLAN.md</code></a>.
+     Each maps to a PLAN phase.</p>
+  <div class="q-list">
+    <div class="q-item" id="q1"><h4>Q1 · Speed threshold &amp; rubric <span class="b ok">resolved</span></h4>
+      <p class="rec"><b>Decision:</b> fluency ≠ accuracy; canonical <b>red/yellow/green/blue</b> rubric at
+        <b>operation / category / problem</b> levels; thresholds <b>adjustable &amp; level-appropriate</b> (not fixed
+        2 s); not a speed-competitor mode. → <a href="#model">rubric</a>, SPEC §2–§4 · <b>PLAN Phase A</b>.</p></div>
+    <div class="q-item" id="q2"><h4>Q2 · One verdict or two axes <span class="b ok">resolved</span></h4>
+      <p class="rec"><b>Decision:</b> accuracy is <b>table stakes</b> = the red floor; the headline metric is
+        <b>automaticity (fluency)</b>. The app is <b>not designed around accuracy</b> (auto-submit accepts only the
+        correct answer). → SPEC §2–§3.</p></div>
+    <div class="q-item" id="q3"><h4>Q3 · Canonical store <span class="b ok">resolved</span></h4>
+      <p class="rec"><b>Decision:</b> move to <b>per-user SQLite</b>; <b>retire session-JSON</b> as the math-quiz store
+        (keep JSON only as interchange behind the write-mode switch); add a legacy-JSON importer. Per-run
+        <code>.sqlite</code> = capture/transport; per-user DB = canonical via <code>combine_sqlite.py</code>. →
+        SPEC §8 · <b>PLAN Phase C</b>.</p></div>
+    <div class="q-item" id="q4"><h4>Q4 · Modality capture <span class="b ok">resolved</span></h4>
+      <p class="rec"><b>Decision:</b> add a structured <code>modality</code> record (device, read-aloud, input method,
+        keypad mode, auto-submit) per session/attempt. → SPEC §9 · <b>PLAN Phase D</b>.</p></div>
+    <div class="q-item" id="q5"><h4>Q5 · Cloud-agent S3 access <span class="b ok">resolved — needs user setup</span></h4>
+      <p class="small"><b>Verified 2026-06-16:</b> this environment <b>cannot reach S3</b> — egress returns
+        <em>“Host not in allowlist: aws.amazon.com”</em> — and has <b>no AWS creds</b>. But
+        <code>OPENAI_API_KEY</code> <em>is</em> injected, proving the environment supports configured secrets.</p>
+      <p class="rec"><b>Decision (no secrets in the repo):</b> keep the repo source-only; commit only a few small
+        anonymized canonical fixtures. For real captures, the user (web UI) <b>(a) opens network egress</b> to the S3
+        host and <b>(b) adds scoped <code>AWS_*</code> env secrets</b> (same mechanism as <code>OPENAI_API_KEY</code>;
+        least-privilege read-only IAM on the prefix). boto3/<code>core/aws.py</code> then read them automatically.
+        Committing a token is rejected (leak + bloat). → SPEC §11 · <b>PLAN Phase G</b> (full proposal there).</p></div>
+    <div class="q-item" id="q6"><h4>Q6 · Re-ask policy in assess <span class="b ok">resolved</span></h4>
+      <p class="rec"><b>Decision (specifics):</b> classify the first attempt — <b>fast+correct</b> (no re-ask) ·
+        <b>slow+correct</b> (record the slow time as the signal, <b>no re-ask in assess</b>) · <b>wrong/skip</b>
+        (re-deliver <b>once</b> to catch a fat-finger). Flags <code>reaskSlowCorrect:false</code>,
+        <code>reaskOnErrorOrSkip:true</code>, <code>maxReasksPerFact:1</code>; speed work → practice. Session ≈ one pass.
+        → <b>PLAN Phase B</b>.</p></div>
+    <div class="q-item" id="q7"><h4>Q7 · Deploy story <span class="b ok">resolved</span></h4>
+      <p class="rec"><b>Decision:</b> <b>local-first on device</b> (touchscreen keypad isolates knowledge from
+        mouse/keyboard skill); revisit hosted/Webflow + auth only when sharing beyond the family. → SPEC §9, §1.</p></div>
+  </div>
+</section>
+
+<!-- ===================== LOG ===================== -->
+<section id="log">
+  <h2><span class="n">11</span> Change log / tracking</h2>
+  <p class="lead">Append a row per working turn so this page reflects live state.</p>
+  <table>
+    <thead><tr><th>Date</th><th>Who</th><th>Change</th></tr></thead>
+    <tbody>
+      <tr><td>2026-06-16</td><td class="dim">cloud agent</td>
+        <td class="dim">Created branch <code>feature/math-quiz-compare-report</code>; built this report; captured 8 live
+          screenshots (old + anchor) via headless chromium; documented storage snags, learner findings, integration
+          plan, and open questions.</td></tr>
+      <tr><td>2026-06-16</td><td class="dim">cloud agent</td>
+        <td class="dim">Resolved Q1–Q7. Created the canonical living pair <a href="../SPEC.md"><code>docs/SPEC.md</code></a>
+          + <a href="../PLAN.md"><code>docs/PLAN.md</code></a> and referenced them from <code>AGENTS.md</code>. Added the
+          fluency rubric (red/yellow/green/blue) + accuracy-vs-fluency principle; verified the S3 egress block and wrote
+          the cloud-agent access proposal (Q5/Phase G).</td></tr>
+      <tr><td>2026-06-18</td><td class="dim">local agent</td>
+        <td class="dim">Synced addition categorization with <code>single_digit_addition_categorization.md</code>: renamed
+          Sneaky Six → Hardest Six; added canonical (55) vs expanded (100) counts and terminology throughout §5.</td></tr>
+      <tr><td>2026-06-20</td><td class="dim">cloud agent</td>
+        <td class="dim">Added a fluency-focused companion report,
+          <a href="fluency.html"><code>fluency.html</code></a>: the fluency model + current-tracker documentation (live
+          seeded screenshots), the SQLite data-model status (fluency not persisted), and proposals for an integrated
+          analysis fluency view and a tracker overhaul.</td></tr>
+      <!-- Next turns: add a row here. -->
+    </tbody>
+  </table>
+  <p class="small">To update: edit <code>index.html</code> (this file). To refresh screenshots after UI changes, re-run
+     <code>node docs/2026-06-16_compare-report/capture_screenshots.mjs</code> (see Appendix).</p>
+</section>
+
+<!-- ===================== APPENDIX ===================== -->
+<section id="appendix">
+  <h2><span class="n">12</span> Appendix — serve &amp; regenerate</h2>
+  <h3>View this report</h3>
+  <p class="small">From <code>apps/math-quiz/</code>:</p>
+  <p><code>python3 -m http.server 8907</code> → open
+     <code>http://127.0.0.1:8907/docs/2026-06-16_compare-report/index.html</code></p>
+  <h3>Regenerate screenshots</h3>
+  <p class="small">One-time deps (Playwright + bundled chromium, hermetic CDN libs):</p>
+  <p><code>cd apps/math-quiz/tests &amp;&amp; npm install</code></p>
+  <p class="small">Then, from <code>apps/math-quiz/</code>:</p>
+  <p><code>node docs/2026-06-16_compare-report/capture_screenshots.mjs</code></p>
+  <p class="small">The script serves the app locally, routes the app’s CDN libraries to the pinned copies in
+     <code>tests/node_modules</code> (so it works where the Playwright/CDN hosts are blocked), drives both pages, and
+     writes element-clipped PNGs to <code>screenshots/</code>. It prefers a Playwright-installed chromium, else falls
+     back to the npm <code>@sparticuz/chromium</code> binary.</p>
+  <h3>Key files referenced</h3>
+  <ul class="small">
+    <li><b>Old:</b> <code>math_quiz.html/.js/.css</code>, <code>math_fluency.html/.js</code>,
+      <code>math_analysis.html/.js</code>, <code>math_utils.js</code></li>
+    <li><b>New:</b> <code>anchor.html/.js</code>, <code>engine/*.mjs</code>, <code>simulation/*.mjs</code>,
+      <code>tools/dev_server.py</code>, <code>tools/combine_sqlite.py</code></li>
+    <li><b>Docs:</b> <code>2026-06-14_adaptive-and-profiles-goal.md</code>,
+      <code>2026-06-15_assess-practice-modes-spec-and-plan.md</code>,
+      <code>2026-06-15_guinea-pig-findings.md</code>, <code>single_digit_addition_categorization.md</code></li>
+  </ul>
+</section>
+
+<footer>
+  Math Quiz comparison report · generated 2026-06-16 · <code>apps/math-quiz/docs/2026-06-16_compare-report/</code> ·
+  living document, for internal use.
+</footer>
+</main>
+</div>
+</body>
+</html>

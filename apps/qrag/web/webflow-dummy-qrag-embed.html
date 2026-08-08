@@ -1,0 +1,80 @@
+<!-- START OF FILE webflow-dummy-qrag-embed.html -->
+
+<!-- ================ START Embed Code  ================ -->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      // Get the first bot container
+      const botContainer = document.querySelector('.bot-container');
+      if (!botContainer) return;
+      
+      // Create share div with buttons first
+      const shareDiv = document.createElement('div');
+      shareDiv.className = 'share-div';
+      shareDiv.innerHTML = `
+          <button class="primary-button w-button icon-button">
+              <span class="material-symbols-rounded">download</span>
+          </button>
+          <button class="primary-button w-button icon-button">
+              <span class="material-symbols-rounded">mail</span>
+          </button>
+          <input type="email" placeholder="Enter your email to send the below exchanges" class="email-input-address" style="display: none">
+          <div class="email-checkbox-container" style="display: none">
+              <input type="checkbox" class="email-checkbox">
+              <label class="email-checkbox-label">Add me to the email list for updates to this project.</label>
+          </div>
+      `;
+
+      // Create hidden div for markdown content
+      const hiddenDiv = document.createElement('div');
+      hiddenDiv.className = 'hidden-div';
+      hiddenDiv.style.display = 'none';
+      hiddenDiv.textContent = 'QRAG demo over David Deutsch Interview Corpus\nby Randy True of focusonfoundations.org';
+      
+      // Get the accordion container
+      const accordionContainer = botContainer.querySelector('.accordion-container');
+      
+      // Insert share div and hidden div before accordion container
+      botContainer.insertBefore(hiddenDiv, accordionContainer);
+      botContainer.insertBefore(shareDiv, accordionContainer);
+      
+      // Get the accordion card
+      const accordionCard = botContainer.querySelector('.accordion-card');
+      if (!accordionCard) return;
+      
+      // Create a static accordion item
+      const accordionItem = document.createElement('div');
+      accordionItem.className = 'accordion-item w-dropdown';
+      accordionItem.innerHTML = `
+          <div class="accordion-toggle w-dropdown-toggle">
+              <div class="accordion-icon w-icon-dropdown-toggle"></div>
+              <div class="accordion-title-text">What is SeaRanch?</div>
+          </div>
+          <nav class="accordion-dropdown-list w-dropdown-list" style="display: block">
+              <div class="accordion-dropdown-text">There is NO MATCH in the extracted quotes.</div>
+              <div class="accordion-dropdown-text">The AI ANSWER below uses the model's background knowledge of David Deutsch's philosophy and ideas.</div>
+              <div class="accordion-dropdown-text accordion-dropdown-text-ai-answer">
+                  AI ANSWER:<br>
+                  "SeaRanch" is not directly related to David Deutsch or his philosophy. However, let me give you some background using the available concepts and context I possess. If we consider "Sea Ranch," it likely refers to a famous community known as The Sea Ranch, located on the Northern California coast. The Sea Ranch is renowned for its unique architecture and design that harmonizes with the surrounding natural environment...
+              </div>
+          </nav>
+      `;
+      
+      // Insert at the beginning of the accordion card
+      accordionCard.insertBefore(accordionItem, accordionCard.firstChild);
+
+      // Add click handlers for the buttons
+      const emailButton = shareDiv.querySelector('button:nth-child(2)');
+      const emailInput = shareDiv.querySelector('.email-input-address');
+      const emailCheckboxContainer = shareDiv.querySelector('.email-checkbox-container');
+      
+      emailButton.addEventListener('click', () => {
+          const isHidden = emailInput.style.display === 'none';
+          emailInput.style.display = isHidden ? 'inline-block' : 'none';
+          emailCheckboxContainer.style.display = isHidden ? 'inline-block' : 'none';
+      });
+  });
+  </script>
+<!-- ================ END Embed Code  ================ -->
+
+
+<!-- END OF FILE webflow-dummy-qrag-embed.html -->

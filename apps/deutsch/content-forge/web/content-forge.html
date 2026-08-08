@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<!-- Content Forge — hand-authored UI source. Served by ctools/server.py,
+     which injects the per-run session token in place of __CT_TOKEN__. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Content Forge</title>
+<style>
+  :root {
+    --bg: #f6f5f1; --panel: #ffffff; --border: #ddd8cf; --ink: #2b2a27; --muted: #817a70;
+    --accent: #2f6f8f; --accent-soft: #e8f1f5; --ok: #4f7f4f; --bad: #a84d45; --warn: #9a6a2f; --mark: #f7f0df;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.5 -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; background: var(--bg); color: var(--ink); height: 100vh; display: flex; flex-direction: column; }
+  header { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: var(--panel); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  h1 { font-size: 17px; margin: 0; font-weight: 650; }
+  .sub { color: var(--muted); font-size: 12.5px; }
+  #layout { flex: 1; display: grid; grid-template-columns: 350px minmax(360px, 1fr) 420px; min-height: 0; }
+  #left, #right { background: var(--panel); overflow-y: auto; }
+  #left { border-right: 1px solid var(--border); padding: 14px; }
+  #center { overflow-y: auto; padding: 18px 22px; }
+  #right { border-left: 1px solid var(--border); display: flex; flex-direction: column; min-width: 0; }
+  label { display: block; color: var(--muted); font-size: 12px; margin: 10px 0 4px; }
+  textarea, select { width: 100%; font: inherit; border: 1px solid var(--border); border-radius: 8px; background: #fff; color: var(--ink); padding: 7px 9px; }
+  textarea { min-height: 300px; resize: vertical; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: end; }
+  button { font: inherit; font-size: 13.5px; padding: 7px 12px; border: 1px solid var(--border); border-radius: 8px; background: #fff; color: var(--ink); cursor: pointer; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; width: 100%; margin-top: 12px; }
+  button:disabled { opacity: .55; cursor: default; }
+  .disclosure { font-size: 11.5px; color: var(--muted); margin-top: 10px; }
+  article { max-width: 860px; margin: 0 auto; }
+  article h2 { font-size: 22px; margin: 22px 0 8px; }
+  article h3 { font-size: 17px; margin: 18px 0 6px; }
+  article p { margin: 0 0 12px; }
+  article ul { margin-top: 0; }
+  sup a, sup span { color: var(--accent); text-decoration: none; margin-left: 2px; font-weight: 700; }
+  #empty { max-width: 860px; margin: 0 auto; color: var(--muted); background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+  #tabs { display: flex; border-bottom: 1px solid var(--border); }
+  #tabs div { flex: 1; text-align: center; padding: 9px 0; font-size: 13px; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; }
+  #tabs div.active { color: var(--ink); border-bottom-color: var(--accent); font-weight: 600; }
+  #panel { flex: 1; overflow-y: auto; padding: 14px; font-size: 13px; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .stat { border: 1px solid var(--border); border-radius: 8px; padding: 7px 9px; background: #fbfaf7; }
+  .stat b { display: block; font-size: 18px; }
+  .section-row, .run, .node-row { border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; }
+  .run { cursor: pointer; }
+  .run:hover { color: var(--accent); }
+  .badge { display: inline-block; font-size: 11.5px; border-radius: 6px; padding: 1px 7px; color: #fff; margin-left: 6px; }
+  .grounded { background: var(--ok); }
+  .ungrounded { background: var(--bad); }
+  .invalid { background: var(--warn); }
+  .muted { color: var(--muted); }
+  .cites { margin-top: 6px; }
+  .cites a, .cites span { display: inline-block; background: var(--accent-soft); color: var(--accent); border-radius: 6px; padding: 1px 8px; margin: 2px 4px 0 0; text-decoration: none; font-size: 12px; }
+  pre { white-space: pre-wrap; word-break: break-word; background: #f1eee8; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-size: 12px; }
+  .download-row { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .download-row button { flex: 1 1 110px; }
+  @media (max-width: 1060px) { body { height: auto; } #layout { display: block; } #left, #right, #center { border: 0; min-height: auto; } textarea { min-height: 190px; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Content Forge</h1>
+  <span class="sub">graph-conditioned drafts with per-section citation sidecars</span>
+</header>
+<div id="layout">
+  <aside id="left">
+    <label for="description">Description</label>
+    <textarea id="description" spellcheck="true">Make a short lesson about why optimism means problems are soluble, for a thoughtful high-school student.</textarea>
+    <div class="row">
+      <div><label for="format">Format</label><select id="format"><option value="essay">Essay</option><option value="lesson">Lesson</option><option value="dialogue">Dialogue</option></select></div>
+      <div><label for="length">Length</label><select id="length"><option value="short">Short</option><option value="medium" selected>Medium</option><option value="long">Long</option></select></div>
+    </div>
+    <label for="tone">Tone <span id="tone-label"></span></label>
+    <input id="tone" type="range" min="1" max="5" step="1" value="3">
+    <button id="run" class="primary">Run</button>
+    <div class="disclosure">AI-GENERATED: Outputs are generated from cited deutsch-graph sources; not written or endorsed by David Deutsch.</div>
+  </aside>
+  <main id="center"><div id="empty">Describe the piece you want to create, choose knobs, then run the forge.</div></main>
+  <aside id="right">
+    <div id="tabs"><div data-tab="sidecar" class="active">Sidecar</div><div data-tab="context">Context</div><div data-tab="json">JSON</div><div data-tab="runs">Runs</div></div>
+    <div id="panel"></div>
+  </aside>
+</div>
+<script>
+const TOKEN = "__CT_TOKEN__";
+const S = { state: null, run: null, tab: "sidecar", runs: [], busy: false };
+const el = id => document.getElementById(id);
+const esc = s => (s || "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+async function api(path, opts = {}) {
+  opts.headers = Object.assign({ "X-CT-Token": TOKEN, "Content-Type": "application/json" }, opts.headers || {});
+  const res = await fetch(path, opts);
+  if (!res.ok) throw new Error((await res.json().catch(() => ({}))).detail || res.statusText);
+  return res.json();
+}
+function toneLabel() {
+  if (!S.state) return;
+  const row = S.state.tones.find(t => t.level == el("tone").value);
+  el("tone-label").textContent = row ? row.label : "";
+}
+function citeMap() {
+  const map = {};
+  if (!S.run) return map;
+  (S.run.sidecar.sections || []).forEach(sec => (sec.citations || []).forEach(c => { map[c.id] = c; }));
+  return map;
+}
+function citeHtml(id) {
+  const c = citeMap()[id] || { id };
+  const title = esc((c.label || id) + (c.work ? " — " + c.work : ""));
+  if (c.youtube_ts_url) return `<sup><a href="${esc(c.youtube_ts_url)}" target="_blank" title="${title}">▶</a></sup>`;
+  return `<sup><span title="${title}">#</span></sup>`;
+}
+function inline(s) {
+  return esc(s).replace(/\[((?:qa|concept|chapter|claim|excerpt|category|topic|work|book):[^\]\s]+)\]/g, (_, id) => citeHtml(id));
+}
+function renderPiece() {
+  const center = el("center");
+  if (!S.run) { center.innerHTML = `<div id="empty">Describe the piece you want to create, choose knobs, then run the forge.</div>`; return; }
+  const lines = S.run.piece_markdown.split(/\n/);
+  let html = "", listOpen = false;
+  for (const line of lines) {
+    if (line.startsWith("## ")) { if (listOpen) { html += "</ul>"; listOpen = false; } html += `<h2>${inline(line.slice(3))}</h2>`; continue; }
+    if (line.startsWith("### ")) { if (listOpen) { html += "</ul>"; listOpen = false; } html += `<h3>${inline(line.slice(4))}</h3>`; continue; }
+    if (line.startsWith("- ")) { if (!listOpen) { html += "<ul>"; listOpen = true; } html += `<li>${inline(line.slice(2))}</li>`; continue; }
+    if (!line.trim()) { if (listOpen) { html += "</ul>"; listOpen = false; } continue; }
+    if (listOpen) { html += "</ul>"; listOpen = false; }
+    html += `<p>${inline(line)}</p>`;
+  }
+  if (listOpen) html += "</ul>";
+  center.innerHTML = `<article>${html}</article>`;
+}
+function citationChip(c) {
+  const label = esc((c.label || c.id).slice(0, 72));
+  return c.youtube_ts_url ? `<a href="${esc(c.youtube_ts_url)}" target="_blank" title="${esc(c.id)}">▶ ${label}</a>` : `<span title="${esc(c.id)}">${label}</span>`;
+}
+function renderStats(sc) {
+  const c = sc.coverage || {};
+  return `<div class="stats"><div class="stat"><b>${c.n_grounded || 0}/${c.n_sections || 0}</b><span class="muted">grounded</span></div><div class="stat"><b>${c.n_citations || 0}</b><span class="muted">citations</span></div><div class="stat"><b>${c.n_ungrounded || 0}</b><span class="muted">ungrounded</span></div><div class="stat"><b>${c.n_invalid || 0}</b><span class="muted">invalid stripped</span></div></div>`;
+}
+function sectionRow(sec) {
+  const badge = sec.grounded ? `<span class="badge grounded">grounded</span>` : `<span class="badge ungrounded">ungrounded</span>`;
+  const invalid = sec.invalid_citations.length ? `<span class="badge invalid">${sec.invalid_citations.length} invalid</span>` : "";
+  return `<div class="section-row"><b>${esc(sec.heading)}</b>${badge}${invalid}<div class="muted">${sec.word_count} words</div><div class="cites">${(sec.citations || []).map(citationChip).join("") || '<span>No valid citations</span>'}</div></div>`;
+}
+function renderPanel() {
+  const panel = el("panel");
+  if (!S.run && S.tab !== "runs") { panel.innerHTML = `<p class="muted">No run loaded.</p>`; return; }
+  if (S.tab === "sidecar") {
+    const sc = S.run.sidecar;
+    panel.innerHTML = `<div class="download-row"><button id="download-md">Piece .md</button><button id="download-side-md">Sidecar .md</button><button id="download-json">Sidecar .json</button></div>` + renderStats(sc) + (sc.sections || []).map(sectionRow).join("");
+    el("download-md").onclick = () => download("content-forge.md", S.run.markdown, "text/markdown");
+    el("download-side-md").onclick = () => download("content-forge-citations.md", S.run.sidecar_markdown, "text/markdown");
+    el("download-json").onclick = () => download("content-forge-citations.json", JSON.stringify(S.run.sidecar, null, 2), "application/json");
+  }
+  if (S.tab === "context") {
+    const pkg = S.run.sidecar.context_package || {};
+    const uncited = pkg.retrieved_but_uncited || [];
+    panel.innerHTML = `<p class="muted">Routed topics: ${esc((S.run.routing.topic_labels || []).join(", ") || "none")}</p><p class="muted">Routed categories: ${esc((S.run.routing.category_labels || []).join(", ") || "none")}</p><h3>Retrieved but uncited</h3>` +
+      (uncited.length ? uncited.map(n => `<div class="node-row"><b>${esc(n.id)}</b><div>${esc((n.label || "").slice(0, 180))}</div><div class="muted">${esc(n.type || "")}</div></div>`).join("") : `<p class="muted">All retrieved source nodes were cited at least once.</p>`);
+  }
+  if (S.tab === "json") {
+    panel.innerHTML = `<pre>${esc(JSON.stringify(S.run.sidecar, null, 2))}</pre>`;
+  }
+  if (S.tab === "runs") {
+    panel.innerHTML = S.runs.length ? S.runs.map(r => `<div class="run" data-id="${esc(r.run_id)}"><b>${esc(r.source_name || r.run_id)}</b><div class="muted">${esc(r.run_id)} · ${esc(r.generated_at || "")}</div></div>`).join("") : `<p class="muted">No saved runs yet.</p>`;
+    panel.querySelectorAll(".run").forEach(node => node.onclick = async () => { S.run = await api("/api/forge/runs/" + node.dataset.id); renderPiece(); renderPanel(); });
+  }
+}
+function download(name, content, type) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([content], { type }));
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+async function loadRuns() {
+  S.runs = (await api("/api/forge/runs")).runs;
+  if (S.tab === "runs") renderPanel();
+}
+async function run() {
+  if (S.busy) return;
+  S.busy = true; el("run").disabled = true; el("run").textContent = "Running...";
+  const body = { description: el("description").value, format: el("format").value, length: el("length").value, tone: parseInt(el("tone").value) };
+  try {
+    S.run = await api("/api/forge/run", { method: "POST", body: JSON.stringify(body) });
+    renderPiece(); await loadRuns(); renderPanel();
+  } catch (err) { alert("Error: " + err.message); }
+  S.busy = false; el("run").disabled = false; el("run").textContent = "Run";
+}
+document.querySelectorAll("#tabs div").forEach(t => t.onclick = () => {
+  document.querySelectorAll("#tabs div").forEach(x => x.classList.remove("active"));
+  t.classList.add("active"); S.tab = t.dataset.tab; renderPanel();
+});
+el("tone").oninput = toneLabel;
+el("run").onclick = run;
+(async function boot() {
+  S.state = await api("/api/state");
+  el("tone").value = S.state.defaults.tone;
+  toneLabel();
+  await loadRuns();
+  renderPanel();
+})();
+</script>
+</body>
+</html>

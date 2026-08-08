@@ -1,0 +1,13 @@
+{
+  "version": "2.0",
+  "app_name": "hmac-hash",
+  "stages": {
+    "dev": {
+      "api_gateway_stage": "api",
+      "environment_variables": {
+        "USERS_HMAC_SECRET_KEY": "USERS_HMAC_SECRET_KEY"
+      }
+    }
+  }
+}
+

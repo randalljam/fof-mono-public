@@ -1,0 +1,164 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": "A", "id": "A1", "label": "plant_seed", "shape": "dot", "title": "plant_seed"}, {"font": {"color": "white"}, "group": "A", "id": "A2", "label": "water_plant", "shape": "dot", "title": "water_plant"}, {"font": {"color": "white"}, "group": "A", "id": "A3", "label": "add_fertilizer", "shape": "dot", "title": "add_fertilizer"}, {"font": {"color": "white"}, "group": "A", "id": "A4", "label": "prune_plant", "shape": "dot", "title": "prune_plant"}, {"font": {"color": "white"}, "group": "A", "id": "A5", "label": "harvest_plant", "shape": "dot", "title": "harvest_plant"}, {"font": {"color": "white"}, "group": "A", "id": "A6", "label": "manage_single_plant", "shape": "dot", "title": "manage_single_plant"}, {"font": {"color": "white"}, "group": "A", "id": "A7", "label": "run_small_garden", "shape": "dot", "title": "run_small_garden"}, {"font": {"color": "white"}, "group": "B", "id": "B1", "label": "create_plot", "shape": "dot", "title": "create_plot"}, {"font": {"color": "white"}, "group": "B", "id": "B2", "label": "prepare_soil", "shape": "dot", "title": "prepare_soil"}, {"font": {"color": "white"}, "group": "B", "id": "B3", "label": "plan_crop_rotation", "shape": "dot", "title": "plan_crop_rotation"}, {"font": {"color": "white"}, "group": "B", "id": "B4", "label": "install_irrigation", "shape": "dot", "title": "install_irrigation"}, {"font": {"color": "white"}, "group": "B", "id": "B5", "label": "manage_pests", "shape": "dot", "title": "manage_pests"}, {"font": {"color": "white"}, "group": "B", "id": "B6", "label": "manage_plot", "shape": "dot", "title": "manage_plot"}, {"font": {"color": "white"}, "group": "B", "id": "B7", "label": "run_medium_farm", "shape": "dot", "title": "run_medium_farm"}, {"font": {"color": "white"}, "group": "C", "id": "C1", "label": "analyze_market_demand", "shape": "dot", "title": "analyze_market_demand"}, {"font": {"color": "white"}, "group": "C", "id": "C2", "label": "manage_inventory", "shape": "dot", "title": "manage_inventory"}, {"font": {"color": "white"}, "group": "C", "id": "C3", "label": "handle_distribution", "shape": "dot", "title": "handle_distribution"}, {"font": {"color": "white"}, "group": "C", "id": "C4", "label": "manage_farm_finances", "shape": "dot", "title": "manage_farm_finances"}, {"font": {"color": "white"}, "group": "C", "id": "C5", "label": "hire_farm_workers", "shape": "dot", "title": "hire_farm_workers"}, {"font": {"color": "white"}, "group": "C", "id": "C6", "label": "oversee_farm_operations", "shape": "dot", "title": "oversee_farm_operations"}, {"font": {"color": "white"}, "group": "C", "id": "C7", "label": "run_large_scale_farm", "shape": "dot", "title": "run_large_scale_farm"}]);
+                  edges = new vis.DataSet([{"from": "A6", "to": "A1"}, {"from": "A6", "to": "A2"}, {"from": "A6", "to": "A3"}, {"from": "A6", "to": "A4"}, {"from": "A6", "to": "A5"}, {"from": "A7", "to": "A6"}, {"from": "B6", "to": "B1"}, {"from": "B6", "to": "B2"}, {"from": "B6", "to": "B3"}, {"from": "B6", "to": "B4"}, {"from": "B6", "to": "B5"}, {"from": "B7", "to": "B6"}, {"from": "C6", "to": "C2"}, {"from": "C6", "to": "C3"}, {"from": "C6", "to": "C4"}, {"from": "C6", "to": "C5"}, {"from": "C7", "to": "C1"}, {"from": "C7", "to": "C6"}, {"from": "B6", "to": "A7"}, {"from": "C6", "to": "B7"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "forceAtlas2Based": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.01,
+            "damping": 0.4,
+            "gravitationalConstant": -50,
+            "springConstant": 0.08,
+            "springLength": 100
+        },
+        "solver": "forceAtlas2Based",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

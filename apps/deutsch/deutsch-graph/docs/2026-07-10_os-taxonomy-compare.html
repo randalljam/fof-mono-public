@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>os-taxonomy (Marble) vs Deutsch Graph — architecture compare</title>
+<style>
+  :root{--bg:#0d1117;--panel:#161d29;--panel2:#1c2634;--border:#243040;--border2:#2f3d50;--ink:#e6edf3;--muted:#9aa7b6;--dim:#6d7b8c;--accent:#58a6ff;--accent2:#7ee787;--gold:#f0c674;--red:#ff6b6b;--acc:#b07fd6;--shadow:0 8px 30px rgba(0,0,0,.4);--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  *{box-sizing:border-box}html{scroll-behavior:smooth}
+  body{margin:0;background:linear-gradient(180deg,#0b0f16,#0d1117 400px);color:var(--ink);font-family:var(--sans);line-height:1.55;font-size:15px}
+  a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+  code{font-family:var(--mono);background:#0b1220;border:1px solid var(--border);border-radius:5px;padding:1px 5px;font-size:.86em;color:#cde3ff}
+  h1,h2,h3,h4{line-height:1.25;margin:0}
+  .layout{display:grid;grid-template-columns:250px 1fr;max-width:1440px;margin:0 auto}
+  nav.side{position:sticky;top:0;height:100vh;overflow-y:auto;padding:26px 16px 40px;border-right:1px solid var(--border);background:rgba(10,14,20,.6);backdrop-filter:blur(6px)}
+  nav.side .brand{font-weight:800;font-size:16px}.brand span{color:var(--acc)}
+  nav.side .sub{color:var(--dim);font-size:11.5px;margin:4px 0 22px;font-family:var(--mono)}
+  nav.side a.navlink{display:block;color:var(--muted);padding:7px 11px;border-radius:8px;font-size:13.5px;margin:2px 0;border:1px solid transparent}
+  nav.side a.navlink:hover{background:var(--panel);color:var(--ink);text-decoration:none}
+  nav.side a.navlink.active{background:var(--panel2);color:#fff;border-color:var(--border2)}
+  nav.side a.navlink .n{color:var(--dim);font-family:var(--mono);font-size:11px;margin-right:8px}
+  nav.side .foot{margin-top:22px;color:var(--dim);font-size:11px;border-top:1px solid var(--border);padding-top:14px}
+  main{padding:34px 44px 120px;min-width:0}
+  section{margin-bottom:52px;scroll-margin-top:20px}
+  .eyebrow{font-family:var(--mono);color:var(--acc);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+  .hero h1{font-size:31px;margin:10px 0 6px;letter-spacing:-.5px}
+  .hero .lede{color:var(--muted);font-size:17px;max-width:840px}
+  .kicker{color:var(--acc);font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+  h2.sec{font-size:23px;margin-bottom:6px}h3.sub{font-size:16px;margin:24px 0 10px;color:#fff;border-left:3px solid var(--acc);padding-left:10px}
+  .sec-lede{color:var(--muted);max-width:860px;margin-bottom:16px}
+  .callout{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-left:4px solid var(--acc);border-radius:10px;padding:16px 20px;margin:16px 0}
+  .callout.gold{border-left-color:var(--gold)}.callout.blue{border-left-color:#58a6ff}
+  .callout h4{font-size:15px;margin-bottom:6px}.callout p{margin:6px 0;color:var(--muted);font-size:14px}.callout b{color:var(--ink)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px}.card:hover{border-color:var(--border2)}
+  .card h4{font-size:15px}.card .desc{color:var(--muted);font-size:13.5px;margin:8px 0}.card b{color:var(--ink)}
+  .card ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:13px}.card li{margin:4px 0}
+  ul.tidy{margin:8px 0;padding-left:20px;color:var(--muted);font-size:14px}ul.tidy li{margin:6px 0}ul.tidy b{color:var(--ink)}
+  table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{color:var(--dim);font-family:var(--mono);font-size:10.5px;text-transform:uppercase}tr:hover td{background:var(--panel)}
+  td .s{font-family:var(--mono);font-size:12px;color:#cde3ff}.scroll{overflow-x:auto;border:1px solid var(--border);border-radius:10px}
+  .uv{font-family:var(--mono);font-size:9.5px;padding:1px 6px;border-radius:5px;border:1px solid #a83;color:var(--gold);text-transform:uppercase;white-space:nowrap}
+  .verdict{font-family:var(--mono);font-size:10.5px;padding:2px 9px;border-radius:20px;white-space:nowrap}.v-yes{color:var(--accent2);border:1px solid #2b5}.v-partial{color:var(--gold);border:1px solid #a83}.v-no{color:var(--red);border:1px solid #a33}
+  .flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0}.flow .chip{font-family:var(--mono);font-size:11.5px;background:#0b1220;border:1px solid var(--border2);border-radius:7px;padding:4px 9px;color:#cde3ff}.flow .arr{color:var(--dim)}
+  .num{font-family:var(--mono);font-size:26px;font-weight:800;color:#fff}.numlbl{color:var(--dim);font-size:11.5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:1px}
+  .nums{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin:14px 0}
+  .nums .cell{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+  .steal{display:flex;gap:12px;margin:11px 0;align-items:flex-start}.steal .p{font-family:var(--mono);font-size:10px;border-radius:6px;padding:3px 8px;flex:none;margin-top:2px}
+  .p1{background:#1d3a24;color:var(--accent2);border:1px solid #2b5}.p2{background:#3a301d;color:var(--gold);border:1px solid #a83}.p3{background:#1d2a3a;color:var(--accent);border:1px solid #358}
+  .steal .b b{color:#fff}.steal .b p{margin:3px 0 0;color:var(--muted);font-size:13.5px}
+  @media(max-width:820px){.layout{grid-template-columns:1fr}nav.side{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border)}main{padding:24px}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="side">
+    <div class="brand">os-taxonomy <span>· vs Deutsch Graph</span></div>
+    <div class="sub">withmarbleapp/os-taxonomy · compare &amp; contrast</div>
+    <a class="navlink active" href="#tldr"><span class="n">00</span>The practical read</a>
+    <a class="navlink" href="#what"><span class="n">01</span>What os-taxonomy is</a>
+    <a class="navlink" href="#table"><span class="n">02</span>Side-by-side</a>
+    <a class="navlink" href="#contrasts"><span class="n">03</span>Five deep contrasts</a>
+    <a class="navlink" href="#steal"><span class="n">04</span>What to adopt</a>
+    <a class="navlink" href="#keep"><span class="n">05</span>What we keep</a>
+    <div class="foot">Sources: full clone of <code>withmarbleapp/os-taxonomy</code> @ v1.0.0 (2026-07-08) — README, schemas, data files, validate.mjs, PROVENANCE, CHANGELOG, manifest; <code>apps/deutsch/deutsch-graph</code> v0.2 docs + code. Their hosted 3D viewer blocks automated fetch — its stack is <span class="uv">unverified</span>.</div>
+  </nav>
+  <main>
+    <section id="tldr" class="hero">
+      <div class="eyebrow">Compare &amp; contrast · knowledge-graph architecture</div>
+      <h1>Marble's os-taxonomy vs the Deutsch Graph</h1>
+      <p class="lede">Marble (a kids-learning startup) just open-sourced the <b style="color:var(--ink)">Marble Skill Taxonomy</b>: 1,590 "micro-topics" of primary-school learning wired into a 3,221-edge prerequisite DAG, aligned to 7 national curricula. The headline finding: <b style="color:var(--ink)">they used no graph library, no graph database, and no framework at all</b> — the repo is four plain JSON files, four JSON Schemas, and one dependency-free validator. Their architecture and ours converge on the same core philosophy (plain-text property graph + integrity validator + checksum manifest), and differ exactly where our purposes differ: theirs is a <em>published dataset</em> exported from a private product database; ours is a <em>self-contained factory</em> that compiles a private corpus into a graph, with the build code, curation overlays, and viewer all in the repo.</p>
+      <div class="callout">
+        <h4>The one-paragraph verdict</h4>
+        <p>Nothing in os-taxonomy says "we chose the wrong architecture" — it says the opposite: an independent, well-funded team shipping a serious knowledge graph landed on <b>the same no-database, plain-JSON, validator-enforced pattern</b> we chose in <code>architecture.md</code> D1. What they do better is <b>publication engineering</b>: formal JSON Schemas, per-file output checksums, semver + CHANGELOG, a genuinely sophisticated license split (ODbL database / CC BY-SA content / codes-only for encumbered sources), and richer <b>edge metadata</b> (every prerequisite edge carries a <code>hard/soft</code> strength and a one-line human <code>reason</code>). Those are the four things worth adopting — two now, two when the Deutsch Graph goes public.</p>
+      </div>
+      <div class="cards" style="margin-top:8px">
+        <div class="card"><h4>✅ Where they're ahead</h4><ul class="tidy" style="font-size:13px"><li>Edge <code>reason</code> + <code>strength</code> on every dependency — curation you can review.</li><li>Formal JSON Schema per file (<code>additionalProperties:false</code>).</li><li>Output checksums + counts in <code>manifest.json</code>.</li><li>Publication kit: ODbL/CC split, PROVENANCE.md, CITATION.cff, CHANGELOG, semver.</li><li>Per-node <code>evidence[]</code> + <code>assessmentPrompt</code> — mastery checks baked into the node.</li></ul></div>
+        <div class="card"><h4>✅ Where we're ahead</h4><ul class="tidy" style="font-size:13px"><li>The whole <b>factory ships</b>: build pipeline, curation overlays, input pinning — theirs is an export of a private Postgres DB.</li><li><b>Multi-layer</b> graph (8 node types, L0–L5 digestion ladder) vs one node type + one edge type.</li><li><b>Viewer in-repo</b> (file://-capable, explore/research modes) — theirs is closed, hosted only.</li><li>Media traversal: every QA node jumps to the YouTube moment; excerpts resolve to chapter/interview.</li><li>Input provenance: build pins every source file by sha256.</li></ul></div>
+      </div>
+    </section>
+
+    <section id="what">
+      <div class="kicker">01 · The object of study</div>
+      <h2 class="sec">What os-taxonomy actually is</h2>
+      <p class="sec-lede">Released 2026-07-08 (v1.0.0). A "connected graph of learning" for ages ~4–11: each micro-topic is one teachable idea with a description, mastery evidence, a type, subject/domain, age range, and links to the curriculum standards it was distilled from. The star is the <b style="color:var(--ink)">prerequisite DAG</b> — "tap any concept to trace everything a learner must master before it."</p>
+      <div class="nums">
+        <div class="cell"><div class="num">1,590</div><div class="numlbl">micro-topics</div></div>
+        <div class="cell"><div class="num">3,221</div><div class="numlbl">prerequisite edges</div></div>
+        <div class="cell"><div class="num">8</div><div class="numlbl">subjects</div></div>
+        <div class="cell"><div class="num">3,261</div><div class="numlbl">standards · 7 curricula</div></div>
+        <div class="cell"><div class="num">183</div><div class="numlbl">domain clusters</div></div>
+        <div class="cell"><div class="num">4.0 MB</div><div class="numlbl">total data · 4 json files</div></div>
+      </div>
+      <h3 class="sub">The pipeline (what ships vs what doesn't)</h3>
+      <div class="flow"><span class="chip">private Postgres DB</span><span class="arr">→</span><span class="chip">exportTaxonomy.mjs (not shipped)</span><span class="arr">→</span><span class="chip">repo: 4 JSON + schemas + validator</span><span class="arr">→</span><span class="chip">consumers load JSON directly</span></div>
+      <div class="flow"><span class="chip">same DB</span><span class="arr">→</span><span class="chip">hosted 3D viz at withmarble.com/curriculum (closed source)</span></div>
+      <ul class="tidy">
+        <li><b>No graph library, no runtime:</b> the README is explicit — <em>"Pure data — no runtime, no dependencies. Load the JSON and go."</em> <code>package.json</code> has zero dependencies; the only script is the validator. Consumers get a 5-line snippet building a <code>Map</code> by id.</li>
+        <li><b>Node model:</b> one type (<code>mt_…</code> micro-topic) with a controlled <code>type</code> enum (CONCEPTUAL / PROCEDURAL / REPRESENTATIONAL / LANGUAGE / META), <code>subject</code>/<code>domain</code>, age range, precomputed <code>centrality</code>, <code>evidence[]</code> mastery criteria, an <code>assessmentPrompt</code> (with a <code>{{name}}</code> child-name placeholder), and <code>standards[]</code> cross-refs.</li>
+        <li><b>Edge model:</b> one type — <code>{topicId, prerequisiteId, strength: hard|soft, reason}</code>. Directed, acyclic by intent. Every edge explains itself in one line: <em>"Must understand vibrations make sound before finding volume patterns."</em></li>
+        <li><b>Rollups:</b> 183 hand-written <code>clusters</code> (one parent-friendly paragraph per subject × domain × age band) — human-authored community summaries, GraphRAG-style but curated.</li>
+        <li><b>Validator (<code>validate.mjs</code>, node stdlib only):</b> declared counts vs reality, id format, duplicate detection, referential integrity for both edge endpoints and topic→standard refs, a "codes-only" licensing invariant, and sha256 checksums of every data file against <code>manifest.json</code>. (Notably absent: an acyclicity check on the DAG — enforced upstream, trusted in the export.)</li>
+        <li><b>Licensing machinery:</b> ODbL 1.0 for the database, CC BY-SA 4.0 for Marble-authored text, and per-source upstream licenses for standards. Encumbered sources (NGSS, C3, IB) ship <b>codes only</b> — the identifier and the link survive, the verbatim text is omitted, and the validator enforces that nothing leaks.</li>
+      </ul>
+    </section>
+
+    <section id="table">
+      <div class="kicker">02 · Point by point</div>
+      <h2 class="sec">Architecture side-by-side</h2>
+      <div class="scroll">
+      <table>
+        <thead><tr><th>Dimension</th><th>os-taxonomy (Marble)</th><th>Deutsch Graph (v0.2)</th><th>Read</th></tr></thead>
+        <tbody>
+          <tr><td><b>Repo's role</b></td><td class="s">Published <b>dataset</b> — export artifact of a private DB; build tooling not included</td><td class="s">Self-contained <b>factory</b> — corpus pointers + overlays + build code + outputs together</td><td><span class="verdict v-partial">different purpose</span></td></tr>
+          <tr><td><b>Graph store / library</b></td><td class="s">None. Plain JSON property graph; consumers build their own index</td><td class="s">None. Plain JSONL property graph; <code>dgraph/query.py</code> builds the index</td><td><span class="verdict v-yes">convergent</span></td></tr>
+          <tr><td><b>Graph shape</b></td><td class="s">Homogeneous: 1 node type, 1 edge type (prerequisite DAG) + standard refs + cluster rollups</td><td class="s">Heterogeneous: 8 node types across an L0–L5 digestion ladder; 4 stored + 6 derived edge types</td><td><span class="verdict v-partial">deep vs wide</span></td></tr>
+          <tr><td><b>Node richness</b></td><td class="s"><code>evidence[]</code>, <code>assessmentPrompt</code>, age range, <code>centrality</code>, type enum</td><td class="s">stars/starred, timestamps, YouTube URLs, Pinecone vector ids, source pointers</td><td><span class="verdict v-partial">each fits its app</span></td></tr>
+          <tr><td><b>Edge richness</b></td><td class="s"><code>strength</code> (hard/soft) + human <code>reason</code> on every edge</td><td class="s"><code>weight</code> (QA count) on work_topic; bridges carry no rationale</td><td><span class="verdict v-no">theirs better — adopt</span></td></tr>
+          <tr><td><b>IDs</b></td><td class="s">Opaque nanoid (<code>mt_N8CpN1EJrP</code>) — rename-proof, meaningless in diffs</td><td class="s">Typed semantic slugs (<code>qa:2018-12-08_joe-boswell…:000</code>) + alias overlay for renames</td><td><span class="verdict v-partial">tradeoff, both defensible</span></td></tr>
+          <tr><td><b>File layout</b></td><td class="s">4 monolithic JSON files with envelope counts (<code>topicCount</code>, …)</td><td class="s">Sharded JSONL, sorted, per-work / per-category files (diff-friendly, &lt;512 KB hook)</td><td><span class="verdict v-partial">they don't review data diffs; we do</span></td></tr>
+          <tr><td><b>Schema definition</b></td><td class="s">Formal JSON Schema (2020-12) per file, <code>additionalProperties:false</code></td><td class="s">Prose spec (<code>graph-spec.md</code>) + validator</td><td><span class="verdict v-no">theirs better — adopt at publish</span></td></tr>
+          <tr><td><b>Validation</b></td><td class="s"><code>validate.mjs</code>: counts, ids, dup, referential integrity, license invariant, checksums</td><td class="s"><code>build_graph.py validate</code>: endpoints, uniqueness, pointer existence, counts — auto-run at build</td><td><span class="verdict v-yes">strikingly convergent</span></td></tr>
+          <tr><td><b>Provenance</b></td><td class="s"><code>manifest.json</code>: sha256 of <b>outputs</b> + counts + generatedAt + exclusions</td><td class="s"><code>build-manifest.json</code>: sha256 of every <b>input</b> + counts + diagnostics</td><td><span class="verdict v-partial">complementary — do both</span></td></tr>
+          <tr><td><b>Versioning</b></td><td class="s">Dataset semver + CHANGELOG + <code>version</code> field per file</td><td class="s">Git history + builder version + generated <code>GRAPH.md</code> as diff surface</td><td><span class="verdict v-partial">theirs for consumers, ours for makers</span></td></tr>
+          <tr><td><b>Licensing / publication</b></td><td class="s">ODbL + CC BY-SA + per-source upstream; codes-only redaction; PROVENANCE, CITATION.cff</td><td class="s">Private for now; pointer-not-text rule (D3) plays the same role as codes-only</td><td><span class="verdict v-no">their kit is the template</span></td></tr>
+          <tr><td><b>Visualization</b></td><td class="s">Not shipped — hosted 3D force graph (closed; stack unverified, media shows three.js-style WebGL)</td><td class="s">Shipped — vis-network viewer, file://-capable, explore/research modes, split-view content panel</td><td><span class="verdict v-yes">ours open, theirs prettier</span></td></tr>
+          <tr><td><b>Embeddings / vectors</b></td><td class="s">Deliberately excluded ("derived / recomputable")</td><td class="s">Same call — vectors live in Pinecone; graph stores the cross-ref ids only</td><td><span class="verdict v-yes">convergent</span></td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <section id="contrasts">
+      <div class="kicker">03 · The interesting differences</div>
+      <h2 class="sec">Five deep contrasts</h2>
+
+      <h3 class="sub">1 · Export artifact vs self-contained factory</h3>
+      <p class="sec-lede">Marble's source of truth is a private Postgres database; the repo is a snapshot produced by an export tool they didn't publish, and community contributions can't rebuild it. Our source of truth is the corpus + committed overlays, and the repo carries everything needed to regenerate the graph from scratch (<code>fetch → build → validate</code>). For a product company protecting a moat, their split is rational. For a solo-dev, git-first, agent-operated workflow, ours is — an agent can rebuild, extend, and verify the whole thing in one session, which is exactly what has happened three times so far.</p>
+
+      <h3 class="sub">2 · One deep relation vs many layered ones</h3>
+      <p class="sec-lede">Their entire graph is engineered around a single query: <em>"what must a learner master before X?"</em> — one node type, one edge type, DAG semantics, precomputed centrality. Ours is engineered around traversal between layers: category → claim → verbatim excerpt → the exact minute of the interview. Neither generalizes to the other's job. The lesson worth taking: their single relation is <b>semantically strong</b> (direction, strength, reason), while our bridges are structurally typed but semantically silent. When claim→claim or concept→concept relations arrive (roadmap R4), they should be born with direction + type + reason, prerequisite-style — the Deutsch corpus genuinely has this structure ("you need <em>explanation</em> before <em>good explanation</em> before <em>hard to vary</em>").</p>
+
+      <h3 class="sub">3 · Opaque ids vs semantic slugs</h3>
+      <p class="sec-lede">Their <code>mt_N8CpN1EJrP</code> ids never break on rename and never collide — but a diff or a validator error is unreadable without a lookup, fine when no human reviews data diffs. Our <code>work:2018-12-08_joe-boswell-constructor-theory</code> ids make every diff, error, and URL self-describing — at the price of the rename problem, which the alias overlay handles (and which the Deutsch Well import exercised for real: 4 aliases fixed 35 dangling references). Given that PR review of data changes is a core requirement here (AGENTS.md posture), semantic slugs remain the right call.</p>
+
+      <h3 class="sub">4 · They checksum outputs; we checksum inputs</h3>
+      <p class="sec-lede">Their manifest answers a <b>consumer's</b> question: "is the file I downloaded the file they published?" Ours answers a <b>maker's</b> question: "exactly which corpus state produced this graph?" These aren't alternatives — a dataset intended for others needs both, and adding per-file output sha256 to <code>build-manifest.json</code> is a ~10-line change.</p>
+
+      <h3 class="sub">5 · The codes-only pattern is our D3 rule, weaponized for licensing</h3>
+      <p class="sec-lede">Their cleverest move: for standards they can't relicense (NGSS, IB, C3), they ship the <b>identifier and the relationship but not the text</b> — and the validator enforces the redaction. That is structurally identical to our D3 pointer-not-text rule (graph stores question text and pointers; verbatim answers stay in the corpus). When the Deutsch Graph goes public, the same mechanism handles the copyright question you deferred: publish structure, topics, claims, and pointers; gate verbatim excerpt/answer text per-source with a <code>textIncluded</code>-style flag, validator-enforced. Their PROVENANCE.md is the document to copy the shape of.</p>
+    </section>
+
+    <section id="steal">
+      <div class="kicker">04 · Actionable</div>
+      <h2 class="sec">What to adopt, in priority order</h2>
+      <div class="steal"><span class="p p1">now · cheap</span><div class="b"><b>Edge <code>reason</code> on curated edges.</b><p>Add an optional <code>reason</code> field to <code>overlays/category_topics.jsonl</code> entries and carry it onto <code>category_topic</code> edges (viewer tooltip + panel). Make it mandatory for future claim/concept relations. This is the single best idea in their repo.</p></div></div>
+      <div class="steal"><span class="p p1">now · cheap</span><div class="b"><b>Output checksums in <code>build-manifest.json</code>.</b><p>Alongside input pinning, record bytes + sha256 for every file under <code>graph/</code>. Distribution integrity for free, and stale-artifact detection (did someone hand-edit an output?).</p></div></div>
+      <div class="steal"><span class="p p2">soon</span><div class="b"><b>Per-claim <code>evidence[]</code> / understanding prompts.</b><p>Their <code>assessmentPrompt</code> ("can {{name}} explain why…") is exactly the Worldview Mirror mechanic: a per-claim "do you actually hold / understand this idea?" probe. Author these as an overlay on the 127 Well claims — it converts the graph from reference material into an interactive instrument.</p></div></div>
+      <div class="steal"><span class="p p2">soon</span><div class="b"><b>Precomputed <code>centrality</code>.</b><p>They ship a centrality score per node; we size viewer nodes by raw counts. A degree/PageRank-style score over the full edge set (computed at build, stored on topic/category/work nodes) would make explore-mode sizing and "what matters most" ordering principled.</p></div></div>
+      <div class="steal"><span class="p p3">at publish</span><div class="b"><b>The publication kit.</b><p>Formal JSON Schemas for each node/edge file, envelope counts, semver + CHANGELOG.md, CITATION.cff, PROVENANCE.md with per-source terms, and codes-only-style <code>textIncluded</code> flags for rights-encumbered verbatim text. Wholesale, this is the template for "Deutsch Well 2.0 goes public."</p></div></div>
+      <h3 class="sub">What not to adopt</h3>
+      <ul class="tidy">
+        <li><b>The private-DB + export split.</b> It would break the agent-rebuildable, PR-reviewable loop that the whole app is designed around.</li>
+        <li><b>Opaque ids.</b> Wrong tradeoff for a repo where humans and agents review data diffs (contrast #3).</li>
+        <li><b>Monolithic data files.</b> A single 1.7 MB <code>topics.json</code> would collide with the 512 KB pre-commit hook and produce unreviewable diffs; sharded JSONL stays.</li>
+        <li><b>A graph database.</b> The strongest external signal yet for <code>architecture.md</code> D1: at 10³–10⁴ nodes, nobody needs one — not them at 1.6k nodes, not us at 5.7k.</li>
+      </ul>
+    </section>
+
+    <section id="keep">
+      <div class="kicker">05 · Confirmation</div>
+      <h2 class="sec">What this validates about the Deutsch Graph</h2>
+      <ul class="tidy">
+        <li><b>Plain files + validator beats infrastructure</b> at this scale — independently chosen by both projects (their README even brags about it).</li>
+        <li><b>Exclude embeddings, keep cross-refs</b> — identical decision, identical reasoning ("derived / recomputable").</li>
+        <li><b>Human rollups over clusters</b> — their 183 hand-written cluster summaries are the same layer as our category definitions + chapter summaries: curated digest text stored on rollup nodes, not LLM-generated at read time.</li>
+        <li><b>Checksum-manifest provenance</b> — both treat "which bytes, exactly?" as a first-class artifact.</li>
+        <li><b>Redaction as architecture</b> — their codes-only licensing pattern and our pointer-not-text rule are the same idea; ours is already positioned for the eventual public release.</li>
+      </ul>
+      <div class="callout gold">
+        <h4>Bottom line</h4>
+        <p>os-taxonomy is a <b>dataset with excellent publication engineering</b>; the Deutsch Graph is a <b>knowledge factory with excellent build engineering</b>. The architectures agree on every load-bearing choice (no DB, plain-text property graph, integrity validator, checksums, no embeddings). Adopt their edge-reasons and output-checksums now, their assessment-prompt idea for the Worldview Mirror soon, and their license/provenance kit whenever the graph goes public.</p>
+      </div>
+    </section>
+  </main>
+</div>
+<script>
+// scrollspy for the left nav
+const links = [...document.querySelectorAll("nav.side a.navlink")];
+const secs = links.map(a => document.querySelector(a.getAttribute("href")));
+const spy = () => {
+  let idx = 0;
+  secs.forEach((s, i) => { if (s && s.getBoundingClientRect().top < 140) idx = i; });
+  links.forEach((a, i) => a.classList.toggle("active", i === idx));
+};
+document.addEventListener("scroll", spy, { passive: true });
+spy();
+</script>
+</body>
+</html>

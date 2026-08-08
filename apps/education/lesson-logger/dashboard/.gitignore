@@ -1,0 +1,9 @@
+# Local runtime artifacts live on the lesson-logger data mount at ../data
+# (apps/education/lesson-logger/data → _LOCAL_FILES; see scripts/local_files_mounts.txt):
+#   ../data/lessons_dev.db
+#   ../data/lessons_from_hermes.db
+#   ../data/dashboard_state.sqlite
+#   ../data/schedule_live/
+# Covered by the root .gitignore `data/` rule. Keep this note so agents/humans
+# do not re-create a per-worktree dashboard/data folder.
+__pycache__/

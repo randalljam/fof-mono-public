@@ -1,0 +1,29 @@
+{
+  "id": "profile:scientific-materialism",
+  "label": "Scientific Materialism / Naturalism",
+  "summary": "There is one world — the natural world — governed by discoverable laws, with no supernatural realm, souls, or cosmic teleology; science is the paradigm of reliable knowledge. Public exponents run from Sagan ('the Cosmos is all that is or ever was or ever will be') and Dawkins to Sean Carroll's 'poetic naturalism', which treats choice, morality, and meaning as valid emergent ways of talking atop fundamental physics.",
+  "thinkers": ["Carl Sagan", "Richard Dawkins", "Sean Carroll"],
+  "sources": [
+    {"title": "SEP: Naturalism", "url": "https://plato.stanford.edu/entries/naturalism/"},
+    {"title": "The Big Picture (Carroll) — Wikipedia", "url": "https://en.wikipedia.org/wiki/The_Big_Picture_(Carroll_book)"},
+    {"title": "Scientific materialism — Wikipedia", "url": "https://en.wikipedia.org/wiki/Scientific_materialism"}
+  ],
+  "variants": "Eliminative/reductive materialism (Churchlands) vs non-reductive emergentist naturalism (Carroll) vs combative New Atheism (Dawkins, Hitchens) vs Sagan-style wonder-forward science communication; meta-ethical realists (Harris) vs constructivists (Carroll). Distinguished from secular humanism by center of gravity (ontology/epistemology rather than ethical-social program) and from Bayesian rationalism by the absence of the AI-eschatology apparatus.",
+  "cited_from_graph": false,
+  "positions": [
+    {"axis": "axis:epistemology", "position": 1.0, "summary": "Fallibilist about particular theories ('provisional truth') while confident in the scientific method's authority; Carroll frames belief-updating in Bayesian terms; Sagan's 'baloney detection' skepticism.", "evidence": [{"url": "https://en.wikipedia.org/wiki/The_Demon-Haunted_World", "title": "The Demon-Haunted World"}]},
+    {"axis": "axis:knowledge-reach", "position": 1.0, "summary": "Optimistic about the expanding reach of scientific understanding, without Deutsch's explicit unboundedness thesis.", "evidence": [{"url": "https://plato.stanford.edu/entries/naturalism/", "title": "SEP: Naturalism"}]},
+    {"axis": "axis:authority-of-belief", "position": 2.0, "summary": "Scientific method and reason exclusively; explicitly anti-revelation and anti-tradition as truth sources.", "evidence": [{"url": "https://en.wikipedia.org/wiki/The_God_Delusion", "title": "The God Delusion"}]},
+    {"axis": "axis:realism", "position": 1.5, "summary": "Scientific realism: one physical world described by the Core Theory, with emergent descriptions valid at their levels.", "evidence": [{"url": "https://en.wikipedia.org/wiki/The_Big_Picture_(Carroll_book)", "title": "The Big Picture"}]},
+    {"axis": "axis:progress", "position": 1.0, "summary": "Optimistic about scientific understanding and its benefits, tempered by warnings about pseudoscience and civilizational self-destruction; progress is real but contingent on defending reason.", "evidence": [{"url": "https://en.wikipedia.org/wiki/The_Demon-Haunted_World", "title": "The Demon-Haunted World"}]},
+    {"axis": "axis:risk", "position": 0.5, "summary": "Moderately proactionary: pro-science and pro-technology with evidence-based regulation; existential literacy via science rather than restraint per se.", "evidence": [{"url": "https://en.wikipedia.org/wiki/The_Demon-Haunted_World", "title": "The Demon-Haunted World"}]},
+    {"axis": "axis:agency", "position": 0.5, "summary": "Compatibilist: determinism (or quantum stochasticity) at bottom, with free will as a valid emergent description; Dawkins — we alone can rebel against our replicators.", "evidence": [{"url": "https://en.wikipedia.org/wiki/The_Big_Picture_(Carroll_book)", "title": "The Big Picture"}]},
+    {"axis": "axis:human-significance", "position": -0.5, "summary": "Cosmic humility ('pale blue dot') joined to wonder — 'we are a way for the universe to know itself' — but no special cosmic role for humanity.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Pale_Blue_Dot", "title": "Pale Blue Dot"}]},
+    {"axis": "axis:morality", "position": -1.0, "summary": "Typically constructivist meta-ethics: morality is constructed by evolved social creatures, not written into the universe — yet practically humanist and universalist. (Harris's science-grounded realism is the internal dissent.)", "evidence": [{"url": "https://en.wikipedia.org/wiki/The_Big_Picture_(Carroll_book)", "title": "The Big Picture"}]},
+    {"axis": "axis:metaphysics", "position": 2.0, "summary": "Strict naturalism and physicalism: no gods, souls, or afterlife; consciousness and purpose are emergent phenomena.", "evidence": [{"url": "https://plato.stanford.edu/entries/naturalism/", "title": "SEP: Naturalism"}]},
+    {"axis": "axis:change", "position": 1.0, "summary": "Enlightenment-progressive: institutions should track evidence; tradition earns no epistemic deference.", "evidence": [{"url": "https://en.wikipedia.org/wiki/The_Demon-Haunted_World", "title": "The Demon-Haunted World"}]},
+    {"axis": "axis:nature", "position": 1.0, "summary": "Nature is matter to be understood and responsibly engineered; no intrinsic normative authority in the wild, though ecological prudence is scientific common sense.", "evidence": [{"url": "https://plato.stanford.edu/entries/naturalism/", "title": "SEP: Naturalism"}]},
+    {"axis": "axis:meaning", "position": 1.0, "summary": "Self-created within a purposeless cosmos: wonder at nature and Carroll's project of finding meaning within the universe we discover.", "evidence": [{"url": "https://en.wikipedia.org/wiki/The_Big_Picture_(Carroll_book)", "title": "The Big Picture"}]},
+    {"axis": "axis:social", "position": 0.5, "summary": "Individualist-leaning liberalism with universalist scientific institutions.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Secular_humanism", "title": "Overlap with secular humanism"}]}
+  ]
+}

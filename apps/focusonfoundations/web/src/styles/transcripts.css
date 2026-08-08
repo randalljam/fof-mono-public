@@ -1,0 +1,202 @@
+.source-page {
+  margin: 0 auto;
+  max-width: 700px;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-top: 0;
+  padding-bottom: 50px;
+  hyphens: auto;
+  overflow-wrap: break-word;
+  text-rendering: optimizeLegibility;
+  font-kerning: normal;
+}
+.source-page h1 {
+  margin-top: 0;
+}
+.source-page h1,
+.source-page h2,
+.source-page h3 {
+  font-size: 20px;
+  margin-bottom: 0.8em;
+  line-height: 1.2;
+}
+.source-page h1,
+.source-page h2,
+.source-page h3,
+.source-page h4 {
+  font-weight: 700;
+}
+.source-page h4 {
+  margin: 0.3em 0;
+  padding: 0;
+}
+.source-page p::first-line {
+  font-weight: 700;
+}
+.source-page p strong:not(:first-child) {
+  font-weight: 700;
+  color: #ff0000;
+}
+.source-page details {
+  margin: 0.1em 0;
+  padding: 0;
+  border: none;
+  font-family: Lato, sans-serif;
+}
+.source-page summary {
+  cursor: pointer;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  color: #0c02c5;
+}
+.source-page summary::before {
+  content: "›";
+  display: inline-block;
+  margin-right: 0.5em;
+  transition: transform 0.2s;
+  font-size: 1.5em;
+  transform: translateY(0em);
+  color: #0c02c5;
+}
+.source-page details[open] > summary::before {
+  transform: translateY(0em) rotate(90deg);
+}
+.source-page summary::-webkit-details-marker {
+  display: none;
+}
+.source-page details > p {
+  padding-left: 30px;
+  padding-right: 10px;
+  font-size: 14px;
+  margin-top: 2px;
+}
+.source-page details details {
+  margin-left: 20px;
+  margin-top: 0.5em;
+}
+.source-page details details > summary {
+  --question-color: #cc0000;
+  font-size: 16px;
+  color: var(--question-color);
+  font-weight: 700;
+}
+.source-page details details > summary::before {
+  font-size: 20px;
+  color: var(--question-color);
+}
+.source-page details details details {
+  margin-left: 10px;
+  margin-top: 0.5em;
+}
+.source-page details details details > summary {
+  --answer-color: #2a2525;
+  font-size: 16px;
+  color: var(--answer-color);
+  font-weight: normal;
+}
+.source-page details details details > summary::before {
+  font-size: 16px;
+  color: var(--answer-color);
+}
+.source-page header {
+  position: sticky;
+  top: 0;
+  background: #fdfdfd;
+  padding: 0 0 10px 0;
+  z-index: 100;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+.source-page .control-panel {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.source-page .button,
+.source-page #toggleDocButton {
+  border: none;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: #fff;
+  padding: 0.45rem 0.85rem;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.source-page .button:hover,
+.source-page #toggleDocButton:hover {
+  background: var(--color-accent-dark);
+}
+.source-page .button-orange {
+  background: var(--color-accent);
+}
+.source-page .button-orange:hover {
+  background: var(--color-accent-dark);
+}
+.source-page .header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+.source-page .header-row h3 {
+  text-align: left;
+}
+.transcript-page-nav {
+  margin-bottom: 1.5rem;
+}
+.transcript-index-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.transcript-index-item {
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #eee;
+}
+.transcript-index-links a {
+  margin-right: 1rem;
+}
+@media print {
+  .source-page {
+    background-color: transparent;
+    color: black;
+    font-size: 16pt;
+  }
+  .source-page p,
+  .source-page h2,
+  .source-page h3 {
+    orphans: 3;
+    widows: 3;
+  }
+  .source-page h2,
+  .source-page h3,
+  .source-page h4 {
+    page-break-after: avoid;
+  }
+}
+@media screen and (max-width: 767px) {
+  .source-page {
+    font-size: 0.9em;
+    padding: 12px;
+  }
+}
+@media (max-width: 600px) {
+  .source-page {
+    padding: 4px;
+  }
+  .source-page h1 {
+    font-size: 1.2em;
+  }
+}

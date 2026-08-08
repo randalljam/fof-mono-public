@@ -1,0 +1,21 @@
+schema: spec-driven
+
+context: |
+  App: deutsch-graph
+  App stage: S1-dev
+  Spec stage: openspec-single-spec
+  Capability model: one living capability named "app" covers the whole app until the spec grows enough to split.
+  Tech stack: Python stdlib build/query library and CLI; boto3 is used only by the fetch command; pytest covers the graph builder with inline fixture data; the static viewer is hand-authored HTML/CSS/JavaScript using vendored vis-network and generated script shards.
+  Data model: deterministic property graph artifacts are JSONL files under graph/ with a build-manifest.json and generated GRAPH.md summary; bulk corpus inputs live under gitignored data/deutsch/ and are fetched from S3 via manifests/deutsch.manifest.jsonl plus temporary unmanifested Deutsch Well and terms prefixes.
+  Key conventions: graph/ and web/graphdata/ are generated outputs and must not be hand-edited; edit dgraph/ or overlays/ and rebuild instead. web/deutsch-graph-viewer.html is hand-authored source and export-vis must not regenerate it. QA block parsing intentionally mirrors core/structured.py while staying stdlib-only. QA ids and vector_id_base must continue to align with QRAG Pinecone vector id conventions.
+  Roadmap boundary: current behavior belongs in openspec/specs/app/spec.md; future apps, worldview axes, divergence detection, serving APIs, exports, and other intended behavior belong in ROADMAP.md or future OpenSpec changes, not in the baseline spec.
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours

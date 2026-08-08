@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Web Stacks × Design — review, options, and how they intersect</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161d29; --panel2:#1c2634; --border:#243040; --border2:#2f3d50;
+    --ink:#e6edf3; --muted:#9aa7b6; --dim:#6d7b8c; --accent:#58a6ff; --accent2:#7ee787;
+    --gold:#f0c674; --pink:#ff7b9c; --violet:#bc8cff; --teal:#39d3c3; --red:#ff6b6b;
+    /* validated categorical (dark surface) — direct-labeled on the map */
+    --c-spa:#3987e5; --c-ssg:#199e70; --c-py:#c98500; --c-nocode:#9085e9; --c-vanilla:#e66767;
+    --surface-1:#131a24; --text-secondary:#c3c2b7;
+    --shadow:0 8px 30px rgba(0,0,0,.4);
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:linear-gradient(180deg,#0b0f16,#0d1117 400px);color:var(--ink);font-family:var(--sans);line-height:1.55;font-size:15px}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  code{font-family:var(--mono);background:#0b1220;border:1px solid var(--border);border-radius:5px;padding:1px 5px;font-size:.86em;color:#cde3ff}
+  h1,h2,h3,h4{line-height:1.25;margin:0}
+  .layout{display:grid;grid-template-columns:250px 1fr;gap:0;max-width:1440px;margin:0 auto}
+  nav.side{position:sticky;top:0;height:100vh;overflow-y:auto;padding:26px 16px 40px;border-right:1px solid var(--border);background:rgba(10,14,20,.6);backdrop-filter:blur(6px)}
+  nav.side .brand{font-weight:800;font-size:16px;letter-spacing:.4px}
+  nav.side .brand span{color:var(--teal)}
+  nav.side .sub{color:var(--dim);font-size:11.5px;margin:4px 0 22px;font-family:var(--mono)}
+  nav.side a.navlink{display:block;color:var(--muted);padding:7px 11px;border-radius:8px;font-size:13.5px;margin:2px 0;border:1px solid transparent}
+  nav.side a.navlink:hover{background:var(--panel);color:var(--ink);text-decoration:none}
+  nav.side a.navlink.active{background:var(--panel2);color:#fff;border-color:var(--border2)}
+  nav.side a.navlink .n{color:var(--dim);font-family:var(--mono);font-size:11px;margin-right:8px}
+  nav.side .foot{margin-top:22px;color:var(--dim);font-size:11px;border-top:1px solid var(--border);padding-top:14px}
+  main{padding:34px 44px 120px;min-width:0}
+  section{margin-bottom:62px;scroll-margin-top:20px}
+  .eyebrow{font-family:var(--mono);color:var(--teal);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+  .hero h1{font-size:34px;margin:10px 0 6px;letter-spacing:-.5px}
+  .hero .lede{color:var(--muted);font-size:17px;max-width:820px}
+  h2.sec{font-size:25px;margin-bottom:6px;letter-spacing:-.3px}
+  .sec-lede{color:var(--muted);max-width:840px;margin-bottom:20px}
+  h3.sub{font-size:18px;margin:28px 0 12px;color:#fff;border-left:3px solid var(--teal);padding-left:10px}
+  .kicker{color:var(--teal);font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:15px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+  .card:hover{border-color:var(--border2)}
+  .card h4{font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .card .desc{color:var(--muted);font-size:13.5px;margin:8px 0}
+  .card ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:13px} .card li{margin:4px 0}
+  .card b{color:var(--ink);font-weight:600}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+  .tag{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:6px;background:#0b1220;border:1px solid var(--border);color:var(--dim)}
+  .callout{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-left:4px solid var(--teal);border-radius:10px;padding:16px 20px;margin:16px 0}
+  .callout.gold{border-left-color:var(--gold)} .callout.pink{border-left-color:var(--pink)} .callout.blue{border-left-color:var(--accent)}
+  .callout h4{font-size:15px;margin-bottom:6px}
+  .callout p{margin:6px 0;color:var(--muted);font-size:14px}
+  .callout b{color:var(--ink)}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{color:var(--dim);font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px}
+  tr:hover td{background:var(--panel)}
+  td .s{font-family:var(--mono);font-size:12px;color:#cde3ff}
+  .scroll{overflow-x:auto;border:1px solid var(--border);border-radius:10px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:900px){.two{grid-template-columns:1fr}.layout{grid-template-columns:1fr}nav.side{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border)}main{padding:24px}}
+  .lens{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+  .lens.designer{border-top:3px solid var(--pink)} .lens.randy{border-top:3px solid var(--accent)}
+  .lens h4{font-size:16px;display:flex;align-items:center;gap:8px}
+  .lens .role{font-family:var(--mono);font-size:10.5px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+  .lens ul{margin:10px 0 0;padding-left:18px;color:var(--muted);font-size:13.5px} .lens li{margin:6px 0} .lens b{color:var(--ink)}
+  /* map */
+  .mapwrap{background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:16px 16px 8px;position:relative}
+  svg{display:block;width:100%;height:auto;overflow:visible}
+  .maplegend{display:flex;gap:16px;flex-wrap:wrap;margin-top:6px;font-size:12px;color:var(--muted);font-family:var(--mono)}
+  .maplegend span{display:flex;align-items:center;gap:6px}
+  #tip{position:fixed;pointer-events:none;background:#0b1220;border:1px solid var(--border2);border-radius:8px;padding:8px 11px;font-size:12.5px;color:var(--ink);max-width:280px;box-shadow:var(--shadow);opacity:0;transition:opacity .1s;z-index:20}
+  #tip b{color:#fff} #tip .m{color:var(--muted);display:block;margin-top:3px}
+  /* picker */
+  .picker{background:var(--panel);border:1px solid var(--border2);border-radius:12px;padding:18px 20px}
+  .picker .q{margin-bottom:14px}
+  .picker .q .lab{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-bottom:7px}
+  .picker .opts{display:flex;gap:8px;flex-wrap:wrap}
+  .pbtn{font-size:12.5px;padding:6px 12px;border-radius:20px;border:1px solid var(--border2);background:#0b1220;color:var(--muted);cursor:pointer}
+  .pbtn:hover{color:#fff;border-color:var(--teal)}
+  .pbtn.on{background:var(--teal);color:#08201d;border-color:var(--teal);font-weight:700}
+  .rec{margin-top:6px;background:#0b1220;border:1px solid var(--border);border-radius:10px;padding:15px 17px}
+  .rec .big{font-size:17px;font-weight:800;color:#fff} .rec .why{color:var(--muted);font-size:13.5px;margin-top:6px}
+  ul.tidy{margin:8px 0;padding-left:20px;color:var(--muted);font-size:14px} ul.tidy li{margin:6px 0} ul.tidy b{color:var(--ink)}
+  .backlink{display:inline-block;margin-bottom:16px;font-family:var(--mono);font-size:12px;color:var(--dim)}
+  .step{display:flex;gap:12px;margin:10px 0;align-items:flex-start}
+  .step .n{font-family:var(--mono);color:#08201d;background:var(--teal);border-radius:7px;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex:none}
+  .step .b b{color:#fff} .step .b p{margin:3px 0 0;color:var(--muted);font-size:13.5px}
+  .aud{font-family:var(--mono);font-size:10.5px;padding:2px 8px;border-radius:6px;border:1px solid var(--border2)}
+  .aud.d{color:var(--pink);border-color:#a35} .aud.r{color:var(--accent);border-color:#357}
+</style>
+</head>
+<body>
+<div id="tip"></div>
+<div class="layout">
+  <nav class="side">
+    <div class="brand">Web <span>Stacks × Design</span></div>
+    <div class="sub">review · options · intersection</div>
+    <a class="navlink active" href="#read"><span class="n">00</span>How to read this</a>
+    <a class="navlink" href="#now"><span class="n">01</span>What you run now</a>
+    <a class="navlink" href="#options"><span class="n">02</span>The option space</a>
+    <a class="navlink" href="#intersection"><span class="n">03</span>Design × stack map</a>
+    <a class="navlink" href="#lenses"><span class="n">04</span>The two lenses</a>
+    <a class="navlink" href="#recommend"><span class="n">05</span>What to do here</a>
+    <div class="foot">
+      <a href="index.html">← system snapshot</a> · <a href="fable5.html">Fable 5 playbook</a><br><br>
+      Stacks verified from the repo on 2026-07-01 (main + live branches).
+    </div>
+  </nav>
+
+  <main>
+    <a class="backlink" href="index.html">← fof-mono system snapshot</a>
+
+    <section id="read" class="hero">
+      <div class="eyebrow">Full-stack web apps · a shared map for two people</div>
+      <h1>Web stacks, design, and where they meet</h1>
+      <p class="lede">Three things in one place: an honest review of the stacks running every web app in this repo, a plain-language map of the options that exist, and — the part that matters most — how <b style="color:var(--ink)">design and UX choices intersect with the technical stack you pick</b>. Written for two readers at once.</p>
+      <div class="two" style="margin-top:20px">
+        <div class="lens randy">
+          <div class="role">Reader A</div>
+          <h4><span class="aud r">AI-first builder</span> Randy</h4>
+          <p class="desc" style="color:var(--muted);font-size:13.5px;margin-top:8px">Building a serious AI-coding operation since ChatGPT launched, with rising sophistication and new tools. Not a professional engineer, doesn't read or write code, and won't. Directs AI to build; decides at the product and PR level. Needs to understand the <b style="color:var(--ink)">tradeoffs</b> of a stack without touching the code inside it.</p>
+        </div>
+        <div class="lens designer">
+          <div class="role">Reader B</div>
+          <h4><span class="aud d">UX / design lead</span> the designer</h4>
+          <p class="desc" style="color:var(--muted);font-size:13.5px;margin-top:8px">A professional UX and web-design lead from big tech, small-teams, full-process — but from <b style="color:var(--ink)">before</b> AI let designers ship real prototypes in code and let engineers design with AI tools. Knows design systems, handoff, and craft cold; needs the map of how that expertise lands in an AI-era stack.</p>
+        </div>
+      </div>
+      <div class="callout">
+        <p style="margin:0">Throughout, <span class="aud r">R</span> marks a note aimed at Randy and <span class="aud d">D</span> a note aimed at the designer. The whole point is that you end up with <b>one shared vocabulary</b> — so a conversation about "which stack for this app" is also a conversation about "how far can the design go, and who can change it."</p>
+      </div>
+    </section>
+
+    <section id="now">
+      <div class="kicker">01 · The review</div>
+      <h2 class="sec">What's running in the repo right now</h2>
+      <p class="sec-lede">Every web-facing app, verified from the actual files on 2026-07-01. The surprise: you're already well past "just Webflow." The repo spans <b style="color:var(--ink)">five distinct patterns</b> and <b style="color:var(--ink)">three deploy targets</b> (AWS Lambda, AWS S3/CloudFront via CDK, and Fly containers). That's a broader, more modern footprint than most solo operators — and also the thing worth consolidating.</p>
+
+      <div class="cards">
+        <div class="card">
+          <h4><span class="dot" style="background:var(--c-nocode)"></span> A · Webflow front + AWS serverless back</h4>
+          <p class="desc"><b>QRAG</b> (production-like, real users). Front end is <b>Webflow</b> — designer plus AI-managed custom-code blocks (shells in <code>web-shared/webflow/</code>, app code in <code>apps/qrag/web/</code>). Back end is <b>AWS Chalice Lambdas</b> (qrag-llm, qrag-routing, vrag-llm) on API Gateway, <b>Pinecone</b> vectors, <b>S3</b> context, JWT + HMAC PII hashing.</p>
+          <ul><li><b>Good:</b> real design polish without code; battle-tested backend.</li><li><b>Friction:</b> design lives in a tool AI can't cleanly drive; front/back split across two worlds.</li></ul>
+        </div>
+        <div class="card">
+          <h4><span class="dot" style="background:var(--c-ssg)"></span> B · Static site (SSG) + AWS CDK</h4>
+          <p class="desc"><b>focusonfoundations.org redo</b> (branch). <b>Astro 5</b>, static output, plain <code>.astro</code> components + vanilla JS modules ported off Webflow (<code>marked</code>, <code>validator</code>) — <b>no Tailwind, no React islands yet</b>. Infra is <b>AWS CDK</b> (TypeScript, aws-cdk-lib 2.15) provisioning an S3 + CloudFront static site with staging/prod deploy scripts.</p>
+          <ul><li><b>Good:</b> you now own the whole deploy; fast, cheap, SEO-friendly.</li><li><b>Gap:</b> no design system yet (add Tailwind + components to raise the ceiling).</li></ul>
+        </div>
+        <div class="card">
+          <h4><span class="dot" style="background:var(--c-py)"></span> C · Containerized Python web app on Fly</h4>
+          <p class="desc"><b>lesson-logger dashboard</b> (<code>fof-lesson-dash</code>) and the Hermes services. <b>FastAPI + uvicorn + Jinja2</b> templates, static CSS, in a <b>Dockerfile deployed to Fly.io</b>, SQLite synced from Hermes. This is your "own the full stack in a container" goal <b>already realized</b> for internal tools.</p>
+          <ul><li><b>Good:</b> one owned box, server-rendered, simple, AI-easy to extend.</li><li><b>Ceiling:</b> Jinja templates cap design sophistication unless paired with Tailwind/components.</li></ul>
+        </div>
+        <div class="card">
+          <h4><span class="dot" style="background:var(--c-py)"></span> D · Local FastAPI + vanilla-JS tools</h4>
+          <p class="desc"><b>prism-sync</b> (FastAPI shelling to ssh/rsync, vanilla HTML/CSS/JS matrix UI, TOML config, localhost:8770) and the <b>MathQuest control panel</b> (HTTP panel on 8765). Utilities you run on your own machine, not deployed.</p>
+          <ul><li><b>Good:</b> zero-ceremony, fast to build, disposable.</li><li><b>Scope:</b> personal tools — design ambition is deliberately low.</li></ul>
+        </div>
+        <div class="card">
+          <h4><span class="dot" style="background:var(--c-vanilla)"></span> E · Framework-less static (HTML/JS + WASM/WebGL)</h4>
+          <p class="desc"><b>math-quiz</b> (multi-page HTML/JS, <b>SQLite in the browser via sql-wasm.wasm</b>, Playwright tests, a local Python dev server), the <b>kid games</b> (<code>apps/games/</code>: robopoli, <b>Three.js</b> experiments, 3D viewers), and <b>family</b> apps (Kid1, milestone-web).</p>
+          <ul><li><b>Good:</b> runs anywhere, no build step, no server; great for kids' apps and 3D.</li><li><b>Ceiling:</b> hand-rolled UI; consistency and design system are manual.</li></ul>
+        </div>
+        <div class="card" style="border-style:dashed">
+          <h4>Also present</h4>
+          <p class="desc">Shared AWS Lambdas (<code>hash-store</code>, <code>hmac-hash</code>, <code>send-email</code>); the <b>voice-router</b> dashboard (design-variant phase); <b>animation-studio</b> (Python + vision-verifier loop). The cross-app Webflow shells in <code>web-shared/webflow/</code> are the connective tissue of the Webflow-era apps.</p>
+        </div>
+      </div>
+
+      <h3 class="sub">One-line inventory</h3>
+      <div class="scroll">
+      <table>
+        <thead><tr><th>App</th><th>Front end</th><th>Back / data</th><th>Deploy</th><th>Pattern</th><th>State</th></tr></thead>
+        <tbody>
+          <tr><td>QRAG</td><td class="s">Webflow + custom JS</td><td class="s">Chalice Lambdas · Pinecone · S3</td><td class="s">AWS API GW</td><td>A</td><td>Production-like</td></tr>
+          <tr><td>focusonfoundations.org</td><td class="s">Astro 5 (static)</td><td class="s">static + QRAG demos</td><td class="s">AWS S3/CloudFront (CDK)</td><td>B</td><td>Branch, active</td></tr>
+          <tr><td>lesson-logger dashboard</td><td class="s">FastAPI + Jinja2</td><td class="s">SQLite (from Hermes)</td><td class="s">Fly.io container</td><td>C</td><td>Deployed</td></tr>
+          <tr><td>prism-sync</td><td class="s">vanilla JS</td><td class="s">FastAPI → ssh/rsync</td><td class="s">localhost</td><td>D</td><td>Branch, active</td></tr>
+          <tr><td>math-quiz</td><td class="s">HTML/JS, sql.js WASM</td><td class="s">browser SQLite + Python tools</td><td class="s">static / local</td><td>E</td><td>Active</td></tr>
+          <tr><td>kid games (3js, robopoli, viewers)</td><td class="s">vanilla JS + Three.js</td><td class="s">client-side</td><td class="s">static</td><td>E</td><td>Experimental</td></tr>
+          <tr><td>family (Kid1, milestone)</td><td class="s">HTML/JS</td><td class="s">client-side</td><td class="s">static / local</td><td>E</td><td>Experimental</td></tr>
+          <tr><td>Hermes / hermes-mom</td><td class="s">— (bot)</td><td class="s">Python service</td><td class="s">Fly.io container</td><td>C-ish</td><td>Deployed</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="callout gold">
+        <p style="margin:0"><b>The honest read:</b> you have <b>no single frontend framework</b> (Webflow, Astro, and three flavors of vanilla) and <b>three deploy targets</b>. That's not failure — it's the natural result of building many small apps with whatever fit. But it means AI agents hit a different world in each app, and design can't carry across them. The rest of this page is about choosing a smaller, more deliberate set. <span class="aud d">D</span> None of these currently has a shared design system. <span class="aud r">R</span> This is exactly the "consolidate the stack" decision on your roadmap.</p>
+      </div>
+    </section>
+
+    <section id="options">
+      <div class="kicker">02 · The landscape</div>
+      <h2 class="sec">The option space, in plain language</h2>
+      <p class="sec-lede">A full-stack web app is a stack of decisions. Here are the layers and the realistic choices at each, with the tradeoffs that actually matter for a small AI-first operation. You don't need all of it — you need to recognize the names and what each buys you.</p>
+
+      <h3 class="sub">Layer 1 · Rendering model — <span style="color:var(--muted);font-weight:400;font-size:14px">how the page reaches the browser</span></h3>
+      <div class="cards">
+        <div class="card"><h4>Static (SSG)</h4><p class="desc">Pages built once, served as files. Fastest, cheapest, most secure. Best for content/marketing sites. <span class="tag">Astro, plain HTML</span></p></div>
+        <div class="card"><h4>Single-page app (SPA)</h4><p class="desc">One HTML shell, JS renders everything client-side. Rich interactivity; weaker SEO/first-load. <span class="tag">React, Svelte, Vue</span></p></div>
+        <div class="card"><h4>Server-rendered (SSR)</h4><p class="desc">Server builds each page per request. Good SEO + dynamic data. Needs a running server. <span class="tag">Next, SvelteKit, FastAPI+Jinja</span></p></div>
+        <div class="card"><h4>Islands / hybrid</h4><p class="desc">Static page with small interactive "islands." Best of both for content-with-some-app. <span class="tag">Astro islands, HTMX</span></p></div>
+      </div>
+      <p class="desc" style="color:var(--muted);margin-top:10px"><span class="aud d">D</span> This is the axis you already think in as "marketing site vs product." <span class="aud r">R</span> Your repo already has one of each: Astro (static), QRAG (SPA-ish), lesson-dash (SSR).</p>
+
+      <h3 class="sub">Layer 2 · Frontend framework — <span style="color:var(--muted);font-weight:400;font-size:14px">the tool the UI is written in</span></h3>
+      <div class="cards">
+        <div class="card"><h4><span class="dot" style="background:var(--c-ssg)"></span> Astro</h4><p class="desc">Content-first, ships almost no JS, can embed React/Svelte islands. Ideal for sites and docs. <b>You already use it.</b></p></div>
+        <div class="card"><h4><span class="dot" style="background:var(--c-spa)"></span> Next.js (React)</h4><p class="desc">The default for interactive apps. Biggest ecosystem, best AI training coverage, works with shadcn/ui. Heavier.</p></div>
+        <div class="card"><h4><span class="dot" style="background:var(--c-spa)"></span> SvelteKit</h4><p class="desc">Simpler mental model, less boilerplate, excellent DX. Smaller ecosystem than React but very AI-friendly.</p></div>
+        <div class="card"><h4><span class="dot" style="background:var(--c-vanilla)"></span> Vanilla + Web Components / HTMX</h4><p class="desc">No framework. HTMX adds interactivity via HTML attributes + a server. Lowest ceremony; lower design-system leverage.</p></div>
+      </div>
+
+      <h3 class="sub">Layer 3 · Styling &amp; UI system — <span style="color:var(--muted);font-weight:400;font-size:14px">where design actually lives</span></h3>
+      <div class="cards">
+        <div class="card"><h4>Tailwind CSS</h4><p class="desc">Utility classes = a <b>design system encoded in config</b> (spacing, color, type scales). The current default, and the format AI generates best.</p></div>
+        <div class="card"><h4>shadcn/ui</h4><p class="desc">Copy-in React components (built on Radix) you own and restyle. Accessible, unopinionated look. The modern app-UI default.</p></div>
+        <div class="card"><h4>DaisyUI</h4><p class="desc">Tailwind component classes with themes — fast, good-looking defaults, framework-agnostic. Lightest path to "looks designed."</p></div>
+        <div class="card"><h4>Radix / MUI / Chakra</h4><p class="desc">Component libraries — Radix (unstyled+accessible), MUI (Material, batteries-included), Chakra (friendly defaults).</p></div>
+      </div>
+      <div class="callout blue">
+        <p style="margin:0"><span class="aud d">D</span> <b>This is the layer that changed the most.</b> Pre-AI, the design system lived in Figma and got hand-translated. Now it lives in <b>code as tokens + components</b> (Tailwind config, shadcn variants) that both you and the AI read and write. Your design-system craft doesn't disappear — it moves from "Figma library + redlines" to "token definitions + component contracts + review." <span class="aud r">R</span> Picking Tailwind + a component library is the single biggest lever for "AI produces good-looking UI by default."</p>
+      </div>
+
+      <h3 class="sub">Layer 4 · Backend, data &amp; auth</h3>
+      <div class="cards">
+        <div class="card"><h4>Serverless functions</h4><p class="desc">AWS Lambda/Chalice, Cloudflare Workers, Vercel funcs. Scale-to-zero, pay-per-use. <b>Your QRAG backend.</b></p></div>
+        <div class="card"><h4>Long-running server</h4><p class="desc">FastAPI / Express / Hono in a container. Simple mental model, always-on. <b>Your Fly dashboards.</b></p></div>
+        <div class="card"><h4>Backend-as-a-service</h4><p class="desc">Supabase (Postgres + auth + storage), Firebase. Skip building a backend; great for prototypes and small apps.</p></div>
+        <div class="card"><h4>Data + auth</h4><p class="desc">Postgres (relational), SQLite (single-file, great for small apps), vector DB (Pinecone/pgvector for RAG). Auth via Clerk/Auth.js/Supabase or your JWT+HMAC.</p></div>
+      </div>
+
+      <h3 class="sub">Layer 5 · Hosting &amp; deploy</h3>
+      <div class="cards">
+        <div class="card"><h4>Managed frontend hosts</h4><p class="desc">Vercel, Netlify, Cloudflare Pages. Push-to-deploy, previews, CDN. Vercel is easiest but <b>cost-scales unfavorably</b> (your noted concern).</p></div>
+        <div class="card"><h4>Container platforms</h4><p class="desc">Fly.io (you use it), Railway, Render. Deploy a Docker image; own the runtime; predictable cost. Great middle ground.</p></div>
+        <div class="card"><h4>AWS (owned)</h4><p class="desc">S3+CloudFront (static, via CDK — you use it), Lambda (serverless), EC2/ECS (containers). Most control, most complexity.</p></div>
+        <div class="card"><h4>Cloudflare</h4><p class="desc">Pages + Workers + D1/R2. Cheap at scale, edge-first. A strong Vercel alternative worth evaluating.</p></div>
+      </div>
+    </section>
+
+    <section id="intersection">
+      <div class="kicker">03 · The point of all this</div>
+      <h2 class="sec">Where design choices meet stack choices</h2>
+      <p class="sec-lede">The core idea in one sentence: <b style="color:var(--ink)">your stack decides how far the design can go and who is able to change it.</b> Two questions capture the whole intersection — how high is the design ceiling out of the box, and how well can an AI agent (not a human coder) drive it while you still own the deploy. Plot the stacks on those two axes and the decision becomes visual.</p>
+
+      <div class="mapwrap">
+        <svg id="map" viewBox="0 0 760 500" role="img" aria-label="Positioning map of web stacks by design ceiling and AI-drivability">
+          <!-- axes + quadrant guides drawn by JS -->
+        </svg>
+        <div class="maplegend">
+          <span><span class="dot" style="background:var(--c-spa)"></span> App framework (Next/SvelteKit)</span>
+          <span><span class="dot" style="background:var(--c-ssg)"></span> Static site (Astro)</span>
+          <span><span class="dot" style="background:var(--c-py)"></span> Server-rendered Python</span>
+          <span><span class="dot" style="background:var(--c-nocode)"></span> No-code (Webflow)</span>
+          <span><span class="dot" style="background:var(--c-vanilla)"></span> Framework-less / 3D</span>
+        </div>
+      </div>
+      <p class="desc" style="color:var(--muted);margin-top:12px">Hover any point for the read. <b>X → design &amp; UX ceiling</b> (how sophisticated the look, interaction, and motion can get with reasonable effort). <b>Y → AI-drivability &amp; ownership</b> (how cleanly an AI agent can generate and change it, and how fully you own the deploy). The upper-right quadrant is the sweet spot for an AI-first operator; Webflow sits high-design but low-AI-drive — precisely why it's on your way out.</p>
+
+      <h3 class="sub">The same thing as a table</h3>
+      <div class="scroll">
+      <table>
+        <thead><tr><th>Stack</th><th>Design ceiling</th><th>AI-drivability</th><th>Interactivity</th><th>Where design lives</th><th>Own the deploy?</th><th>Best for</th></tr></thead>
+        <tbody>
+          <tr><td class="s">Next / SvelteKit + Tailwind + shadcn</td><td>Very high</td><td>Very high</td><td>Full app</td><td>Code: tokens + components</td><td>Yes (container/edge)</td><td>Real interactive products</td></tr>
+          <tr><td class="s">Astro + Tailwind + islands</td><td>High</td><td>Very high</td><td>Content + islands</td><td>Code: tokens + components</td><td>Yes (static/CDN)</td><td>Sites, marketing, docs, demos</td></tr>
+          <tr><td class="s">FastAPI + Jinja / HTMX</td><td>Medium <span style="color:var(--dim)">(high with Tailwind)</span></td><td>High</td><td>Server-driven</td><td>Templates (+ optional Tailwind)</td><td>Yes (container)</td><td>Internal tools, dashboards</td></tr>
+          <tr><td class="s">Webflow + custom code</td><td>High (visual)</td><td>Low</td><td>Content + embeds</td><td>In the Webflow tool</td><td>No (hosted lock-in)</td><td>Designer-led sites, fast polish</td></tr>
+          <tr><td class="s">Vanilla HTML/JS (+ WASM)</td><td>Low–medium</td><td>High</td><td>DIY</td><td>Hand-rolled CSS</td><td>Yes (static)</td><td>Kids' apps, quick utilities</td></tr>
+          <tr><td class="s">Three.js / WebGL</td><td>High (3D/motion)</td><td>Medium</td><td>Rich canvas</td><td>Code + assets</td><td>Yes (static)</td><td>Games, 3D, experiences</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="callout gold">
+        <h4>The three insights that fall out of the map</h4>
+        <p>1 · <b>Tailwind + a component library is the bridge.</b> It's what moves a stack rightward (higher design ceiling) <em>and</em> upward (more AI-drivable) at the same time — because the design system becomes legible code that AI generates fluently. Adding it to your Astro site and your Fly dashboards is the highest-leverage single move.</p>
+        <p>2 · <b>Webflow's tradeoff is now backwards for you.</b> It buys design polish by putting design in a place AI can't reach and you don't own. In an AI-first shop, that's the expensive corner — you give up drivability and ownership for polish you can now get in code.</p>
+        <p>3 · <b>Match the stack to the app's design ambition, not the other way around.</b> A kids' math game doesn't need Next.js; a client-facing product shouldn't ship as hand-rolled HTML. The map is a triage tool: place the app by how much design and interactivity it truly needs, then read off the stack.</p>
+      </div>
+    </section>
+
+    <section id="lenses">
+      <div class="kicker">04 · Same map, two vantage points</div>
+      <h2 class="sec">What this means for each of you</h2>
+      <div class="two">
+        <div class="lens designer">
+          <div class="role">For the UX / design lead</div>
+          <h4><span class="aud d">D</span> Your craft moved layers — it didn't shrink</h4>
+          <ul>
+            <li><b>The design system is now code.</b> Tokens (color, type, spacing), component variants, and states live in Tailwind config + a component library, not only in Figma. You define the contract; AI fills in the implementation. Learn to read/spec tokens and component APIs — that's the new handoff.</li>
+            <li><b>Prototypes are real now.</b> Tools like v0, Lovable, Bolt, and Claude artifacts turn your design intent into working code. Your prototype can <em>be</em> the spec — no more redlines lost in translation.</li>
+            <li><b>Your scarce value rose.</b> AI does adequate UI; it does not do taste, systems thinking, information architecture, motion, or accessibility at your level. Those are exactly the things that don't come free with any stack — so they're where you lead.</li>
+            <li><b>Figma → code paths exist</b> (Figma Make, Anima, Builder.io Visual Copilot) but the durable pattern is <b>design tokens as the shared source of truth</b> (W3C tokens, Style Dictionary) that both Figma and the codebase consume.</li>
+            <li><b>Stack literacy = design leverage.</b> Knowing that "this is an Astro content site" vs "a SvelteKit app" tells you the interaction budget and where a design will or won't survive. The map above is your triage tool too.</li>
+          </ul>
+        </div>
+        <div class="lens randy">
+          <div class="role">For the AI-first builder</div>
+          <h4><span class="aud r">R</span> Choose stacks your agents drive and you own</h4>
+          <ul>
+            <li><b>Optimize for AI-drivability.</b> You'll never touch the code, so the best stack is the one an agent generates and modifies most reliably — conventional framework + Tailwind + a component library. That's why the upper-right of the map matters more to you than to a hand-coder.</li>
+            <li><b>Good design should be a default, not a project.</b> Picking DaisyUI or shadcn/ui means "looks designed" is the starting point, and your designer refines from there instead of rescuing it.</li>
+            <li><b>Own the deploy where it counts.</b> You're already doing this (CDK static, Fly containers). Keep AWS serverless for the RAG/LLM backends you've invested in; front them with whatever fits. Evaluate Cloudflare/Railway before defaulting to Vercel on cost.</li>
+            <li><b>Consolidate so agents get fluent.</b> Every distinct stack is a separate world your agents (and your designer) must re-learn. A small, deliberate set compounds: better prompts, reusable skills, shared components.</li>
+            <li><b>The designer is your highest-leverage collaborator now, not a handoff.</b> With code-resident design systems, their tokens and component specs flow straight into what your agents build. Set that pipeline up once.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="recommend">
+      <div class="kicker">05 · The concrete move</div>
+      <h2 class="sec">A deliberate stack set for this repo</h2>
+      <p class="sec-lede">Not one stack for everything — a small, matched set, aligned with the direction already in your <code>ai-coding-system-dev.md</code> (off Webflow; evaluate DaisyUI/ShadCN; React/Svelte/Next; own a containerized deploy; steer clear of Vercel on cost). Triage each app by design ambition and interactivity, then use one of four lanes.</p>
+
+      <div class="cards">
+        <div class="card"><h4><span class="dot" style="background:var(--c-ssg)"></span> Lane 1 · Content &amp; marketing</h4><p class="desc"><b>Astro + Tailwind + a few islands</b>, deploy to <b>S3/CloudFront (CDK)</b> or Cloudflare Pages.</p><ul><li>Fits: focusonfoundations.org, docs, demo hubs.</li><li>Move: add Tailwind + DaisyUI to the existing Astro site.</li></ul></div>
+        <div class="card"><h4><span class="dot" style="background:var(--c-spa)"></span> Lane 2 · Interactive products</h4><p class="desc"><b>SvelteKit or Next.js + Tailwind + shadcn/ui</b>, TypeScript, deploy to a <b>Fly/Railway container</b>.</p><ul><li>Fits: a real QRAG front end, future user-facing apps.</li><li>Move: pick one (SvelteKit = simpler; Next = biggest AI coverage).</li></ul></div>
+        <div class="card"><h4><span class="dot" style="background:var(--c-py)"></span> Lane 3 · Internal tools &amp; dashboards</h4><p class="desc"><b>FastAPI + Jinja/HTMX + Tailwind</b>, deploy to <b>Fly</b> — the pattern you already run.</p><ul><li>Fits: lesson-dash, prism-sync, admin panels.</li><li>Move: add Tailwind to lift the look with no new framework.</li></ul></div>
+        <div class="card"><h4><span class="dot" style="background:var(--c-vanilla)"></span> Lane 4 · Kids' apps &amp; 3D</h4><p class="desc"><b>Vanilla + Three.js</b>, static hosting. Keep it simple where design ambition is low or canvas-driven.</p><ul><li>Fits: math-quiz, games, family apps.</li><li>Move: leave as-is; optionally share a tiny token file.</li></ul></div>
+      </div>
+
+      <h3 class="sub">The sequence</h3>
+      <div class="step"><span class="n">1</span><div class="b"><b>Establish a code-resident design system once.</b><p>A Tailwind config (color/type/spacing tokens) + a component choice (DaisyUI for speed, shadcn/ui for control). The designer defines the tokens; it becomes the shared source of truth every lane and every agent reads. <span class="aud d">D</span> this is your deliverable. <span class="aud r">R</span> this is the one-time setup that makes all later UI good by default.</p></div></div>
+      <div class="step"><span class="n">2</span><div class="b"><b>Finish the Astro site as the reference implementation.</b><p>Add Tailwind + the component system to the focusonfoundations.org branch. It becomes the template new content sites are cut from, and the proof of the owned-deploy pipeline (CDK).</p></div></div>
+      <div class="step"><span class="n">3</span><div class="b"><b>Pick one app framework for Lane 2 and build one real app in it.</b><p>SvelteKit or Next — one, not both. A fresh QRAG front end is the natural candidate: it retires the Webflow dependency and proves the interactive-product lane end to end.</p></div></div>
+      <div class="step"><span class="n">4</span><div class="b"><b>Retire Webflow deliberately, per app.</b><p>Once lanes 1 and 2 are proven, migrate the Webflow-fronted apps off it. No big-bang — one site at a time, onto the lane it belongs in.</p></div></div>
+
+      <h3 class="sub">Try it — which lane is this app?</h3>
+      <div class="picker">
+        <div class="q"><div class="lab">What is the app?</div><div class="opts" data-k="type">
+          <button class="pbtn" data-v="content">Content / marketing site</button>
+          <button class="pbtn" data-v="product">Interactive product (auth, state, data)</button>
+          <button class="pbtn" data-v="tool">Internal tool / dashboard</button>
+          <button class="pbtn" data-v="kids">Kids' app / game / 3D</button>
+        </div></div>
+        <div class="q"><div class="lab">Design ambition?</div><div class="opts" data-k="design">
+          <button class="pbtn" data-v="high">High — client-facing, brand matters</button>
+          <button class="pbtn" data-v="med">Medium — clean and consistent</button>
+          <button class="pbtn" data-v="low">Functional — get it working</button>
+        </div></div>
+        <div class="q"><div class="lab">Who maintains it?</div><div class="opts" data-k="own">
+          <button class="pbtn" data-v="own">We own it (deploy, cost, control)</button>
+          <button class="pbtn" data-v="fast">Fastest possible, don't care where</button>
+        </div></div>
+        <div class="rec" id="rec"><div class="big">Pick the three above ↑</div><div class="why">The recommendation and why it fits will appear here.</div></div>
+      </div>
+
+      <div class="callout pink" style="margin-top:22px">
+        <p style="margin:0"><b>The one-line takeaway for both of you:</b> a code-resident design system (Tailwind + a component library) plus a small set of matched lanes is what lets the designer's craft flow straight into what the agents build, and lets Randy own and evolve every app without ever opening the code. That intersection — design-in-code, driven by AI, owned by you — is the whole game.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+/* ---------- positioning map ---------- */
+const SV = getComputedStyle(document.documentElement);
+const col = n => SV.getPropertyValue(n).trim();
+const STACKS = [
+  {name:"Next / SvelteKit + Tailwind + shadcn", x:9.0, y:8.2, c:col('--c-spa'),
+   m:"Highest design ceiling and highest AI-drivability. Real products; you own the container/edge deploy. The Lane-2 recommendation."},
+  {name:"Astro + Tailwind + islands", x:7.6, y:8.6, c:col('--c-ssg'),
+   m:"High design ceiling for content, extremely AI-friendly, owned static deploy. Your FOF site — once Tailwind is added."},
+  {name:"Astro (plain) — your FOF site today", x:6.0, y:8.0, c:col('--c-ssg'), faded:true,
+   m:"Already owned and AI-friendly, but no design system yet. Add Tailwind + components to move it up-and-right."},
+  {name:"FastAPI + Jinja / HTMX", x:5.2, y:7.4, c:col('--c-py'),
+   m:"Functional, server-rendered, very AI-easy, owned on Fly. Design ceiling is the limiter — Tailwind lifts it. Your dashboards."},
+  {name:"Webflow + custom code", x:7.8, y:2.6, c:col('--c-nocode'),
+   m:"Strong visual design, but locked in a tool AI can't cleanly drive and you don't own. The corner you're leaving."},
+  {name:"Vanilla HTML/JS (+ WASM)", x:3.8, y:6.6, c:col('--c-vanilla'),
+   m:"Runs anywhere, AI-easy, owned — but hand-rolled UI caps the design ceiling. Fine for kids' apps and utilities."},
+  {name:"Three.js / WebGL", x:7.0, y:5.0, c:col('--c-vanilla'),
+   m:"High ceiling for 3D and motion, owned static deploy, but more specialized for AI to drive. Games and experiences."},
+];
+const map = document.getElementById('map');
+const W=760,H=500, pad={l:60,r:24,t:24,b:56};
+const px = v => pad.l + (v/10)*(W-pad.l-pad.r);
+const py = v => H-pad.b - (v/10)*(H-pad.t-pad.b);
+function el(tag,attrs,txt){const e=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(txt!=null)e.textContent=txt;return e;}
+// quadrant fill (upper-right sweet spot)
+map.appendChild(el('rect',{x:px(5),y:py(10),width:px(10)-px(5),height:py(5)-py(10),fill:'#7ee787',opacity:'0.05'}));
+// grid mid-lines
+map.appendChild(el('line',{x1:px(5),y1:py(0),x2:px(5),y2:py(10),stroke:col('--border2'),'stroke-dasharray':'3 4','stroke-width':1}));
+map.appendChild(el('line',{x1:px(0),y1:py(5),x2:px(10),y2:py(5),stroke:col('--border2'),'stroke-dasharray':'3 4','stroke-width':1}));
+// axes
+map.appendChild(el('line',{x1:px(0),y1:py(0),x2:px(10),y2:py(0),stroke:col('--border2'),'stroke-width':1.5}));
+map.appendChild(el('line',{x1:px(0),y1:py(0),x2:px(0),y2:py(10),stroke:col('--border2'),'stroke-width':1.5}));
+// axis labels
+const axfill=col('--text-secondary');
+map.appendChild(el('text',{x:px(5),y:H-16,'text-anchor':'middle',fill:axfill,'font-size':13,'font-family':'var(--sans)'},'Design & UX ceiling  →'));
+const yl=el('text',{x:16,y:py(5),'text-anchor':'middle',fill:axfill,'font-size':13,'font-family':'var(--sans)',transform:`rotate(-90 16 ${py(5)})`},'AI-drivability & ownership  →');
+map.appendChild(yl);
+// low/high ticks
+[['low',0.4],['high',9.6]].forEach(([t,v])=>{map.appendChild(el('text',{x:px(v),y:py(0)+18,'text-anchor':'middle',fill:col('--dim'),'font-size':10.5,'font-family':'var(--mono)'},t));});
+[['low',0.4],['high',9.6]].forEach(([t,v])=>{map.appendChild(el('text',{x:px(0)-10,y:py(v)+3,'text-anchor':'end',fill:col('--dim'),'font-size':10.5,'font-family':'var(--mono)'},t));});
+// quadrant caption
+map.appendChild(el('text',{x:px(9.7),y:py(9.7),'text-anchor':'end',fill:col('--accent2'),'font-size':11,'font-family':'var(--mono)',opacity:.8},'sweet spot'));
+// points + labels
+const tip=document.getElementById('tip');
+STACKS.forEach(s=>{
+  const cx=px(s.x), cy=py(s.y);
+  const g=el('g',{});
+  const ring=el('circle',{cx,cy,r:9,fill:col('--surface-1'),stroke:s.c,'stroke-width':2,opacity:s.faded?0.55:1});
+  const dot=el('circle',{cx,cy,r:5,fill:s.c,opacity:s.faded?0.55:1});
+  // label placement: right unless near right edge
+  const right = s.x < 6.8;
+  const lx = right ? cx+15 : cx-15;
+  const lab=el('text',{x:lx,y:cy+4,'text-anchor':right?'start':'end',fill:col('--ink'),'font-size':12,'font-family':'var(--sans)',opacity:s.faded?0.7:1},s.name);
+  g.appendChild(ring);g.appendChild(dot);g.appendChild(lab);
+  const hit=el('circle',{cx,cy,r:16,fill:'transparent',style:'cursor:pointer'});
+  hit.addEventListener('mousemove',e=>{tip.style.opacity=1;tip.style.left=(e.clientX+14)+'px';tip.style.top=(e.clientY+14)+'px';tip.innerHTML=`<b>${s.name}</b><span class="m">${s.m}</span>`;});
+  hit.addEventListener('mouseleave',()=>{tip.style.opacity=0;});
+  g.appendChild(hit);
+  map.appendChild(g);
+});
+
+/* ---------- stack picker ---------- */
+const sel={type:null,design:null,own:null};
+document.querySelectorAll('.picker .opts').forEach(row=>{
+  const k=row.dataset.k;
+  row.querySelectorAll('.pbtn').forEach(b=>b.addEventListener('click',()=>{
+    row.querySelectorAll('.pbtn').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); sel[k]=b.dataset.v; recommend();
+  }));
+});
+function recommend(){
+  const {type,design,own}=sel;
+  if(!type||!design||!own){return;}
+  let big='', why='';
+  if(type==='content'){ big='Lane 1 — Astro + Tailwind + islands';
+    why=(design==='low')?'Even a simple content site benefits from Astro + Tailwind: cheap, fast, owned, and AI generates it fluently. Deploy static via CDK or Cloudflare Pages.'
+      :'Content site with real design needs → Astro for speed + SEO, Tailwind + DaisyUI/shadcn for the design system, islands for the interactive bits. Owned static deploy.';
+  } else if(type==='product'){ big='Lane 2 — SvelteKit or Next + Tailwind + shadcn/ui';
+    why=(design==='low')?'An interactive app still wants a real framework so state and data are sane — but keep it lean. SvelteKit is the simpler pick. Deploy a Fly/Railway container.'
+      :'A client-facing interactive product is exactly the upper-right of the map: framework + Tailwind + shadcn/ui for a systematic, high-ceiling UI your designer drives and your agents build. Container deploy you own.';
+  } else if(type==='tool'){ big='Lane 3 — FastAPI + Jinja/HTMX + Tailwind';
+    why='An internal tool matches the pattern you already run on Fly. Server-rendered, minimal ceremony, AI-easy. Add Tailwind so it looks intentional without a frontend framework.';
+    if(design==='high') why+=' If it becomes user-facing with high design needs, promote it to Lane 2.';
+  } else { big='Lane 4 — Vanilla + Three.js, static hosting';
+    why='Kids’ apps and 3D reward simplicity and canvas control over a framework. Keep it framework-less and static; share a small design-token file if you want cross-app consistency.';
+    if(design==='high') why+=' For a polished shell around the canvas, wrap it in an Astro page (Lane 1).';
+  }
+  if(own==='fast' && type!=='kids'){ why+=' Since speed matters most here, a managed host (Cloudflare Pages / Railway) or Supabase for the backend gets you live fastest — just watch Vercel’s cost curve if it grows.'; }
+  document.getElementById('rec').innerHTML=`<div class="big">${big}</div><div class="why">${why}</div>`;
+}
+
+/* scroll-spy */
+const links=[...document.querySelectorAll('nav.side a.navlink')];
+const secs=links.map(l=>document.querySelector(l.getAttribute('href'))).filter(Boolean);
+const obs=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){const id='#'+e.target.id;links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')===id));}})},{rootMargin:'-20% 0px -70% 0px'});
+secs.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+{
+  "policies": {
+    "keep-all": {
+      "fillers": "keep",
+      "repeats": "keep",
+      "partial_words": "keep",
+      "numerals": "as-is",
+      "contractions": "as-is"
+    },
+    "deutsch-v1": {
+      "fillers": "strip",
+      "filler_words": ["um", "uh", "you know", "sort of", "like", "i mean", "well"],
+      "repeats": "collapse-adjacent-repeats",
+      "partial_words": "strip",
+      "numerals": "as-is",
+      "contractions": "as-is"
+    },
+    "pv-v1": {
+      "fillers": "strip",
+      "filler_words": ["um", "uh", "you know", "sort of", "like", "i mean", "well"],
+      "repeats": "collapse-adjacent-repeats",
+      "partial_words": "strip",
+      "numerals": "as-is",
+      "contractions": "as-is"
+    },
+    "sovereign-child-v1": {
+      "fillers": "strip",
+      "filler_words": ["um", "uh", "you know", "sort of", "like", "i mean", "well"],
+      "repeats": "collapse-adjacent-repeats",
+      "partial_words": "strip",
+      "numerals": "as-is",
+      "contractions": "as-is"
+    }
+  },
+  "deutsch": {
+    "ref_suffix_priority": ["_qafixed.md", "_vrb.md"],
+    "eval_suffixes": ["_nova2gen.md", "_dgwhspm.md"],
+    "search_folders": ["data/deutsch/f9_raw", "data/deutsch/f8_done_qafixed_and_vrb", "data/deutsch/f8_vrb_talks_only", "data/deutsch/f8_qafixed_talks"],
+    "policy_id": "deutsch-v1",
+    "proper_names_method": "caprules",
+    "weights": {
+      "word_accuracy": 0.35,
+      "speaker": 0.25,
+      "alignment": 0.20,
+      "proper_names": 0.12,
+      "quotations": 0.08
+    }
+  },
+  "pv": {
+    "ref_suffix_priority": ["_cemanual.md"],
+    "eval_suffixes": ["_nova2gen.md", "_dgwhspm.md"],
+    "search_folders": ["data/pv/meetings_epc/f9_raw", "data/pv/meetings_epc/fx_archive"],
+    "policy_id": "pv-v1",
+    "proper_names_method": "caprules",
+    "weights": {
+      "word_accuracy": 0.30,
+      "speaker": 0.35,
+      "alignment": 0.20,
+      "proper_names": 0.10,
+      "quotations": 0.05
+    }
+  },
+  "sovereign-child": {
+    "ref_suffix_priority": ["_qafixed.md", "_cemanual.md", "_vrb.md"],
+    "eval_suffixes": ["_nova2gen.md", "_dgwhspm.md"],
+    "search_folders": ["data/sovereign-child/_intermediate-transcript-files", "data/sovereign-child/new_processed"],
+    "policy_id": "sovereign-child-v1",
+    "proper_names_method": "caprules",
+    "weights": {
+      "word_accuracy": 0.35,
+      "speaker": 0.25,
+      "alignment": 0.20,
+      "proper_names": 0.12,
+      "quotations": 0.08
+    }
+  }
+}

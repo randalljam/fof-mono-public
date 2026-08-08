@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Math Quiz — Fluency: flow, current state &amp; proposals</title>
+<style>
+  :root{
+    --old:#b26a00; --old-bg:#fff8ec; --old-bd:#f0d9af;
+    --new:#1565c0; --new-bg:#eef5fd; --new-bd:#bcd9f7;
+    --ink:#1f2733; --muted:#5b6675; --line:#e2e6ec; --bg:#f4f6f9; --card:#fff;
+    --ok:#2e7d32; --warn:#c77700; --stop:#c62828; --gray:#616161; --accent:#5b35c0;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+       color:var(--ink);background:var(--bg);line-height:1.55;font-size:15.5px}
+  a{color:var(--new);text-decoration:none}
+  a:hover{text-decoration:underline}
+  code{background:#eef1f5;border:1px solid #e1e6ec;border-radius:4px;padding:1px 5px;
+       font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86em}
+  .layout{display:flex;max-width:1240px;margin:0 auto;gap:28px;padding:0 22px}
+  nav{position:sticky;top:0;align-self:flex-start;height:100vh;overflow:auto;
+      width:236px;flex:0 0 236px;padding:26px 0 40px;font-size:13.5px}
+  nav h4{margin:18px 0 6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  nav a{display:block;color:var(--muted);padding:4px 10px;border-radius:6px;border-left:2px solid transparent}
+  nav a:hover{background:#fff;color:var(--ink);text-decoration:none}
+  main{flex:1 1 auto;min-width:0;padding:26px 0 120px}
+  header.hero{background:linear-gradient(135deg,#10243e,#1565c0);color:#fff;border-radius:16px;
+       padding:30px 34px;margin-bottom:26px;box-shadow:0 8px 30px rgba(16,36,62,.18)}
+  header.hero h1{margin:0 0 8px;font-size:27px;line-height:1.2}
+  header.hero p{margin:6px 0 0;opacity:.93;max-width:74ch}
+  header.hero code{background:none;border:none;padding:0;font-size:inherit}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .pill{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);
+        border-radius:999px;padding:3px 12px;font-size:12.5px}
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;
+          padding:24px 28px;margin:0 0 22px;box-shadow:0 1px 2px rgba(20,40,70,.04)}
+  section>h2{margin:0 0 4px;font-size:21px;display:flex;align-items:center;gap:10px}
+  section>h2 .n{font-size:13px;color:#fff;background:var(--accent);border-radius:8px;
+       width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 26px}
+  .lead{color:var(--muted);margin:2px 0 18px;max-width:84ch}
+  h3{margin:22px 0 8px;font-size:16.5px}
+  h4{margin:16px 0 6px;font-size:14.5px}
+  ul,ol{margin:8px 0 8px;padding-left:22px}
+  li{margin:4px 0}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:860px){.grid2{grid-template-columns:1fr}nav{display:none}}
+  .col{border-radius:12px;padding:16px 18px;border:1px solid}
+  .col.old{background:var(--old-bg);border-color:var(--old-bd)}
+  .col.new{background:var(--new-bg);border-color:var(--new-bd)}
+  .col h3{margin-top:0;display:flex;align-items:center;gap:8px}
+  .tag{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+       padding:2px 8px;border-radius:6px;color:#fff}
+  .tag.old{background:var(--old)} .tag.new{background:var(--new)}
+  figure{margin:0}
+  .shots{display:grid;grid-template-columns:1fr;gap:18px}
+  .shot{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fbfcfe}
+  .shot img{width:100%;display:block}
+  .shot figcaption{padding:8px 12px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);background:#fff}
+  .shot figcaption b{color:var(--ink)}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}
+  th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#f7f9fc;font-size:12.5px;letter-spacing:.02em;color:var(--muted)}
+  td.dim{color:var(--muted)}
+  tr td:first-child{font-weight:600;width:23%}
+  .b{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;border:1px solid}
+  .b.ok{color:var(--ok);border-color:#bfe0c0;background:#eef8ef}
+  .b.warn{color:var(--warn);border-color:#f0dcb0;background:#fdf6e7}
+  .b.stop{color:var(--stop);border-color:#f0c2c2;background:#fdeeee}
+  .b.new{color:var(--new);border-color:var(--new-bd);background:var(--new-bg)}
+  .b.gray{color:var(--gray);border-color:#d6d6d6;background:#f1f1f1}
+  .b.done{color:#fff;border-color:#1c7c34;background:#1e8e3e}
+  .dot{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:5px;border:1px solid rgba(0,0,0,.15)}
+  .dot.blue{background:#1565c0}.dot.green{background:#2e7d32}.dot.yellow{background:#f9a825}
+  .dot.red{background:#c62828}.dot.gray{background:#616161}
+  .callout{border-left:4px solid var(--accent);background:#f7f4fe;border-radius:0 10px 10px 0;
+           padding:12px 16px;margin:14px 0}
+  .callout.warn{border-color:var(--warn);background:#fdf7ea}
+  .callout.q{border-color:var(--new);background:var(--new-bg)}
+  .callout.ok{border-color:var(--ok);background:#eef8ef}
+  .callout b{display:block;margin-bottom:2px}
+  .phase{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:10px 0;background:#fcfdff}
+  .phase h4{margin:0 0 4px;display:flex;align-items:center;gap:8px;font-size:15.5px}
+  .roles{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0}
+  @media(max-width:860px){.roles{grid-template-columns:1fr}}
+  .role{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fcfdff}
+  .role h4{margin:0 0 6px;font-size:15.5px;display:flex;align-items:center;gap:8px}
+  .role .who{font-size:12px;color:var(--muted)}
+  .cycle{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0 4px}
+  .cycle .step{background:var(--new-bg);border:1px solid var(--new-bd);color:#0d3c73;
+       border-radius:999px;padding:6px 13px;font-size:13px;font-weight:600}
+  .cycle .arr{color:var(--muted);font-weight:700}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;font-size:12.5px;color:var(--muted)}
+  pre{background:#0f1722;color:#d7e2f0;border-radius:10px;padding:14px 16px;overflow:auto;font-size:12.5px;
+      line-height:1.5;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  pre .c{color:#7d8aa0}
+  footer{color:var(--muted);font-size:13px;text-align:center;padding:10px 0 60px}
+  .small{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav>
+  <h4>Fluency report</h4>
+  <a href="#summary">Overview &amp; TL;DR</a>
+  <a href="#flow">1 · Flow &amp; roles</a>
+  <a href="#model">2 · The fluency model</a>
+  <a href="#current">3 · Current tracker</a>
+  <a href="#datamodel">4 · Data-model status</a>
+  <h4>Built this round</h4>
+  <a href="#analysis-view">5 · Analysis fluency view ✅</a>
+  <a href="#new-tracker">6 · Tracker overhaul</a>
+  <a href="#coding">7 · Coding status</a>
+  <h4>Forward</h4>
+  <a href="#roadmap">8 · Roadmap</a>
+  <a href="#log">Change log</a>
+  <a href="fluency_v1.html">↩ v1 snapshot</a>
+  <a href="index.html">↩ Compare report</a>
+</nav>
+
+<main>
+<header class="hero">
+  <h1>Math Quiz — Fluency: flow, current state &amp; proposals</h1>
+  <p>The fluency companion to the <a href="index.html" style="color:#cfe4ff"><code>compare report</code></a>. This round it
+     gained a <b>Flow</b> section (how the app is used, and the two roles), and two of its proposals were <b>built</b>:
+     the <b>integrated fluency view on the analysis page</b> and the <b>roll-up overview</b> on the tracker. The previous
+     version is preserved at <a href="fluency_v1.html" style="color:#cfe4ff"><code>fluency_v1.html</code></a>.</p>
+  <div class="meta">
+    <span class="pill">Branch: <b>feature/math-quiz-further-dev</b></span>
+    <span class="pill">Updated 2026-06-20</span>
+    <span class="pill">Canonical defs: <code>docs/SPEC.md</code></span>
+  </div>
+</header>
+
+<!-- ===================== OVERVIEW ===================== -->
+<section id="summary">
+  <h2><span class="n">★</span> Overview &amp; TL;DR</h2>
+  <ul>
+    <li><b>Flow (new, <a href="#flow">§1</a>).</b> Two roles — the <b>learner</b> takes quizzes; the
+        <b>parent/teacher/admin</b> sets up, reads fluency, and steers the next quiz. The loop is
+        <b>quiz → evaluate → next quiz → (review) → repeat</b>.</li>
+    <li><b>Model (<a href="#model">§2</a>).</b> red → yellow → green → blue, at three levels (operation / category /
+        problem). Roll-ups use a <b>minimum / worst-of</b> rule.</li>
+    <li><b>Analysis fluency view <span class="b done">built</span> (<a href="#analysis-view">§5</a>).</b> A
+        <b>metric toggle</b> (response time ⇄ fluency rating), a <b>fluency overlay</b> (response-time fill +
+        rating borders, to see both), and a <b>category roll-up strip</b>.</li>
+    <li><b>Tracker overview <span class="b done">built</span> (<a href="#new-tracker">§6</a>).</b> The high-level landing
+        dashboard: per operation, the <b>operation / 0–5·6–9 / category</b> roll-ups across addition, subtraction,
+        multiplication.</li>
+    <li><b>Shared engine.</b> The rubric moved into <code>fluency_core.js</code> — one evaluator for the tracker, the
+        analysis view, and the engine. Fluency is still <b>not</b> persisted (recomputed; <a href="#datamodel">§4</a>).</li>
+  </ul>
+</section>
+
+<!-- ===================== FLOW ===================== -->
+<section id="flow">
+  <h2><span class="n">1</span> Flow &amp; roles</h2>
+  <p class="lead">How the app is used <b>right now</b>, with two kids at home. Other use cases are on the roadmap
+     (<a href="#roadmap">§8</a>) but deliberately out of scope here — the point of this section is to get the
+     <b>interaction flow</b> right.</p>
+
+  <h3>The two roles</h3>
+  <p class="small">Right now there are exactly two roles. (More — e.g. self-serve learners, classroom cohorts — come later.)</p>
+  <div class="roles">
+    <div class="role">
+      <h4>🧒 Learner <span class="who">(student / kid)</span></h4>
+      <ul class="small">
+        <li><b>Takes the quiz.</b> One operation at a time, keypad entry, answer as fast as they can.</li>
+        <li>Goes <b>as long as they can</b> before frustration — older kids do more (K2 ~40–50; Kid1 ~88).</li>
+        <li>Every attempt (problem, answer, correctness, time, flags) lands in <b>their</b> per-user file.</li>
+        <li>That’s it — the learner doesn’t configure anything; they just demonstrate what they know.</li>
+      </ul>
+    </div>
+    <div class="role">
+      <h4>👩‍🏫 Parent / teacher / admin <span class="who">(the operator)</span></h4>
+      <ul class="small">
+        <li><b>Sets up</b> the session: which operation, and <b>easy-first vs hard-first</b>.</li>
+        <li><b>Reads fluency</b> — the overview dashboard + the analysis grid — to see where the learner is.</li>
+        <li><b>Steers the next quiz</b>: accept a recommendation or adjust it (shorter vs longer).</li>
+        <li>Can <b>manually override</b> a rating when warranted — but prefers to let the data decide.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Current-mode flow — the first session and the cycle</h3>
+  <div class="phase">
+    <h4><span class="b new">1</span> First session ever — pick one operation + a start order</h4>
+    <p class="small">Start with a <b>single operation</b>. Choose the generation mode — today that’s <b>auto mode</b>
+      (roadmap: pre-selected lists, or simply “easy” / “hard”). Then choose the <b>start order</b>:</p>
+    <ul class="small">
+      <li><b>Hard-first</b> — when you think they’re fluent, or you’re demoing for an adult (the original anchor case).</li>
+      <li><b>Easy-first</b> — for an early learner who may not know all the single-digit facts yet (what we did for K2).</li>
+    </ul>
+    <p class="small">Let the learner go <b>as long as they can</b>. The first run already yields a useful first read.</p>
+  </div>
+  <div class="phase">
+    <h4><span class="b new">2</span> Initial evaluation</h4>
+    <p class="small">An <b>early determination of fluency</b> from that first test — enough to see the rough shape
+      (which categories / ranges are solid vs missing).</p>
+  </div>
+  <div class="phase">
+    <h4><span class="b new">3</span> Follow-up quizzes — collect more, append to the file</h4>
+    <p class="small">Run more sessions; each appends to the learner’s file so the picture sharpens and durability
+      (green → blue) can be judged across sessions.</p>
+  </div>
+  <div class="phase">
+    <h4><span class="b new">4</span> Recommended next quiz — the operator adjusts (more or less involvement)</h4>
+    <p class="small">The operator can be hands-on or hands-off. They get a <b>recommended next quiz</b> and can tweak it.
+      Today it’s bucketed into a <b>quicker next quiz</b> and a <b>longer next quiz</b> — so each learner file stores a
+      <b>short</b> and a <b>long</b> ready-to-run list. (K2 already has a 20-problem and a 40-problem list.)</p>
+  </div>
+  <div class="phase">
+    <h4><span class="b new">5</span> Fluency analysis — on demand / after N / end of session</h4>
+    <p class="small">The automated fluency evaluation should run <b>on demand</b>, <b>automatically after a set number of
+      questions</b>, and/or <b>automatically at the end of each session</b>, so the evaluation stored in the file always
+      reflects the latest responses + session data. <span class="small">(Today the rating is recomputed on view; wiring it
+      to those triggers is a build item — <a href="#coding">§7</a>.)</span></p>
+  </div>
+  <div class="phase">
+    <h4><span class="b new">6</span> Manual override — sparingly</h4>
+    <p class="small">The operator can <b>manually set</b> a rating — e.g. if you started hard and barely covered 0–5, set
+      0–5 addition to <span class="b new">blue</span> (“in ice — they know it”). <b>Avoid this as much as possible</b>;
+      prefer to let the evidence decide.</p>
+  </div>
+
+  <h3>The repeating cycle</h3>
+  <div class="cycle">
+    <span class="step">Quiz</span><span class="arr">→</span>
+    <span class="step">Evaluate fluency</span><span class="arr">→</span>
+    <span class="step">Generate next quiz(es)</span><span class="arr">→</span>
+    <span class="step">Review / adjust (optional)</span><span class="arr">→</span>
+    <span class="step">Quiz again</span><span class="arr">↺</span>
+  </div>
+  <p class="small">Each turn of the loop adds data, re-evaluates fluency, and proposes the next problems. Over repeated
+     cycles the learner moves category-by-category from <span class="dot red"></span>red toward
+     <span class="dot blue"></span>blue across addition, then subtraction, then multiplication.</p>
+</section>
+
+<!-- ===================== MODEL ===================== -->
+<section id="model">
+  <h2><span class="n">2</span> The fluency model</h2>
+  <p class="lead">Reproduced from the compare report’s §5. Canonical version: <a href="../SPEC.md"><code>SPEC.md</code></a> §2–§5.</p>
+  <div class="callout">
+    <b>Fluency ≠ accuracy (core principle).</b>
+    <b>Accuracy</b> = is it correct? <b>Fluency</b> = correct <em>and</em> immediate <em>and</em> effortless — known cold.
+    Accuracy is the floor; the headline signal is <b>automaticity (speed)</b>.
+  </div>
+  <h3>The rubric: red → yellow → green → blue</h3>
+  <table>
+    <thead><tr><th>Status</th><th>Meaning</th><th>Signature</th></tr></thead>
+    <tbody>
+      <tr><td><span class="dot red"></span><span class="b stop">red</span></td><td class="dim">Really doesn’t know it.</td>
+        <td class="dim">Errors, or so effortful it’s effectively unknown. Below the accuracy floor ⇒ red.</td></tr>
+      <tr><td><span class="dot yellow"></span><span class="b warn">yellow</span></td><td class="dim">Kind of knows it — not fluent.</td>
+        <td class="dim">Accurate but slow/effortful. Needs practice.</td></tr>
+      <tr><td><span class="dot green"></span><span class="b ok">green</span></td><td class="dim">Fluent / near-fluent.</td>
+        <td class="dim">Fast + correct recently; not yet permanent.</td></tr>
+      <tr><td><span class="dot blue"></span><span class="b new">blue</span></td><td class="dim">Permanent — “in ice.”</td>
+        <td class="dim">Green sustained across sessions; known cold.</td></tr>
+    </tbody>
+  </table>
+  <h3>Three levels + the roll-up rule</h3>
+  <p class="small">The same rubric rolls up and drills down: <b>operation → category → problem</b>. The two intermediate
+     levels this app uses are the broad <b>0–5 vs 6–9</b> split and the <b>categories</b> (Add Zero, Add One, Add Two,
+     Doubles, Tough 21, Hardest Six). A group’s rating is the <b>worst (minimum)</b> of its facts: blue only if every fact
+     is blue; one green makes it green; any yellow → yellow; any red → red; any gray/missing → gray.</p>
+  <pre><span class="c">// the roll-up rule (fluency_core.js)</span>
+const FLUENCY_SEVERITY = ['blue','green','yellow','red','gray']; <span class="c">// best → worst</span>
+function fluencyRollupStatus(statuses){ <span class="c">/* return the WORST present; ignore nodata */</span> }</pre>
+</section>
+
+<!-- ===================== CURRENT ===================== -->
+<section id="current">
+  <h2><span class="n">3</span> What the fluency tracker did before this round</h2>
+  <p class="lead">The page is <code>math_fluency.html</code> + <code>math_fluency.js</code>. It is functional and tested,
+     built on the old JSON store, evaluating <b>per problem</b>. Screenshots are live from a seeded multi-session history.</p>
+  <div class="shots">
+    <figure class="shot"><img src="screenshots/fluency_01_controls_legend.png" alt="Fluency tracker controls and rubric legend">
+      <figcaption><b>Controls + legend.</b> “Session Data Management” still loads/clears <b>session JSON</b> (the retired
+        store). Settings expose the live thresholds; the legend is the five-status rubric.</figcaption></figure>
+    <figure class="shot"><img src="screenshots/fluency_02_addition_section.png" alt="Addition fluency section">
+      <figcaption><b>Addition section.</b> Two scatter maps (Current / Historical), summary counts, and “Problems Needing
+        Work.” Blue appears <em>only</em> as a count — never as a marker on the grids.</figcaption></figure>
+    <figure class="shot"><img src="screenshots/fluency_03_edit_dialog.png" alt="Manual override dialog">
+      <figcaption><b>Manual override.</b> Per-fact dialog: shows the system recommendation and lets the operator override
+        with a reason (stored per-user).</figcaption></figure>
+  </div>
+  <p class="small">Seams that motivated the work below: built on the <b>retired JSON store</b>; <b>no category level</b>;
+     <b>blue invisible on the grid</b>; <b>logic was page-bound</b> (now shared via <code>fluency_core.js</code>).</p>
+</section>
+
+<!-- ===================== DATA MODEL ===================== -->
+<section id="datamodel">
+  <h2><span class="n">4</span> Is fluency in the SQLite schema yet?</h2>
+  <p class="lead"><b>Still no.</b> The store holds <b>only raw attempts</b>; fluency is recomputed on every view.</p>
+  <div class="callout warn">
+    <b>Fluency is not persisted.</b> <code>engine/db_io.mjs</code> states it and stubs the future table:
+    <code>RAW_TABLES = ['Users','Sessions','ProblemAttempts','ModeEvents']</code>,
+    <code>EVALUATION_TABLES = ['FluencySnapshots']</code> (“not created yet”). No status / category / durability columns.
+  </div>
+  <div class="callout ok">
+    <b>This is a good default — keep it.</b> Recompute-from-raw means the rubric/thresholds can change and old captures
+    re-score for free. The flow’s “run analysis after N / at end of session” (§1.5) is about <b>when</b> to recompute and
+    cache, not about making stored status authoritative. An <b>optional</b> <code>FluencySnapshots</code> cache would make
+    cross-session durability (green→blue) robust across cloud/local — <a href="#coding">§7</a>.
+  </div>
+</section>
+
+<!-- ===================== ANALYSIS VIEW (BUILT) ===================== -->
+<section id="analysis-view">
+  <h2><span class="n">5</span> Analysis fluency view <span class="b done">built</span></h2>
+  <p class="lead">The granular level of fluency, exactly where it belongs: on the analysis page’s per-fact grid. Flip a
+     switch and the same grid that shows response times shows the <b>fluency rating</b> for every problem.</p>
+  <div class="shots">
+    <figure class="shot"><img src="screenshots/analysis_fluency_mode.png" alt="Analysis page in fluency-rating mode">
+      <figcaption><b>Cell metric → “Fluency rating.”</b> Each cell is colored by the rubric (legend: Permanent / Fluent /
+        Almost / Needs practice / Missing). The <b>roll-up strip</b> on top shows the <b>operation</b> level, the
+        <b>0–5 / 6–9</b> split, and the <b>categories</b> — each via the min rule (e.g. <i>Tough 21 = Missing</i> because
+        one fact is gray).</figcaption></figure>
+    <figure class="shot"><img src="screenshots/analysis_overlay_mode.png" alt="Analysis page with fluency overlay borders">
+      <figcaption><b>Fluency overlay (see both).</b> The fill still shows <b>response time</b>; each cell is
+        <b>outlined</b> by its fluency rating. A fast-but-wrong fact reads <b>green fill + gray border</b> — speed and
+        knowledge at once.</figcaption></figure>
+  </div>
+  <h3>What shipped</h3>
+  <ul class="small">
+    <li><b>Cell-metric toggle:</b> <code>Response time</code> ⇄ <code>Fluency rating</code> (discrete 5-band colorscale +
+      status colorbar). Per-cell rating from the in-scope attempts, range-clipped, recency-windowed.</li>
+    <li><b>Fluency overlay</b> checkbox — rating borders over the response-time fill (the user’s “see both” idea).</li>
+    <li><b>Category roll-up strip</b> — operation / 0–5·6–9 / category, min rule, with count breakdowns on hover.</li>
+    <li>New controls persist + reset with the rest; click-to-focus, the problem list, and the stepper still work.</li>
+  </ul>
+  <div class="callout">
+    <b>One known limit.</b> The analysis view colors up to <span class="b ok">green</span> — <b>blue (permanent)</b> is a
+    cross-session verdict computed by the tracker, not by the per-scope evaluator, so it doesn’t appear here yet (it does
+    on the overview, <a href="#new-tracker">§6</a>). Unifying permanence into the shared engine is a follow-up.
+  </div>
+</section>
+
+<!-- ===================== TRACKER OVERHAUL ===================== -->
+<section id="new-tracker">
+  <h2><span class="n">6</span> Fluency tracker overhaul — overview dashboard <span class="b done">phase 1 built</span></h2>
+  <p class="lead">When you want to zoom out from the granular analysis grid, you come to the tracker and see <b>where the
+     learner is on their journey</b> across addition, subtraction, and multiplication. That landing dashboard now exists.</p>
+  <div class="shots">
+    <figure class="shot"><img src="screenshots/fluency_04_overview.png" alt="Fluency tracker overview dashboard">
+      <figcaption><b>“Where the learner is.”</b> One card per operation: the <b>operation-level</b> rating + % fluent,
+        the broad <b>0–5 / 6–9</b> split, and the <b>categories</b> (addition). Here addition is <i>Missing</i> overall
+        (a gray fact dominates) at 54%, while <b>Add 0</b> and <b>Doubles</b> are <span class="b new">Permanent</span>;
+        subtraction/multiplication show “No data yet.”</figcaption></figure>
+  </div>
+  <h3>Built now</h3>
+  <ul class="small">
+    <li>The three-level roll-up the operator asked for: <b>operation → 0–5/6–9 → categories</b>, all three operations,
+      via the shared min rule. Blue shows here (cross-session permanence from <code>fluencyDatasets</code>).</li>
+    <li>It’s the page’s <b>landing</b> view; the existing per-operation detail sections remain below as the drill-down.</li>
+  </ul>
+  <h3>Still to do on the tracker (next phases)</h3>
+  <ul class="small">
+    <li>Move it off the <b>JSON store</b> onto the per-user <code>.sqlite</code> (shared <code>engine/sqlite_io.mjs</code>),
+      so the tracker and analysis read the same file.</li>
+    <li>Render <b>blue on the per-fact grid</b> (not just as a count) and drill operation → category → problem in place.</li>
+    <li><b>Level-appropriate thresholds</b> (developing ~3.5–4 s) per the G1/G2 finding.</li>
+    <li>Then the <b>problem-generation + next-quiz</b> surface (separate phase — <a href="#roadmap">§8</a>).</li>
+  </ul>
+</section>
+
+<!-- ===================== CODING STATUS ===================== -->
+<section id="coding">
+  <h2><span class="n">7</span> Coding status</h2>
+  <p class="lead">Each step lands independently with tests green (<code>cd apps/math-quiz/tests &amp;&amp; npm run test:all</code>;
+     <code>node --test</code> is 125/125 this round).</p>
+  <div class="phase"><h4><span class="b done">done</span> Shared fluency engine</h4>
+    <p class="small">Rubric + roll-up helpers extracted to <code>fluency_core.js</code> (one source for tracker, analysis,
+      engine). Behavior-preserving; tests updated.</p></div>
+  <div class="phase"><h4><span class="b done">done</span> Roll-up helpers</h4>
+    <p class="small"><code>fluencyRollupStatus</code> (min/worst-of), <code>additionCategoryOf</code>,
+      <code>easyHardBucket</code>, status breakdown — unit-tested.</p></div>
+  <div class="phase"><h4><span class="b done">done</span> Analysis metric toggle + overlay + roll-up strip</h4>
+    <p class="small">Proposal A (§5). Per-cell rating + category strip; covered by
+      <code>math_analysis_page.test.mjs</code> and a capture script.</p></div>
+  <div class="phase"><h4><span class="b done">done</span> Tracker overview dashboard</h4>
+    <p class="small">Proposal B phase 1 (§6).</p></div>
+  <div class="phase"><h4><span class="b new">next</span> Reconcile status names with canon (SPEC §3)</h4>
+    <p class="small">Decide gray’s fate (fold low-accuracy into red vs keep “missing” as an explicit sub-state); make
+      <code>greenMs</code>/<code>redMs</code>/<code>minAccuracy</code> level presets.</p></div>
+  <div class="phase"><h4><span class="b new">next</span> Tracker onto the SQLite store + blue-on-grid + drill-down</h4>
+    <p class="small">Repoint to <code>engine/sqlite_io.mjs</code>; unify permanence into the shared engine so the analysis
+      view can show blue too.</p></div>
+  <div class="phase"><h4><span class="b new">next</span> Run-analysis triggers + optional <code>FluencySnapshots</code></h4>
+    <p class="small">Recompute on demand / after N / at session end (flow §1.5); optional snapshot cache for durability.</p></div>
+  <div class="phase"><h4><span class="b new">later</span> Problem generation + next-quiz surface</h4>
+    <p class="small">The generation/selection engine (§8) — its own phase, once the read/flow surfaces feel right.</p></div>
+</section>
+
+<!-- ===================== ROADMAP ===================== -->
+<section id="roadmap">
+  <h2><span class="n">8</span> Roadmap — problem generation &amp; next-quiz</h2>
+  <p class="lead">Deliberately deferred so the <b>flow</b> (how the tool informs the operator) settles first. Captured here
+     so it isn’t lost.</p>
+  <ul>
+    <li><b>Auto-generate the next lists</b> from current status + response times — producing the <b>short</b> and
+      <b>long</b> next-quiz lists stored in the learner file (today these are hand-made; K2 has a 20 and a 40).</li>
+    <li><b>Quiz-creation-time spec</b> — e.g. “40 questions, 50/50 proximal-zone + already-fluent,” or 80/20; difficulty
+      and time budget as dials.</li>
+    <li><b>Variable-length / “keep going” mode</b> — you can already quit-and-save early; add the inverse: extend a run
+      as if more questions were configured, without restarting.</li>
+    <li><b>Anchor auto-generation</b> (the fluent-user / demo path) already exists and remains available; SQLite already
+      <b>stores problem lists</b> inside the learner file.</li>
+    <li><b>Other use cases</b> (self-serve learners, classroom cohorts, richer roles) — later; not this mode.</li>
+  </ul>
+</section>
+
+<!-- ===================== LOG ===================== -->
+<section id="log">
+  <h2><span class="n">★</span> Change log</h2>
+  <table>
+    <thead><tr><th>Date</th><th>Who</th><th>Change</th></tr></thead>
+    <tbody>
+      <tr><td>2026-06-20</td><td class="dim">cloud agent</td>
+        <td class="dim">Snapshotted v1 → <code>fluency_v1.html</code>. Extracted <code>fluency_core.js</code> (shared
+          rubric + roll-ups). Built the <b>analysis fluency view</b> (metric toggle + overlay + category roll-up, min
+          rule) and the <b>tracker overview dashboard</b> (operation / 0–5·6–9 / category). Rewrote this report with a
+          <b>Flow &amp; roles</b> section and a roadmap; added live screenshots of both new surfaces.</td></tr>
+      <tr><td>2026-06-20</td><td class="dim">cloud agent</td>
+        <td class="dim">First version (now <a href="fluency_v1.html"><code>fluency_v1.html</code></a>): fluency model,
+          current-tracker docs, SQLite data-model status, and the initial proposals.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>
+  Math Quiz fluency report · <code>apps/math-quiz/docs/2026-06-16_compare-report/fluency.html</code> · living document, for internal use.
+</footer>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+{
+  "pipeline_version": "0.4.0",
+  "prompts_version": "denovo-v4",
+  "model_tiers": {
+    "cheap": {
+      "openai": "gpt-5-mini",
+      "anthropic": "claude-haiku-4-5-20251001"
+    },
+    "standard": {
+      "openai": "gpt-5.4",
+      "anthropic": "claude-sonnet-4-6"
+    }
+  },
+  "default_model_tier": "cheap",
+  "chunk_token_cap": 3000,
+  "adjacent_context_segments": 2,
+  "max_island_segments": 20,
+  "anchor_timestamp_threshold": 1,
+  "anchor_sim_ratio_threshold": 1.0,
+  "dual_min_anchor_words": 6,
+  "dual_anchor_edge_words": 3,
+  "dual_decision_max_words": 160,
+  "dual_decision_max_segments": 6,
+  "dual_internal_min_anchor_words": 3,
+  "dual_internal_edge_words": 1,
+  "dual_match_sim_threshold": 0.98,
+  "dual_position_sim_threshold": 0.8,
+  "dual_conservation_min": 0.9,
+  "dual_base_side": "b",
+  "llm_max_retries": 3,
+  "dual_source_suffixes": ["_nova2gen", "_dgwhspm"],
+  "draft_suffixes": {
+    "single_deterministic": "_draftds",
+    "single_llm": "_draftls",
+    "dual_deterministic": "_draftdd",
+    "dual_llm": "_draftld"
+  }
+}

@@ -1,0 +1,29 @@
+---
+import SiteLayout from '../../components/SiteLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getDemoList } from '../../lib/demo-config.js';
+const demos = getDemoList();
+---
+<SiteLayout title="AI Q&amp;A Demos — Focus on Foundations" description="Interactive QRAG demos over interviews, town halls, meetings, and books.">
+  <Header />
+  <main class="demo-page-header">
+    <div class="container">
+      <h1>AI Q&amp;A Demos</h1>
+      <p class="lead">
+        These demos use our QRAG pipeline: your question is routed to relevant source excerpts, then an AI answer
+        is generated with quoted context. Accept the privacy consent and ask a question.
+        Browse <a href="/transcripts/">source transcripts and Q&amp;A</a> for each corpus.
+      </p>
+      <div class="card-grid" style="margin-top: 1.5rem;">
+        {demos.map((demo) => (
+          <a class="card" href={`/demos/${demo.slug}/`}>
+            <h3>{demo.title}</h3>
+            <p>{demo.description}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </main>
+  <Footer />
+</SiteLayout>

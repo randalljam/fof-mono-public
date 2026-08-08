@@ -1,0 +1,105 @@
+<!-- START OF FILE webflow-cms-template-embed-fda-vth.html -->
+
+<!-- ================ START Embed Code  ================ -->
+<div class="source-page">
+  <div id="transcript-container"></div>
+  <div id="qa-container" style="display: none;"></div>
+</div>
+
+<script>
+(function() {
+  console.log('Loading webflow-cms-template-embed-fda-vth.html: 2-4 0811 renamed again keep timestamp');
+
+  var transcriptContainer = document.getElementById('transcript-container');
+  var qaContainer = document.getElementById('qa-container');
+  
+  // Add the toggleLevel function for section/question controls
+  window.toggleLevel = function(level) {
+    // Get all details elements within the currently visible container
+    const visibleContainer = transcriptContainer.style.display !== 'none' ? 
+      transcriptContainer : qaContainer;
+    const allDetails = visibleContainer.querySelectorAll('details');
+    
+    if (level === 'collapse') {
+      // Close everything
+      allDetails.forEach(detail => {
+        detail.removeAttribute('open');
+      });
+      return;
+    }
+    
+    allDetails.forEach(detail => {
+      switch(level) {
+        case 'sections':
+          // For transcript view - open all sections
+          detail.setAttribute('open', '');
+          break;
+          
+        case 'questions':
+          // First level details (questions) only
+          if (detail.parentElement.tagName !== 'DETAILS') {
+            detail.setAttribute('open', '');
+          }
+          break;
+          
+        case 'answers':
+          // Second level details (answers)
+          if (detail.parentElement.tagName === 'DETAILS' && 
+              detail.parentElement.parentElement.tagName !== 'DETAILS') {
+            detail.setAttribute('open', '');
+            // Also open parent to show answer
+            detail.parentElement.setAttribute('open', '');
+          }
+          break;
+          
+        case 'all':
+          // All levels
+          detail.setAttribute('open', '');
+          break;
+      }
+    });
+  };
+  
+  // Function to fetch and insert content
+  async function fetchContent(url, container) {
+    try {
+      const response = await fetch(url);
+      const html = await response.text();
+      container.innerHTML = html;
+      
+      // Set up toggle document button click handler
+      const toggleDocButton = container.querySelector('#toggleDocButton');
+      if (toggleDocButton) {
+        toggleDocButton.addEventListener('click', function() {
+          var transcriptVisible = (transcriptContainer.style.display !== 'none');
+          
+          if (transcriptVisible) {
+            transcriptContainer.style.display = 'none';
+            qaContainer.style.display = 'block';
+            this.textContent = 'View Q&A';
+          } else {
+            qaContainer.style.display = 'none';
+            transcriptContainer.style.display = 'block';
+            this.textContent = 'View Transcript';
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error loading content:', error);
+      container.innerHTML = '<p>Error loading content. Please try again later.</p>';
+    }
+  }
+  
+  // Get URLs from Webflow CMS
+  const transcriptUrl = "{{wf {&quot;path&quot;:&quot;s3-transcript-html-url&quot;,&quot;type&quot;:&quot;Link&quot;\} }}";
+  const qaUrl = "{{wf {&quot;path&quot;:&quot;s3-qa-html-url&quot;,&quot;type&quot;:&quot;Link&quot;\} }}";
+  
+  // Load initial content
+  fetchContent(transcriptUrl, transcriptContainer);
+  fetchContent(qaUrl, qaContainer);
+})();
+</script>
+<!-- ================ END Embed Code  ================ -->
+
+
+<!-- END OF FILE webflow-cms-template-embed-fda-vth.html -->

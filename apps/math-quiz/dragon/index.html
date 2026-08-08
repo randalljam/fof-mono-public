@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dragon Fluency Game</title>
+  <link rel="icon" href="../icons/favicon-dragon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
+  <script src="../math_utils.js"></script>
+  <script src="../fluency_core.js"></script>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.175.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.175.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="loading-screen">
+    <div class="loading-inner">
+      <h1>Dragon Nest</h1>
+      <p id="loading-status">Loading…</p>
+    </div>
+  </div>
+  <div id="game-container"></div>
+  <div id="hud-root"></div>
+  <div id="quiz-root"></div>
+  <div id="story-root" class="hidden"></div>
+  <div id="howto-root"></div>
+  <div id="server-error" class="hidden">
+    <div class="server-error-inner">
+      <h2 id="server-error-title">Need the game server</h2>
+      <p id="server-error-detail">Start the dev server, then open the game at the link below.</p>
+      <p>Ask a grown-up to start the server:</p>
+      <code>cd apps/math-quiz && python3 tools/dev_server.py</code>
+      <p>Then open:</p>
+      <code id="server-error-url">http://127.0.0.1:8907/dragon/index.html</code>
+    </div>
+  </div>
+  <script type="module">
+    // Dynamic import so a failed module fetch (e.g. ERR_CONNECTION_RESET) can
+    // update the loading screen instead of leaving "Dragon Nest / Loading…" forever.
+    // One automatic reload clears the browser module map after a flaky LAN burst;
+    // a second failure shows the message (avoids a reload loop).
+    const RETRY_KEY = 'dragon-module-load-retry';
+    import('./main.js').then(() => {
+      try { sessionStorage.removeItem(RETRY_KEY); } catch { /* private mode */ }
+    }).catch((err) => {
+      console.error('[dragon] failed to load main module graph', err);
+      try {
+        if (!sessionStorage.getItem(RETRY_KEY)) {
+          sessionStorage.setItem(RETRY_KEY, '1');
+          const el = document.getElementById('loading-status');
+          if (el) el.textContent = 'Retrying load…';
+          location.reload();
+          return;
+        }
+        sessionStorage.removeItem(RETRY_KEY);
+      } catch { /* private mode — fall through to error UI */ }
+      const el = document.getElementById('loading-status');
+      if (el) {
+        el.textContent = 'Load failed — hard-refresh once the game server is running (Cmd+Shift+R).';
+      }
+    });
+  </script>
+</body>
+</html>

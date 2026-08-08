@@ -1,0 +1,48 @@
+{
+  "name": "fof-local-files-decorator",
+  "displayName": "FOF Local Files Decorator",
+  "description": "Decorates configured canonical local-file mount paths in the Cursor/VS Code Explorer.",
+  "version": "0.1.0",
+  "publisher": "focusonfoundations",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "workspaceContains:scripts/local_files_mounts.txt"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "FOF Local Files Decorator",
+      "properties": {
+        "fofLocalFilesDecorator.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Explorer decorations for canonical local-file mount paths."
+        },
+        "fofLocalFilesDecorator.mountsFile": {
+          "type": "string",
+          "default": "scripts/local_files_mounts.txt",
+          "description": "Workspace-relative file listing local-only mount paths, one path per line."
+        },
+        "fofLocalFilesDecorator.extraMounts": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "description": "Additional workspace-relative local-only paths to decorate."
+        },
+        "fofLocalFilesDecorator.tooltip": {
+          "type": "string",
+          "default": "Local-only canonical file mount",
+          "description": "Tooltip shown for decorated local-only files and folders."
+        }
+      }
+    }
+  }
+}

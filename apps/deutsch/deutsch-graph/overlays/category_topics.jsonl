@@ -1,0 +1,15 @@
+# Curated category -> topic bridge (extends the automatic slug/plural matching in dgraph/build.py).
+# One JSON object per line: {"category": "<category label>", "topics": ["<topic slug>", ...]}
+# Topic slugs must exist in graph/nodes/topics.jsonl (unresolved slugs are reported as diagnostics).
+{"category": "Artificial General Intelligence (AGI)", "topics": ["agi", "ai", "quantum-agi", "ai-risk"]}
+{"category": "Governing", "topics": ["government", "politics"]}
+{"category": "Human Brain", "topics": ["brain", "brains"]}
+{"category": "Human Mind", "topics": ["mind", "consciousness", "unconscious", "psychology", "free-will", "fun"]}
+{"category": "Explanatory Knowledge", "topics": ["knowledge", "epistemology", "fallibilism", "popper"]}
+{"category": "Principle of Optimism", "topics": ["optimism", "pessimism"]}
+{"category": "Sustainability", "topics": ["x-risk", "risk", "wealth"]}
+{"category": "Computation", "topics": ["quantum-computation", "quantum-computing", "programs"]}
+{"category": "Universal Computers", "topics": ["quantum-computer"]}
+{"category": "Replicator", "topics": ["evolution"]}
+{"category": "Experience", "topics": ["virtual-reality"]}
+{"category": "Memes", "topics": ["anti-rational-memes"]}

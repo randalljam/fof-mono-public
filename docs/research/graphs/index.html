@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Graphs as Data Structures</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg2: #131a24;
+      --panel: #161d29;
+      --panel2: #1c2634;
+      --ink: #e6edf3;
+      --muted: #9aa7b6;
+      --dim: #6d7b8c;
+      --border: #243040;
+      --border2: #2f3d50;
+      --accent: #58a6ff;
+      --accent-2: #7ee787;
+      --teal: #39d3c3;
+      --gold: #f0c674;
+      --violet: #bc8cff;
+      --good: #7ee787;
+      --bad: #ff6b6b;
+      --edge: #8b9bb0;
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #0b0f16, var(--bg) 400px);
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.55;
+      font-size: 15px;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    header {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 40px 22px 24px;
+    }
+    main {
+      max-width: 1180px;
+      margin: 0 auto 80px;
+      padding: 0 22px;
+    }
+    .hub-link {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--dim);
+      margin-bottom: 18px;
+    }
+    .hub-link:hover {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    h1 {
+      max-width: 820px;
+      margin: 10px 0 0;
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+    h2 {
+      margin: 0 0 14px;
+      font-size: clamp(1.45rem, 2.6vw, 1.9rem);
+      letter-spacing: -0.02em;
+    }
+    h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+      letter-spacing: 0.01em;
+    }
+    p {
+      margin: 0 0 14px;
+    }
+    button {
+      border: 1px solid var(--border2);
+      border-radius: 999px;
+      background: var(--panel);
+      color: var(--muted);
+      cursor: pointer;
+      font: inherit;
+      padding: 9px 14px;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, color 160ms ease;
+    }
+    button:hover {
+      border-color: var(--accent);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    button.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #08111f;
+      font-weight: 700;
+    }
+    code {
+      font-family: var(--mono);
+      background: #0b1220;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      color: #cde3ff;
+      padding: 1px 5px;
+      font-size: 0.86em;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 28px;
+      align-items: end;
+    }
+    .eyebrow {
+      font-family: var(--mono);
+      color: var(--accent);
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .lede {
+      max-width: 720px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 1.1rem;
+    }
+    .tag-row,
+    .button-row,
+    .checklist {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+    .tag {
+      border: 1px solid var(--border2);
+      border-radius: 999px;
+      background: var(--panel);
+      color: var(--muted);
+      padding: 7px 11px;
+      font-size: 0.82rem;
+      font-family: var(--mono);
+    }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+    .section {
+      margin-top: 28px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 18px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .mini-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--panel2);
+      padding: 16px;
+    }
+    .muted {
+      color: var(--muted);
+    }
+    .canvas-card {
+      min-height: 430px;
+    }
+    .graph-svg {
+      width: 100%;
+      min-height: 360px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background:
+        linear-gradient(rgba(47, 61, 80, 0.35) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(47, 61, 80, 0.35) 1px, transparent 1px),
+        #0b1220;
+      background-size: 28px 28px;
+      overflow: visible;
+    }
+    .node circle,
+    .node rect {
+      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.35));
+    }
+    .node text {
+      fill: #0d1117;
+      font-size: 15px;
+      font-weight: 700;
+      pointer-events: none;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+    .edge {
+      stroke: var(--edge);
+      stroke-width: 2.3;
+      fill: none;
+    }
+    .edge.cycle {
+      stroke: var(--bad);
+      stroke-width: 3;
+    }
+    .edge-label {
+      fill: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      font-family: var(--mono);
+      paint-order: stroke;
+      stroke: #0b1220;
+      stroke-width: 4px;
+      stroke-linejoin: round;
+      text-anchor: middle;
+    }
+    .status {
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+    }
+    .status.good {
+      background: rgba(126, 231, 135, 0.12);
+      color: var(--good);
+      border-color: rgba(126, 231, 135, 0.35);
+    }
+    .status.bad {
+      background: rgba(255, 107, 107, 0.12);
+      color: var(--bad);
+      border-color: rgba(255, 107, 107, 0.35);
+    }
+    .details-panel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .pill {
+      border-radius: 999px;
+      background: #0b1220;
+      border: 1px solid var(--border2);
+      color: var(--muted);
+      padding: 6px 10px;
+      font-size: 0.82rem;
+      font-family: var(--mono);
+    }
+    .edge-controls {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .edge-controls button {
+      border-radius: 10px;
+      text-align: left;
+    }
+    .topo-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .topo-item {
+      border-radius: 10px;
+      background: rgba(88, 166, 255, 0.12);
+      border: 1px solid rgba(88, 166, 255, 0.35);
+      color: var(--accent);
+      font-weight: 700;
+      padding: 7px 10px;
+    }
+    .lens-card {
+      min-height: 190px;
+      cursor: pointer;
+      transition: border-color 0.12s ease, transform 0.12s ease;
+    }
+    .lens-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-2px);
+    }
+    .lens-card.active {
+      border-color: var(--accent);
+      background: rgba(88, 166, 255, 0.08);
+    }
+    .definition {
+      border-left: 4px solid var(--accent);
+    }
+    .source-note {
+      border: 1px solid var(--border2);
+      border-left: 4px solid var(--teal);
+      border-radius: 10px;
+      background: linear-gradient(180deg, var(--panel2), var(--panel));
+      padding: 16px;
+    }
+    .footer-note {
+      color: var(--dim);
+      font-size: 0.9rem;
+      margin-top: 22px;
+      font-family: var(--mono);
+    }
+    @media (max-width: 880px) {
+      .hero,
+      .grid-2,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+      .edge-controls {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="hub-link" href="/docs/">← Docs Hub</a>
+    <div class="hero">
+      <div>
+        <div class="eyebrow">Research · graphs as data structures</div>
+        <div class="tag-row" aria-label="Page topics" style="margin-top: 14px;">
+          <span class="tag">Graph theory</span>
+          <span class="tag">DAGs</span>
+          <span class="tag">Code dependency graphs</span>
+          <span class="tag">Edtech + AI curriculum</span>
+        </div>
+        <h1>Graphs as data structures</h1>
+        <p class="lede">A graph is a way to model things and relationships. The same idea can describe friendships, roads, prerequisites, function calls, lesson dependencies, recommendation paths, and causal claims.</p>
+      </div>
+      <aside class="card definition">
+        <h2>The compact definition</h2>
+        <p>A graph has <strong>nodes</strong> and <strong>edges</strong>. Nodes are the things. Edges are the relationships between them.</p>
+        <p>A <strong>DAG</strong> is a <strong>directed acyclic graph</strong>: every edge points one way, and following arrows can never bring you back to where you started.</p>
+      </aside>
+    </div>
+  </header>
+  <main>
+    <section class="section grid-3" aria-label="Core graph vocabulary">
+      <article class="mini-card">
+        <h3>Node / vertex</h3>
+        <p class="muted">An entity: a learner, skill, file, function, lesson, task, commit, city, or concept.</p>
+      </article>
+      <article class="mini-card">
+        <h3>Edge / relationship</h3>
+        <p class="muted">A connection: depends on, calls, unlocks, follows, influences, resembles, links to, or is adjacent to.</p>
+      </article>
+      <article class="mini-card">
+        <h3>Traversal / query</h3>
+        <p class="muted">An algorithmic walk: find neighbors, trace prerequisites, detect loops, rank importance, or choose the next step.</p>
+      </article>
+    </section>
+    <section class="section grid-2">
+      <article class="card canvas-card">
+        <h2>Compare graph shapes</h2>
+        <p class="muted">Choose a type. The drawing, constraints, and use cases update together.</p>
+        <div id="typeButtons" class="button-row" aria-label="Graph type selector"></div>
+        <svg id="typeGraph" class="graph-svg" viewBox="0 0 720 390" role="img" aria-label="Interactive graph example"></svg>
+      </article>
+      <article class="card">
+        <h2 id="typeTitle">Graph type</h2>
+        <p id="typeDescription"></p>
+        <div class="details-panel">
+          <div>
+            <h3>What makes it distinct</h3>
+            <div id="typeProperties" class="pill-list"></div>
+          </div>
+          <div>
+            <h3>Where you see it</h3>
+            <div id="typeUses" class="pill-list"></div>
+          </div>
+          <div>
+            <h3>Question it helps answer</h3>
+            <p id="typeQuestion" class="muted"></p>
+          </div>
+        </div>
+      </article>
+    </section>
+    <section class="section grid-2">
+      <article class="card">
+        <h2>DAG lab</h2>
+        <p class="muted">Toggle edges in this curriculum graph. The checker tells you whether the result is still a DAG and, when it is, gives one valid learning order.</p>
+        <div id="dagStatus" class="status good"></div>
+        <div class="edge-controls" id="edgeControls"></div>
+        <h3 style="margin-top: 16px;">One valid topological order</h3>
+        <div id="topoOrder" class="topo-list"></div>
+      </article>
+      <article class="card canvas-card">
+        <h2>Prerequisite graph</h2>
+        <svg id="dagGraph" class="graph-svg" viewBox="0 0 720 390" role="img" aria-label="DAG checker graph"></svg>
+      </article>
+    </section>
+    <section class="section card">
+      <h2>Graphs in edtech and AI education software</h2>
+      <p class="muted">Graphs become useful when educational content stops being a flat list. They let software reason about dependency, sequence, similarity, mastery, evidence, and explanation.</p>
+      <div class="grid-3" id="lensGrid"></div>
+    </section>
+    <section class="section grid-2">
+      <article class="card">
+        <h2>How this relates to <code>docs/codeindex</code></h2>
+        <p>The code-index script is already using graph ideas. It parses Python files with <code>ast</code>, treats user-defined functions as graph nodes, and treats function calls as directed edges.</p>
+        <div class="source-note">
+          <p><strong>Concrete mapping:</strong></p>
+          <p><code>generate_graph_data()</code> creates <code>graph_nodes</code> with IDs like <code>module.function</code>, then creates <code>graph_edges</code> from caller to callee.</p>
+          <p class="muted">That makes the codebase searchable as a call graph: "what does this function call?" and "what calls this function?"</p>
+        </div>
+      </article>
+      <article class="card">
+        <h2>Useful mental models</h2>
+        <div class="grid-2">
+          <div class="mini-card">
+            <h3>Structure</h3>
+            <p class="muted">What entities exist, and which relationships are allowed?</p>
+          </div>
+          <div class="mini-card">
+            <h3>Direction</h3>
+            <p class="muted">Does the edge mean A relates to B, or specifically A points to B?</p>
+          </div>
+          <div class="mini-card">
+            <h3>Cycles</h3>
+            <p class="muted">Can the relationship loop back? Sometimes cycles are natural; sometimes they are an error.</p>
+          </div>
+          <div class="mini-card">
+            <h3>Algorithms</h3>
+            <p class="muted">What do you need to compute: path, order, cluster, influence, centrality, or recommendation?</p>
+          </div>
+        </div>
+      </article>
+    </section>
+    <section class="section card">
+      <h2>Reference map</h2>
+      <div class="grid-3">
+        <div class="mini-card">
+          <h3>DAG</h3>
+          <p class="muted">Best for dependencies, prerequisites, build steps, course paths, version histories, and causal models that cannot loop.</p>
+        </div>
+        <div class="mini-card">
+          <h3>Knowledge graph</h3>
+          <p class="muted">Best for richly typed entities and relationships: concept relates-to concept, lesson teaches skill, learner shows evidence for standard.</p>
+        </div>
+        <div class="mini-card">
+          <h3>Graph database</h3>
+          <p class="muted">A storage/query system optimized for traversing relationships, such as finding nearby concepts or prerequisite chains.</p>
+        </div>
+      </div>
+      <p class="footer-note">Built as a local research page. Suggested next expansions: graph algorithms, storage choices, graph databases, GraphRAG, and curriculum knowledge-graph design patterns.</p>
+    </section>
+  </main>
+  <script>
+    const typeExamples = {
+      undirected: {
+        label: "Undirected",
+        title: "Undirected graph",
+        description: "Edges are symmetric. If A is connected to B, B is connected to A. This is useful when the relationship does not have a natural direction.",
+        properties: ["No arrowheads", "Symmetric relationship", "Cycles may exist"],
+        uses: ["Friendships", "Road adjacency", "Similar concepts"],
+        question: "What is connected to this thing?",
+        directed: false,
+        nodes: [
+          ["A", 165, 85], ["B", 320, 95], ["C", 500, 160], ["D", 245, 260], ["E", 475, 300]
+        ],
+        edges: [["A", "B"], ["B", "C"], ["A", "D"], ["D", "E"], ["C", "E"]]
+      },
+      directed: {
+        label: "Directed",
+        title: "Directed graph",
+        description: "Edges have direction. A can point to B without B pointing back. Direction lets the graph represent flow, dependence, influence, or reference.",
+        properties: ["Arrowheads", "Asymmetric relationship", "Cycles may exist"],
+        uses: ["Follows graph", "Function calls", "Web links"],
+        question: "Where can this node point next?",
+        directed: true,
+        nodes: [
+          ["A", 140, 190], ["B", 310, 95], ["C", 315, 285], ["D", 520, 190]
+        ],
+        edges: [["A", "B"], ["A", "C"], ["B", "D"], ["C", "D"]]
+      },
+      dag: {
+        label: "DAG",
+        title: "Directed acyclic graph",
+        description: "A DAG has directed edges and no directed cycles. This makes it ideal for dependency systems because there is always at least one valid ordering.",
+        properties: ["Directed", "No cycles", "Topological sort exists"],
+        uses: ["Curriculum prerequisites", "Build pipelines", "Git commits"],
+        question: "What can be safely done next?",
+        directed: true,
+        nodes: [
+          ["A", 150, 80], ["B", 310, 170], ["C", 150, 280], ["D", 510, 170], ["E", 510, 300]
+        ],
+        edges: [["A", "B"], ["A", "C"], ["B", "D"], ["C", "D"], ["D", "E"]]
+      },
+      cyclic: {
+        label: "Cyclic",
+        title: "Directed graph with a cycle",
+        description: "A directed cycle means you can follow arrows and return to the start. Cycles are normal in some systems, but fatal in strict dependency graphs.",
+        properties: ["Directed", "At least one loop", "No full topological order"],
+        uses: ["Feedback loops", "Circular references", "Mutual influence"],
+        question: "Where does the loop make reasoning harder?",
+        directed: true,
+        cycleEdges: [["A", "B"], ["B", "C"], ["C", "A"]],
+        nodes: [
+          ["A", 180, 110], ["B", 430, 105], ["C", 430, 285], ["D", 185, 285]
+        ],
+        edges: [["A", "B"], ["B", "C"], ["C", "A"], ["D", "A"], ["C", "D"]]
+      },
+      tree: {
+        label: "Tree",
+        title: "Tree",
+        description: "A tree is a hierarchical graph. In a rooted tree, each child has one parent. Trees are a special, highly constrained graph shape.",
+        properties: ["Hierarchical", "No cycles", "One path between nodes"],
+        uses: ["File systems", "Taxonomies", "Course outlines"],
+        question: "What belongs under this parent?",
+        directed: true,
+        nodes: [
+          ["Root", 360, 60], ["A", 180, 165], ["B", 360, 165], ["C", 540, 165], ["D", 120, 290], ["E", 240, 290], ["F", 480, 290], ["G", 600, 290]
+        ],
+        edges: [["Root", "A"], ["Root", "B"], ["Root", "C"], ["A", "D"], ["A", "E"], ["C", "F"], ["C", "G"]]
+      },
+      weighted: {
+        label: "Weighted",
+        title: "Weighted graph",
+        description: "Edges carry values. The weight might mean distance, cost, confidence, difficulty, similarity, or strength of evidence.",
+        properties: ["Edge values", "Shortest path", "Ranking by strength"],
+        uses: ["Recommendation", "Routing", "Mastery evidence"],
+        question: "Which path is cheapest, strongest, or most likely?",
+        directed: true,
+        weighted: true,
+        nodes: [
+          ["A", 125, 200], ["B", 290, 90], ["C", 310, 300], ["D", 515, 200]
+        ],
+        edges: [["A", "B", "0.8"], ["A", "C", "0.4"], ["B", "D", "0.7"], ["C", "D", "0.9"], ["B", "C", "0.2"]]
+      }
+    };
+    const dagNodes = [
+      ["Fractions", 115, 200],
+      ["Ratios", 275, 105],
+      ["Decimals", 285, 295],
+      ["Proportions", 465, 105],
+      ["Percent", 475, 295],
+      ["Linear models", 620, 200]
+    ];
+    const dagEdges = [
+      ["Fractions", "Ratios", true],
+      ["Fractions", "Decimals", true],
+      ["Ratios", "Proportions", true],
+      ["Decimals", "Percent", true],
+      ["Proportions", "Linear models", true],
+      ["Percent", "Linear models", true],
+      ["Linear models", "Ratios", false]
+    ];
+    const lenses = [
+      {
+        title: "Prerequisite DAG",
+        text: "Skills point to the skills that depend on them. The platform can choose a valid sequence and flag circular curriculum logic.",
+        tags: ["scope and sequence", "topological sort", "lesson unlocks"]
+      },
+      {
+        title: "Knowledge graph",
+        text: "Concepts, standards, lessons, questions, examples, and misconceptions become typed nodes connected by meaningful relationships.",
+        tags: ["concept map", "standards alignment", "semantic search"]
+      },
+      {
+        title: "Learner model graph",
+        text: "Evidence nodes connect attempts, hints, standards, confidence, and mastery claims. The graph explains why a recommendation was made.",
+        tags: ["mastery", "evidence", "recommendation"]
+      },
+      {
+        title: "Content dependency graph",
+        text: "Generated activities depend on source passages, rubrics, objectives, and constraints. Provenance is visible instead of hidden in prompts.",
+        tags: ["AI generation", "provenance", "quality control"]
+      },
+      {
+        title: "Conversation graph",
+        text: "Tutoring sessions can branch by learner response, misconception, affect, and goal. The graph shows possible teaching moves.",
+        tags: ["adaptive tutoring", "dialogue state", "branching"]
+      },
+      {
+        title: "Code and system graph",
+        text: "Functions, modules, APIs, and jobs connect by calls and dependencies. This is the pattern used by this repo's code-index project.",
+        tags: ["call graph", "impact analysis", "maintenance"]
+      }
+    ];
+    const colors = ["#7ee787", "#ffb4a2", "#79c0ff", "#f0c674", "#d2a8ff", "#39d3c3", "#ff7b9c", "#a5d6a7"];
+    const CIRCLE_R = 34;
+    const RECT_HW = 68;
+    const RECT_HH = 24;
+    function nodeShape(id) {
+      return id.length > 3 ? "rect" : "circle";
+    }
+    function nodeMap(nodes) {
+      return Object.fromEntries(nodes.map(([id, x, y]) => [id, { id, x, y, shape: nodeShape(id) }]));
+    }
+    function borderPoint(from, to, pad) {
+      const dx = to.x - from.x;
+      const dy = to.y - from.y;
+      const len = Math.hypot(dx, dy) || 1;
+      const ux = dx / len;
+      const uy = dy / len;
+      let dist;
+      if (from.shape === "circle") {
+        dist = CIRCLE_R + pad;
+      } else {
+        const tx = Math.abs(ux) < 1e-9 ? Infinity : RECT_HW / Math.abs(ux);
+        const ty = Math.abs(uy) < 1e-9 ? Infinity : RECT_HH / Math.abs(uy);
+        dist = Math.min(tx, ty) + pad;
+      }
+      if (dist >= len - 1) dist = Math.max(0, len * 0.45);
+      return { x: from.x + ux * dist, y: from.y + uy * dist };
+    }
+    function edgeEndpoints(a, b, directed) {
+      const startPad = 2;
+      const endPad = directed ? 3 : 2;
+      return {
+        x1: borderPoint(a, b, startPad).x,
+        y1: borderPoint(a, b, startPad).y,
+        x2: borderPoint(b, a, endPad).x,
+        y2: borderPoint(b, a, endPad).y
+      };
+    }
+    function drawGraph(svgId, nodes, edges, config = {}) {
+      const svg = document.getElementById(svgId);
+      const map = nodeMap(nodes);
+      const directed = Boolean(config.directed);
+      const weighted = Boolean(config.weighted);
+      const cycleSet = new Set((config.cycleEdges || []).map(edge => edge.join("->")));
+      const edgeColor = getComputedStyle(document.documentElement).getPropertyValue("--edge").trim() || "#8b9bb0";
+      const badColor = getComputedStyle(document.documentElement).getPropertyValue("--bad").trim() || "#ff6b6b";
+      svg.innerHTML = `
+        <defs>
+          <marker id="${svgId}-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+            <path d="M1,1 L9,5 L1,9 Z" fill="${edgeColor}"></path>
+          </marker>
+          <marker id="${svgId}-arrow-bad" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+            <path d="M1,1 L9,5 L1,9 Z" fill="${badColor}"></path>
+          </marker>
+        </defs>
+      `;
+      edges.forEach(edge => {
+        const [from, to, label] = edge;
+        const a = map[from];
+        const b = map[to];
+        const key = `${from}->${to}`;
+        const isCycle = cycleSet.has(key);
+        const pts = edgeEndpoints(a, b, directed);
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", pts.x1);
+        line.setAttribute("y1", pts.y1);
+        line.setAttribute("x2", pts.x2);
+        line.setAttribute("y2", pts.y2);
+        line.setAttribute("class", `edge${isCycle ? " cycle" : ""}`);
+        if (directed) {
+          line.setAttribute("marker-end", `url(#${svgId}-${isCycle ? "arrow-bad" : "arrow"})`);
+        }
+        svg.appendChild(line);
+        if (weighted && label) {
+          const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          text.setAttribute("x", (pts.x1 + pts.x2) / 2);
+          text.setAttribute("y", (pts.y1 + pts.y2) / 2 - 8);
+          text.setAttribute("class", "edge-label");
+          text.textContent = label;
+          svg.appendChild(text);
+        }
+      });
+      nodes.forEach(([id, x, y], index) => {
+        const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        group.setAttribute("class", "node");
+        const shapeName = nodeShape(id);
+        const shape = document.createElementNS("http://www.w3.org/2000/svg", shapeName);
+        if (shapeName === "circle") {
+          shape.setAttribute("cx", x);
+          shape.setAttribute("cy", y);
+          shape.setAttribute("r", CIRCLE_R);
+        } else {
+          shape.setAttribute("x", x - RECT_HW);
+          shape.setAttribute("y", y - RECT_HH);
+          shape.setAttribute("width", RECT_HW * 2);
+          shape.setAttribute("height", RECT_HH * 2);
+          shape.setAttribute("rx", 14);
+        }
+        shape.setAttribute("fill", colors[index % colors.length]);
+        shape.setAttribute("stroke", "#0d1117");
+        shape.setAttribute("stroke-width", "1.4");
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", x);
+        text.setAttribute("y", y);
+        text.textContent = id;
+        group.append(shape, text);
+        svg.appendChild(group);
+      });
+    }
+    function renderTypeButtons() {
+      const container = document.getElementById("typeButtons");
+      Object.entries(typeExamples).forEach(([key, example], index) => {
+        const button = document.createElement("button");
+        button.textContent = example.label;
+        button.type = "button";
+        button.addEventListener("click", () => selectType(key));
+        if (index === 0) button.classList.add("active");
+        container.appendChild(button);
+      });
+    }
+    function selectType(key) {
+      const example = typeExamples[key];
+      document.querySelectorAll("#typeButtons button").forEach(button => {
+        button.classList.toggle("active", button.textContent === example.label);
+      });
+      document.getElementById("typeTitle").textContent = example.title;
+      document.getElementById("typeDescription").textContent = example.description;
+      renderPills("typeProperties", example.properties);
+      renderPills("typeUses", example.uses);
+      document.getElementById("typeQuestion").textContent = example.question;
+      drawGraph("typeGraph", example.nodes, example.edges, example);
+    }
+    function renderPills(id, items) {
+      const container = document.getElementById(id);
+      container.innerHTML = "";
+      items.forEach(item => {
+        const pill = document.createElement("span");
+        pill.className = "pill";
+        pill.textContent = item;
+        container.appendChild(pill);
+      });
+    }
+    function activeDagEdges() {
+      return dagEdges.filter(edge => edge[2]).map(([from, to]) => [from, to]);
+    }
+    function analyzeDag() {
+      const ids = dagNodes.map(([id]) => id);
+      const edges = activeDagEdges();
+      const outgoing = Object.fromEntries(ids.map(id => [id, []]));
+      const indegree = Object.fromEntries(ids.map(id => [id, 0]));
+      edges.forEach(([from, to]) => {
+        outgoing[from].push(to);
+        indegree[to] += 1;
+      });
+      const queue = ids.filter(id => indegree[id] === 0);
+      const order = [];
+      while (queue.length) {
+        const current = queue.shift();
+        order.push(current);
+        outgoing[current].forEach(next => {
+          indegree[next] -= 1;
+          if (indegree[next] === 0) queue.push(next);
+        });
+      }
+      const hasCycle = order.length !== ids.length;
+      return { hasCycle, order };
+    }
+    function renderDagLab() {
+      const controls = document.getElementById("edgeControls");
+      controls.innerHTML = "";
+      dagEdges.forEach(edge => {
+        const [from, to, active] = edge;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = active ? "active" : "";
+        button.textContent = `${from} -> ${to}`;
+        button.addEventListener("click", () => {
+          edge[2] = !edge[2];
+          renderDagLab();
+        });
+        controls.appendChild(button);
+      });
+      const result = analyzeDag();
+      const status = document.getElementById("dagStatus");
+      status.className = `status ${result.hasCycle ? "bad" : "good"}`;
+      status.textContent = result.hasCycle
+        ? "Not a DAG: at least one directed cycle exists."
+        : "Valid DAG: directed edges are active and no cycle exists.";
+      const topo = document.getElementById("topoOrder");
+      topo.innerHTML = "";
+      const topoItems = result.hasCycle ? ["Cycle blocks a full order"] : result.order;
+      topoItems.forEach(item => {
+        const span = document.createElement("span");
+        span.className = "topo-item";
+        span.textContent = item;
+        topo.appendChild(span);
+      });
+      const cycleEdge = dagEdges[6][2] ? [["Ratios", "Proportions"], ["Proportions", "Linear models"], ["Linear models", "Ratios"]] : [];
+      drawGraph("dagGraph", dagNodes, activeDagEdges(), { directed: true, cycleEdges: cycleEdge });
+    }
+    function renderLenses() {
+      const grid = document.getElementById("lensGrid");
+      lenses.forEach((lens, index) => {
+        const card = document.createElement("article");
+        card.className = `mini-card lens-card${index === 0 ? " active" : ""}`;
+        card.innerHTML = `
+          <h3>${lens.title}</h3>
+          <p class="muted">${lens.text}</p>
+          <div class="pill-list">${lens.tags.map(tag => `<span class="pill">${tag}</span>`).join("")}</div>
+        `;
+        card.addEventListener("click", () => {
+          document.querySelectorAll(".lens-card").forEach(item => item.classList.remove("active"));
+          card.classList.add("active");
+        });
+        grid.appendChild(card);
+      });
+    }
+    renderTypeButtons();
+    selectType("dag");
+    renderDagLab();
+    renderLenses();
+  </script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+// Fabric build for Minecraft 1.21.11 — last obfuscated release. Uses the legacy
+// `fabric-loom` plugin id and Yarn mappings, just like the original single-project setup.
+// Source is consumed from the sibling `fabric/` module via srcDir.
+
+plugins {
+    id 'fabric-loom' version "${loom_version}.+"
+    id 'maven-publish'
+}
+
+base {
+    archivesName = "${project.archives_base_name}-fabric"
+}
+
+tasks.withType(AbstractArchiveTask).configureEach {
+    archiveVersion = "${project.version}-mc${project.minecraft_version}"
+}
+
+// Pull shared source/resources from the fabric/ module so both fabric-* targets read the
+// same code. The common/ tree is also included for forward-compatibility with code that
+// has moved out of the loader-specific package.
+//
+// Use `srcDirs = [...]` (plural, assignment) rather than `srcDir x` (singular, appends)
+// so we replace Gradle's default list outright. Otherwise the default `src/main/resources`
+// would appear twice and processResources would error on duplicate fabric.mod.json.
+sourceSets {
+    main {
+        java {
+            srcDirs = [
+                rootProject.file('shared/src/main/java'),
+                rootProject.file('common/src/main/java'),
+            ]
+        }
+        resources {
+            srcDirs = [
+                'src/main/resources',                              // target-local: fabric.mod.json
+                rootProject.file('shared/src/main/resources'),     // shared: assets, lang, textures
+            ]
+        }
+    }
+    test {
+        java {
+            srcDirs = [rootProject.file('shared/src/test/java')]
+        }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    // Bundled into the jar for runtime quiz tracking.
+    include implementation('org.xerial:sqlite-jdbc:3.49.1.0')
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.xerial:sqlite-jdbc:3.49.1.0'
+    testImplementation 'com.google.code.gson:gson:2.11.0'
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version
+    }
+}
+
+// The Wandering Nerd texture is a generated asset. Generated into the SHARED resources
+// dir so both fabric targets pick it up without re-running per target.
+processResources.dependsOn rootProject.tasks.named('generateNerdTexture')
+tasks.configureEach {
+    if (it.name == 'sourcesJar') it.dependsOn rootProject.tasks.named('generateNerdTexture')
+}
+
+test {
+    useJUnitPlatform()
+}
+
+java {
+    withSourcesJar()
+}
+
+jar {
+    from(rootProject.file('LICENSE')) {
+        rename { "${it}_${project.archives_base_name}" }
+    }
+}
+
+// One-shot helper to migrate the shared fabric/ source from Yarn names to Mojang names.
+// Run this on a machine with network access; the result lands in `remappedSrc/`. Copy
+// over fabric/src/main/java/ when you're ready to switch the codebase to Mojang names.
+// See docs/migration-1.21-to-26.1.md for the full procedure.
+tasks.register('migrateToMojang') {
+    group = 'mathquest'
+    description = 'Generate Mojang-named source for migration to 26.1.x (writes to remappedSrc/)'
+    doLast {
+        println "[MathQuest] To migrate, run from this target:"
+        println "  ./gradlew :targets:fabric-1.21.11:migrateMappings --mappings \"net.minecraft:mappings:1.21.11\""
+        println ""
+        println "Loom will write the migrated source to remappedSrc/. After verifying it"
+        println "compiles, copy it over fabric/src/main/java/ and switch this target's"
+        println "`mappings` line to loom.officialMojangMappings()."
+        println ""
+        println "Full guide: docs/migration-1.21-to-26.1.md"
+    }
+}

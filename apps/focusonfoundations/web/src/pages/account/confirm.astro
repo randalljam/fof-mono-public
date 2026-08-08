@@ -1,0 +1,80 @@
+---
+import SiteLayout from '../../components/SiteLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+<SiteLayout title="Confirm your email — Focus on Foundations">
+  <Header />
+  <main class="auth-page">
+    <div class="container">
+      <div class="auth-card">
+        <h1>Confirm your email</h1>
+        <p>We emailed you a verification code. Enter it below to finish creating your account.</p>
+        <form class="auth-form" id="confirm-form" novalidate>
+          <div class="form-field">
+            <label for="confirm-email">Email</label>
+            <input id="confirm-email" type="email" autocomplete="email" required />
+          </div>
+          <div class="form-field">
+            <label for="confirm-code">Verification code</label>
+            <input id="confirm-code" type="text" inputmode="numeric" autocomplete="one-time-code" required />
+          </div>
+          <button class="primary-button" type="submit">Confirm</button>
+        </form>
+        <p class="auth-status" id="auth-status" role="status"></p>
+        <p class="auth-links">
+          <button class="link-button" id="resend-code" type="button">Resend code</button>
+          <a href="/account/sign-in/">Back to sign in</a>
+        </p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</SiteLayout>
+
+<script>
+  import { confirmAccount, resendAccountCode } from '../../lib/auth.js';
+
+  const statusEl = document.getElementById('auth-status');
+  function showStatus(message, isError = false) {
+    statusEl.textContent = message;
+    statusEl.classList.toggle('is-error', isError);
+  }
+  const emailInput = document.getElementById('confirm-email');
+  const pendingEmail = sessionStorage.getItem('fofAuthPendingEmail');
+  if (pendingEmail) emailInput.value = pendingEmail;
+
+  document.getElementById('confirm-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const email = emailInput.value.trim();
+    const code = document.getElementById('confirm-code').value.trim();
+    if (!email || !code) return;
+    showStatus('Confirming…');
+    try {
+      const { signedIn } = await confirmAccount(email, code);
+      sessionStorage.removeItem('fofAuthPendingEmail');
+      if (signedIn) {
+        window.location.href = '/account/';
+      } else {
+        showStatus('Email confirmed — you can sign in now.');
+        setTimeout(() => { window.location.href = '/account/sign-in/'; }, 1200);
+      }
+    } catch (error) {
+      showStatus(error.message || 'Confirmation failed.', true);
+    }
+  });
+
+  document.getElementById('resend-code').addEventListener('click', async () => {
+    const email = emailInput.value.trim();
+    if (!email) {
+      showStatus('Enter your email first.', true);
+      return;
+    }
+    try {
+      await resendAccountCode(email);
+      showStatus('A new code is on its way.');
+    } catch (error) {
+      showStatus(error.message || 'Could not resend the code.', true);
+    }
+  });
+</script>

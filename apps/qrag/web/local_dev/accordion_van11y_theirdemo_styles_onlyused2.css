@@ -1,0 +1,78 @@
+html {
+  font-size: 62.5%;
+  font-size: calc(1em * 0.625);
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  background: #fff;
+  color: #444;
+  font-family: Arial, sans-serif;
+  font-size: 1.8em;
+  line-height: 1.5;
+}
+
+.mw960e {
+  max-width: 60em;
+  margin: 0 auto;
+}
+
+.aligncenter {
+  text-align: center;
+}
+
+h1 {
+  font-size: 1.5em;
+  margin: 0 0 1em 0;
+}
+
+h2 {
+  font-size: 1.3em;
+  margin: 0 0 1em 0;
+}
+
+/* --------------- styles for accordion -----------------------*/
+
+.minimalist-accordion__header {
+  display: block;
+  background: none;
+  border: 0;
+  /** fix typo inputs **/
+  font-family: inherit;
+  cursor: pointer;
+  font-size: 1.5em;
+  line-height: 1.8462;
+  margin: 0;
+  padding: .25em 0;
+  text-align: left;
+  width: 100%;
+  font-weight: normal;
+  color: #148297;
+}
+
+.minimalist-accordion__header::before {
+  content: '▶';
+  display: inline-block;
+  margin-right: .5em;
+  transform: rotate(0deg);
+}
+
+[aria-expanded="true"].minimalist-accordion__header::before {
+  transform: rotate(90deg);
+  transform-origin: 50% 50%;
+}
+
+.minimalist-accordion__panel {
+  display: block;
+}
+
+[aria-hidden=true].minimalist-accordion__panel {
+  display: none;
+}
+

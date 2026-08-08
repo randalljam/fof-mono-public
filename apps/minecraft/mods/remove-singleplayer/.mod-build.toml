@@ -1,0 +1,10 @@
+# Build-and-deploy manifest for remove-singleplayer. Consumed by
+# minecraft/mods/build-and-deploy.py. Format documented in
+# minecraft/mods/CLAUDE.md.
+
+# Default target when invoked without --target. The Fabric 1.21.11 build is the
+# expected primary; the Forge 1.20.1 build is intentionally opt-in via --target.
+default_target = "fabric-1.21.11"
+
+# Client-only mod — no dedicated-server deploy path.
+extra_deploy_paths = []

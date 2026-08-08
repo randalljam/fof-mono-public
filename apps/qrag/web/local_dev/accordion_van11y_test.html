@@ -1,0 +1,257 @@
+<!-- START OF FILE accordion_van11y_test.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Van11y Accordion Test</title>
+
+    <script>
+        var fileInfo = 'accordion_van11y_test.html  10-26 1706 console logs after o1-preview after using simple2';
+        console.log('HTML File loaded: ', fileInfo);
+    </script>
+
+    <!-- Include Marked.js -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"
+      onload="console.log('Marked js library loaded successfully')"
+      onerror="console.error('Failed to load Marked js library')">
+    </script>
+
+    <!-- Include the CSS styles -->
+    <!-- <link href="accordion_van11y_theirdemo_styles_onlyused2.css" rel="stylesheet" media="all" /> -->
+
+    <!-- Or include the minimal CSS styles directly -->
+
+    <style>
+        /* Minimal required styles for the accordion */
+        .minimalist-accordion__panel[aria-hidden="true"] {
+            display: none;
+        }
+
+        .minimalist-accordion__header {
+            cursor: pointer;
+            display: block;
+            background: none;
+            border: 0;
+            font-family: inherit;
+            font-size: 1.5em;
+            line-height: 1.8462;
+            margin: 0;
+            padding: 0.25em 0;
+            text-align: left;
+            width: 100%;
+            font-weight: normal;
+            outline: none;
+            position: relative;
+            padding-left: 1.5em;
+        }
+
+        .minimalist-accordion__header::before {
+            content: '>';
+            display: inline-block;
+            margin-right: 0.5em;
+            transform: rotate(0deg);
+        }
+
+        [aria-expanded="true"].minimalist-accordion__header::before {
+            transform: rotate(90deg);
+            transform-origin: 50% 50%;
+        }
+
+        /* Target the actual button elements that Van11y creates */
+        .js-accordion__header[role="tab"] {
+            position: relative;
+            padding-left: 1.5em;
+            margin-bottom: 0.2em;
+            line-height: 1.2;
+        }
+
+        /* Level-specific styles targeting Van11y's rendered buttons */
+        .level-1 > .js-accordion__header[role="tab"] { 
+            margin-left: 0; 
+            font-size: 1.8em;
+            color: #16c003;
+        }
+
+        .level-2 > .js-accordion__header[role="tab"] { 
+            margin-left: 2em; 
+            font-size: 1.5em;
+            color: #3222e2;
+        }
+
+        .level-3 > .js-accordion__header[role="tab"] { 
+            margin-left: 4em; 
+            font-size: 1.3em;
+            color: #c42f1e;
+        }
+
+        /* Panel styles */
+        .js-accordion__panel {
+            margin-top: 0;        /* Remove top margin */
+            margin-bottom: 1em;   /* Space between sections */
+            padding-top: 0;       /* Remove top padding */
+        }
+
+        /* Adjust paragraph spacing within panels */
+        .js-accordion__panel p {
+            margin-top: 0.2em;    /* Reduced space above paragraphs */
+            margin-bottom: 0.6em; /* Reduced space below paragraphs */
+        }
+
+        /* Panel indentation to match header text */
+        .js-accordion__panel[role="tabpanel"].level-1 {
+            margin-left: 5em;
+        }
+        
+        .js-accordion__panel[role="tabpanel"].level-2 {
+            margin-left: 7em;
+        }
+        
+        .js-accordion__panel[role="tabpanel"].level-3 {
+            margin-left: 9em;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div id="markdown-container"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sample markdown content
+            var markdownContent = `
+# Heading Level 1
+
+Some introductory text under Heading Level 1.
+
+## Heading Level 2
+
+Content under Heading Level 2.
+
+### Heading Level 3
+
+Content under Heading Level 3.
+
+## Another Heading Level 2
+
+More content under another Heading Level 2.
+
+# Another Heading Level 1
+
+Final content under another Heading Level 1.
+`;
+
+            // Function to process markdown content into accordion structure
+            function processContentToAccordion(markdown) {
+                // Parse markdown to HTML
+                var htmlContent = marked.parse(markdown);
+                console.log('Starting accordion creation with parsed markdown:', {
+                    rawMarkdown: markdown.substring(0, 100) + '...',
+                    parsedHTML: htmlContent.substring(0, 100) + '...'
+                });
+
+                // Parse the HTML string into DOM nodes
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(htmlContent, 'text/html');
+
+                // Create the accordion container
+                var accordionContainer = document.createElement('div');
+                accordionContainer.className = 'js-accordion';
+                accordionContainer.setAttribute('data-accordion-prefix-classes', 'minimalist');
+
+                var children = Array.from(doc.body.childNodes);
+                var currentPanelContent = document.createElement('div');
+                var currentHeader = null;
+
+                for (var i = 0; i < children.length; i++) {
+                    var node = children[i];
+
+                    if (node.nodeType === Node.ELEMENT_NODE && /^H[1-3]$/.test(node.tagName)) {
+                        // If we have existing panel content, create and append the panel
+                        if (currentPanelContent.childNodes.length > 0) {
+                            console.log('Creating panel for previous header:', {
+                                headerLevel: currentHeader ? currentHeader.getAttribute('data-level') : 'none',
+                                headerText: currentHeader ? currentHeader.innerHTML : 'none',
+                                panelContent: currentPanelContent.innerHTML.substring(0, 100) + '...'
+                            });
+
+                            var panel = document.createElement('div');
+                            panel.className = 'js-accordion__panel minimalist-accordion__panel';
+                            var currentLevel = currentHeader ? currentHeader.getAttribute('data-level') : '1';
+                            panel.classList.add('level-' + currentLevel);
+                            panel.appendChild(currentPanelContent);
+                            accordionContainer.appendChild(panel);
+                            currentPanelContent = document.createElement('div');
+                        }
+
+                        // Create just a div with minimal classes - let Van11y handle the rest
+                        console.log('Creating new header:', {
+                            tagName: node.tagName,
+                            level: node.tagName.substring(1),
+                            content: node.innerHTML
+                        });
+
+                        var header = document.createElement('div');
+                        header.className = 'js-accordion__header';
+                        var level = node.tagName.substring(1);
+                        header.classList.add('level-' + level);
+                        header.innerHTML = node.innerHTML;
+                        header.setAttribute('data-level', level);
+
+                        currentHeader = header;
+                        accordionContainer.appendChild(header);
+                    } else {
+                        console.log('Adding content to current panel:', {
+                            nodeType: node.nodeType,
+                            content: node.textContent ? node.textContent.substring(0, 100) + '...' : 'Empty or non-text node'
+                        });
+                        currentPanelContent.appendChild(node.cloneNode(true));
+                    }
+                }
+
+                // Append the last panel content if any
+                if (currentPanelContent.childNodes.length > 0) {
+                    console.log('Creating final panel:', {
+                        headerLevel: currentHeader ? currentHeader.getAttribute('data-level') : 'none',
+                        headerText: currentHeader ? currentHeader.innerHTML : 'none',
+                        panelContent: currentPanelContent.innerHTML.substring(0, 100) + '...'
+                    });
+
+                    var panel = document.createElement('div');
+                    panel.className = 'js-accordion__panel minimalist-accordion__panel';
+                    // Add the level class from the current header
+                    var currentLevel = currentHeader ? currentHeader.getAttribute('data-level') : '1';
+                    panel.classList.add('level-' + currentLevel);
+                    panel.appendChild(currentPanelContent);
+                    accordionContainer.appendChild(panel);
+                }
+
+                return accordionContainer;
+            }
+
+            // Process the markdown content and generate the accordion
+            var accordionContent = processContentToAccordion(markdownContent);
+
+            // Append the accordion to the container
+            var container = document.getElementById('markdown-container');
+            container.appendChild(accordionContent);
+
+        });
+    </script>
+
+    <!-- Include Van11y Accessible Accordion -->
+    <script 
+    defer
+    src="https://unpkg.com/van11y-accessible-accordion-aria/dist/van11y-accessible-accordion-aria.min.js" 
+    onload="
+        console.log('Van11y Accordion js library loaded successfully');
+        var myAccordion = van11yAccessibleAccordionAria();
+        myAccordion.attach();
+    "
+    onerror="console.error('Failed to load Van11y Accordion js library')">
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!-- START OF FILE webflow-local-dev-qrag-deutsch.html -->
+<!-- deploy: run at terminal: python -m http.server 8000 -->
+<!--         then open browser: http://localhost:8000/webflow-local-dev-qrag-deutsch.html -->
+<!-- contains: setup to inject components into local page -->
+
+<!-- **************** NOT WORKING YET **************** -->
+<!-- 1-15 0451 2nd version from chatgpt o1-pro thread (see cursor chat as well) -->
+<!-- **************** NOT WORKING YET **************** -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Deutsch QRAG Demo - Local Dev</title>
+
+  <!-- Webflow's generated CSS -->
+  <link
+    href="https://cdn.prod.website-files.com/66f32336260d050c6e0fffa0/css/floodlamp-8c9d00d6ef3e90c375de806594d04.webflow.f32955762.css"
+    rel="stylesheet"
+    type="text/css"
+  />
+  
+  <!-- Google Fonts Setup -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous"/>
+  <script
+    src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"
+    type="text/javascript"
+  ></script>
+  <script>
+    console.log("Running Local Dev Page: webflow-local-dev-qrag-deutsch.html 1-15 0451 2nd version from chatgpt o1-pro thread (see cursor chat as well)");
+  </script>
+  <script type="text/javascript">
+    WebFont.load({
+      google: {
+        families: [
+          "Lato:100,100italic,300,300italic,400,400italic,700,700italic,900,900italic",
+          "Poppins:300,regular,500,600,700,800",
+          "Inter:regular"
+        ]
+      }
+    });
+  </script>
+
+  <!-- Your component's specific resources -->
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
+  />
+  <script src="https://cdn.jsdelivr.net/npm/validator@latest/validator.min.js"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/sygnaltech/webflow-util@5.4.6/dist/css/webflow-membership.css"
+  />
+  <script
+    defer
+    src="https://cdn.jsdelivr.net/gh/sygnaltech/webflow-util@5.4.6/dist/nocode/webflow-membership.js"
+  ></script>
+
+  <!-- Placeholder for injected styles -->
+  <style id="injected-styles"></style>
+
+  <!-- Mock Webflow object (local dev) -->
+  <script>
+    window.Webflow = window.Webflow || [];
+    window.Webflow.push = function(fn) {
+      fn();
+    };
+  </script>
+</head>
+<body>
+  <script>
+    // We'll intentionally load the Q/RAG snippet FIRST, then the Privacy snippet
+    // so that handleNiceNameSubmission is defined before setPrivacyConsent tries to call it.
+    const containerId = "container_deutsch-demo_qrag";
+    const htmlFilenameQrag = "webflow-qrag-input-component-date-embed.html";   // or your normal embed
+    const htmlFilenamePrivacy = "webflow-privacy-consent-embed.html";
+    console.log("Container ID:", containerId);
+
+    // Simple debug display
+    document.write(`
+      <div style="text-align: center; padding: 10px; background-color: #ffff00; margin-top: 30px; margin-bottom: 30px; font-size: 20px;">
+        <p>This is a Local Dev Page for the Deutsch Q/RAG Demo</p>
+        <p>Q/RAG Embed Filename: <b>${htmlFilenameQrag}</b></p>
+        <p>Privacy Embed Filename: <b>${htmlFilenamePrivacy}</b></p>
+      </div>
+    `);
+  </script>
+
+  <section class="bot-section">
+    <div class="bot-container w-container" id="container_deutsch-demo_qrag">
+      
+      <!-- FIRST user-input-container: Q/RAG Input (we want this to load first) -->
+      <div class="user-input-container w-container">
+        <div class="code-embed-qrag-input w-embed w-script" id="embed-container">
+          <!-- Q/RAG snippet will be injected here -->
+        </div>
+      </div>
+
+      <!-- SECOND user-input-container: Privacy Consent -->
+      <div class="user-input-container w-container">
+        <div class="code-embed-privacy-consent w-embed w-script" id="privacy-embed-container">
+          <!-- Privacy snippet will be injected here -->
+        </div>
+      </div>
+
+      <div class="accordion-container">
+        <div class="accordion-card"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Include your JavaScript files -->
+  <script src="../../../web-shared/webflow/webflow-fof-site-body.js"></script>
+  <script src="webflow-rag-devpage.js"></script>
+
+  <script>
+    // PATCH: Safeguard setPrivacyConsent to avoid reference error if snippet not loaded
+    //         We do it in the global scope, but if your site-body has it, you can adapt it there.
+    const originalSetPrivacyConsent = window.setPrivacyConsent;
+    window.setPrivacyConsent = function() {
+      sessionStorage.setItem('privacyConsent', PRIVACY_CONSENT_VERSION_DATE);
+      console.log('Privacy consent set:', PRIVACY_CONSENT_VERSION_DATE);
+
+      document.querySelectorAll('.privacy-consent-box').forEach(el => {
+          el.style.display = 'none';
+      });
+      
+      // Delay to see if handleNiceNameSubmission is available
+      setTimeout(() => {
+          if (typeof handleNiceNameSubmission === 'function') {
+              handleNiceNameSubmission();
+          } else {
+              console.warn('handleNiceNameSubmission not yet defined when privacy was set.');
+          }
+      }, 100);
+    }
+
+    // Helper: after injecting each snippet, run all <script> code in it immediately
+    function runInlineScripts(doc) {
+      const inlineScripts = doc.querySelectorAll('script:not([src])');
+      inlineScripts.forEach(script => {
+        try {
+          // Evaluate inline script content in global scope
+          new Function(script.textContent)();
+        } catch (err) {
+          console.error("Error running injected inline script:", err);
+        }
+      });
+    }
+
+    // Function to extract and inject styles + scripts from site-head
+    async function injectSiteHeadContent() {
+      try {
+        const response = await fetch('../../../web-shared/webflow/webflow-fof-site-head.html');
+        const text = await response.text();
+
+        // Parse the HTML
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, 'text/html');
+
+        // Extract and inject <style> from site-head
+        const styles = doc.querySelectorAll('style');
+        const styleContainer = document.getElementById('injected-styles');
+        styles.forEach(style => {
+          styleContainer.textContent += style.textContent;
+        });
+
+        // Extract and run any inline <script> from site-head
+        const headScripts = doc.querySelectorAll('script:not([src])');
+        headScripts.forEach(script => {
+          new Function(script.textContent)();
+        });
+
+        console.log('Successfully injected site-head content');
+      } catch (error) {
+        console.error('Error injecting site-head content:', error);
+      }
+    }
+
+    // Function to inject Q/RAG snippet, THEN the Privacy snippet
+    async function injectComponentContent() {
+      try {
+        // 1) Inject Q/RAG component
+        const respQrag = await fetch(htmlFilenameQrag);
+        const textQrag = await respQrag.text();
+        const parserQrag = new DOMParser();
+        const docQrag = parserQrag.parseFromString(textQrag, 'text/html');
+
+        const qragDiv = docQrag.querySelector('.qrag-input-component');
+        if (qragDiv) {
+          document.getElementById('embed-container').innerHTML = qragDiv.outerHTML;
+        } else {
+          // fallback if the snippet doesn't have that class
+          document.getElementById('embed-container').innerHTML = textQrag;
+        }
+
+        // Immediately run any inline <script> in the Q/RAG snippet
+        runInlineScripts(docQrag);
+
+        // 2) Inject Privacy snippet
+        const respPrivacy = await fetch(htmlFilenamePrivacy);
+        const textPrivacy = await respPrivacy.text();
+        const parserPrivacy = new DOMParser();
+        const docPrivacy = parserPrivacy.parseFromString(textPrivacy, 'text/html');
+
+        const privacyDiv = docPrivacy.querySelector('.privacy-consent-box');
+        if (privacyDiv) {
+          document.getElementById('privacy-embed-container').innerHTML = privacyDiv.outerHTML;
+        } else {
+          document.getElementById('privacy-embed-container').innerHTML = textPrivacy;
+        }
+
+        // Immediately run any inline <script> in the Privacy snippet
+        runInlineScripts(docPrivacy);
+
+        // 3) Re-run your typical RAG initialization logic:
+        //    - Dynamic ID assignments, event listeners, etc.
+        initializeDynamicIdAssignments();
+
+        console.log('All snippets loaded & scripts executed');
+      } catch (error) {
+        console.error('Error injecting component content:', error);
+      }
+    }
+
+    // Start everything
+    injectSiteHeadContent()
+      .then(() => injectComponentContent())
+      .catch(error => {
+        console.error('Error loading content:', error);
+      });
+  </script>
+</body>
+</html>
+<!-- END OF FILE webflow-local-dev-qrag-deutsch.html -->

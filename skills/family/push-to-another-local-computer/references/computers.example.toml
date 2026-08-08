@@ -1,0 +1,26 @@
+# Example computer registry for push_to_computer.py
+#
+# Copy to a private local path (this repo uses docs/personal/push-computers.toml),
+# or point at any file with --config / $FOF_PUSH_COMPUTERS_CONFIG.
+# Fill in real aliases, SSH targets, and absolute destination roots.
+# Do not commit real hostnames, usernames, or home paths to a public tree.
+
+[[computers]]
+id = "target-laptop"
+aliases = ["target-laptop", "tl"]
+ssh = "user@host1.local"
+primary_checkout = "/Users/your-user/Code/fof-mono"
+local_files_root = "/Users/your-user/Code/_LOCAL_FILES/fof-mono"
+
+[[computers]]
+id = "source-laptop"
+aliases = ["source-laptop", "master"]
+ssh = "user@host2.local"
+primary_checkout = "/Users/your-user/Documents/Code/fof-mono"
+local_files_root = "/Users/your-user/Documents/Code/_LOCAL_FILES/fof-mono"
+
+[[computers]]
+id = "other-mac"
+aliases = ["other-mac"]
+ssh = "user@host3.local"
+# primary_checkout / local_files_root optional until discovered

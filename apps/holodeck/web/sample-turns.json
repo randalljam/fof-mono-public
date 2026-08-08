@@ -1,0 +1,191 @@
+{
+  "exchanges": [
+    {
+      "id": "claude-code:cc-holo-plan-001#1",
+      "session_id": "claude-code:cc-holo-plan-001",
+      "session_label": "Claude CLI - Fable 5",
+      "origin": "operator",
+      "title": "Holodeck dashboard plan",
+      "kind": "primary",
+      "user_ts": "2026-07-09T21:54:02-07:00",
+      "user_preview": "Build the holodeck frontend and backend specs for a local dashboard.",
+      "has_digest": true,
+      "digest": {
+        "title": "Holodeck dashboard plan",
+        "asked": [
+          "Create the initial Holodeck control-center plan.",
+          "Cover worktrees, apps, specs, skills, AI sessions, and deploy surfaces.",
+          "Keep frontend and backend work separable for delegated agents."
+        ],
+        "notes": [
+          "The first implementation should stay local and file-backed.",
+          "Session collection needs to tolerate missing or malformed source stores.",
+          "Sample mode should remain useful when the live API is unavailable."
+        ],
+        "recap": "The turn established Holodeck as a local dashboard over repo surfaces and split the work into backend collection plus vanilla frontend rendering."
+      },
+      "commits": [
+        {
+          "sha": "32b9f0a8a9b0c1d2e3f400000000000000000001",
+          "subject": "Add holodeck frontend and backend specs",
+          "author_date": "2026-07-09T22:15:44-07:00",
+          "is_agent_commit": 1
+        }
+      ]
+    },
+    {
+      "id": "claude-code:cc-holo-plan-001#2",
+      "session_id": "claude-code:cc-holo-plan-001",
+      "session_label": "Claude CLI - Fable 5",
+      "origin": "operator",
+      "title": "Implementation task split",
+      "kind": "quick",
+      "user_ts": "2026-07-09T22:11:25-07:00",
+      "user_preview": "Delegate frontend and backend implementation to separate file-disjoint executors.",
+      "has_digest": true,
+      "digest": {
+        "title": "Implementation task split",
+        "asked": [
+          "Split implementation into backend and frontend tasks.",
+          "Make file ownership explicit so agents do not conflict.",
+          "Call out entrypoint display as already landed."
+        ],
+        "notes": [
+          "Frontend owns only apps/holodeck/web.",
+          "Backend owns the turns database, labels, endpoints, and tests."
+        ],
+        "recap": "The follow-up tightened the handoff contract and made the frontend responsible for extending the current UI instead of replacing it."
+      },
+      "commits": [
+        {
+          "sha": "9ee24c8cc0ffee00000000000000000000000002",
+          "subject": "Enhance session entrypoint tracking and UI display",
+          "author_date": "2026-07-09T22:16:49-07:00",
+          "is_agent_commit": 1
+        }
+      ]
+    },
+    {
+      "id": "codex:codex-holo-front-101#1",
+      "session_id": "codex:codex-holo-front-101",
+      "session_label": "Codex CLI (fable5-w-codex) - GPT 5.5 xhigh",
+      "origin": "delegated",
+      "title": "Static frontend executor",
+      "kind": "primary",
+      "user_ts": "2026-07-09T22:20:00-07:00",
+      "user_preview": "You are the implementation executor for Holodeck frontend. Implement the static frontend exactly against the snapshot API contract. Do not commit or push.",
+      "has_digest": false,
+      "digest": null,
+      "commits": [
+        {
+          "sha": "a4c2e19f00dbabe000000000000000000000003",
+          "subject": "Render editable holodeck worktree cards",
+          "author_date": "2026-07-09T22:34:11-07:00",
+          "is_agent_commit": 1
+        },
+        {
+          "sha": "bb18d04f00dbabe000000000000000000000004",
+          "subject": "Wire sample mode for holodeck sessions",
+          "author_date": "2026-07-09T22:35:28-07:00",
+          "is_agent_commit": 0
+        }
+      ]
+    }
+  ],
+  "exchange_details": {
+    "claude-code:cc-holo-plan-001#1": {
+      "id": "claude-code:cc-holo-plan-001#1",
+      "session_id": "claude-code:cc-holo-plan-001",
+      "origin": "operator",
+      "kind": "primary",
+      "user_ts": "2026-07-09T21:54:02-07:00",
+      "response_end_ts": "2026-07-09T22:08:41-07:00",
+      "user_text": "Build the holodeck frontend and backend specs for a local dashboard.",
+      "response_text": "I mapped the dashboard around the repo surfaces Randy uses during AI-coding work: worktrees, branch state, app registry, OpenSpec changes, reusable skills, AI sessions, and deploy targets.\n\nThe implementation plan keeps the collector and static frontend separate. The backend owns snapshot assembly and source parsing. The frontend owns rendering, sample mode, drawers, filters, and local UI state.\n\nVerification should include sample-mode rendering and live API smoke tests once the FastAPI service is running.",
+      "response_final_text": "Holodeck is scoped as a local dashboard with backend collection and frontend rendering split cleanly.",
+      "response_recap": "The turn established Holodeck as a local dashboard over repo surfaces and separated backend collector work from frontend rendering.",
+      "digest": {
+        "title": "Holodeck dashboard plan",
+        "asked": [
+          "Create the initial Holodeck control-center plan.",
+          "Cover worktrees, apps, specs, skills, AI sessions, and deploy surfaces.",
+          "Keep frontend and backend work separable for delegated agents."
+        ],
+        "notes": [
+          "The first implementation should stay local and file-backed.",
+          "Session collection needs to tolerate missing or malformed source stores.",
+          "Sample mode should remain useful when the live API is unavailable."
+        ],
+        "recap": "The turn established Holodeck as a local dashboard over repo surfaces and split the work into backend collection plus vanilla frontend rendering."
+      },
+      "commits": [
+        {
+          "sha": "32b9f0a8a9b0c1d2e3f400000000000000000001",
+          "subject": "Add holodeck frontend and backend specs",
+          "author_date": "2026-07-09T22:15:44-07:00",
+          "is_agent_commit": 1
+        }
+      ]
+    },
+    "claude-code:cc-holo-plan-001#2": {
+      "id": "claude-code:cc-holo-plan-001#2",
+      "session_id": "claude-code:cc-holo-plan-001",
+      "origin": "operator",
+      "kind": "quick",
+      "user_ts": "2026-07-09T22:11:25-07:00",
+      "response_end_ts": "2026-07-09T22:16:49-07:00",
+      "user_text": "Delegate frontend and backend implementation to separate file-disjoint executors.",
+      "response_text": "I split the work into two file-disjoint tasks. The backend task owns the turns database, label derivation, ingestion, correlation, digest generation, API endpoints, tests, and README updates. The frontend task owns only apps/holodeck/web and should extend the current UI, especially the entrypoint display that already landed in commit 9ee24c8.\n\nThe frontend should read from the documented turns endpoints and use client-side session filtering if the backend does not add a session query parameter.",
+      "response_final_text": "The handoff is ready with backend and frontend file ownership separated for concurrent executors.",
+      "response_recap": "",
+      "digest": {
+        "title": "Implementation task split",
+        "asked": [
+          "Split implementation into backend and frontend tasks.",
+          "Make file ownership explicit so agents do not conflict.",
+          "Call out entrypoint display as already landed."
+        ],
+        "notes": [
+          "Frontend owns only apps/holodeck/web.",
+          "Backend owns the turns database, labels, endpoints, and tests."
+        ],
+        "recap": "The follow-up tightened the handoff contract and made the frontend responsible for extending the current UI instead of replacing it."
+      },
+      "commits": [
+        {
+          "sha": "9ee24c8cc0ffee00000000000000000000000002",
+          "subject": "Enhance session entrypoint tracking and UI display",
+          "author_date": "2026-07-09T22:16:49-07:00",
+          "is_agent_commit": 1
+        }
+      ]
+    },
+    "codex:codex-holo-front-101#1": {
+      "id": "codex:codex-holo-front-101#1",
+      "session_id": "codex:codex-holo-front-101",
+      "origin": "delegated",
+      "kind": "primary",
+      "user_ts": "2026-07-09T22:20:00-07:00",
+      "response_end_ts": "2026-07-09T22:34:11-07:00",
+      "user_text": "You are the implementation executor for Holodeck frontend. Implement the static frontend exactly against the snapshot API contract. Do not commit or push.",
+      "response_text": "I built the static frontend as a vanilla JavaScript dashboard that consumes the snapshot API, renders sample data when requested, and keeps write controls disabled in sample mode.\n\nThe worktree cards show editable per-branch state, recent sessions, app chips, and branch metadata. The AI Sessions table opens a drawer with lazily loaded messages. The next frontend step is to layer turn digests above that raw message stream once the turns API contract exists.",
+      "response_final_text": "The static frontend now renders the snapshot-driven dashboard and is ready for the turns API layer.",
+      "response_recap": "",
+      "digest": null,
+      "commits": [
+        {
+          "sha": "a4c2e19f00dbabe000000000000000000000003",
+          "subject": "Render editable holodeck worktree cards",
+          "author_date": "2026-07-09T22:34:11-07:00",
+          "is_agent_commit": 1
+        },
+        {
+          "sha": "bb18d04f00dbabe000000000000000000000004",
+          "subject": "Wire sample mode for holodeck sessions",
+          "author_date": "2026-07-09T22:35:28-07:00",
+          "is_agent_commit": 0
+        }
+      ]
+    }
+  }
+}

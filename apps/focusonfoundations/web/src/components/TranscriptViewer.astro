@@ -1,0 +1,27 @@
+---
+import '../styles/transcripts.css';
+
+interface Props {
+  rootId: string;
+  transcriptUrl: string;
+  qaUrl: string;
+  variant?: 'generic' | 'fda';
+}
+
+const { rootId, transcriptUrl, qaUrl, variant = 'generic' } = Astro.props;
+---
+<div
+  class="source-page"
+  id={rootId}
+  data-transcript-viewer
+  data-transcript-url={transcriptUrl}
+  data-qa-url={qaUrl}
+  data-variant={variant}
+>
+  <div data-transcript-container></div>
+  <div data-qa-container style="display: none;"></div>
+</div>
+<script>
+  import { initTranscriptViewers } from '../lib/transcript-viewer.js';
+  initTranscriptViewers();
+</script>

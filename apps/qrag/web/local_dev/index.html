@@ -1,0 +1,48 @@
+<!-- run these at command line:
+    cd apps/qrag/web/local_dev
+    http-server
+then enter this url in a browser http://127.0.0.1:8080/ 
+chrome://settings/content/insecureContent
+-->
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Local Test of Integrated Chatbot</title>
+<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700|Poppins:300,regular,500,600,700,800|Inter:regular" rel="stylesheet"/>
+<style>
+        body { font-family: 'Lato', sans-serif; padding: 20px; }
+        textarea, button { width: 100%; margin-top: 10px; padding: 10px; }
+        .info { background: #f1f1f1; padding: 10px; margin-top: 20px; }
+        .title { margin-top: 40px; font-size: 18px; font-weight: bold; }
+        #messagesArea { background: #e0e0e0; padding: 10px; margin-top: 20px; min-height: 50px; }
+    </style>
+</head>
+<body>
+<h2>Local Chatbot Test</h2>
+<p>Insert any description here.</p>
+<div>
+<textarea id="userInput" placeholder="Input text here" style="height: 50px; box-sizing: border-box;"></textarea>
+<button id="submitButton">Submit</button>
+</div>
+<div id="messagesArea">Messages will appear here...</div>
+<button id="clearButton">Clear - does not change the html file</button>
+<div class="title">User Question:</div>
+<div class="info" id="userQuestion"><span id="displayUserQuestion">
+What should I eat for lunch?</span></div>
+<div class="title">Route Preamble:</div>
+<div class="info" id="routePreamble"><span id="displayRoutePreamble">
+Your question is not addressed in David Deutsch's interviews. No QUOTED QUESTIONS AND ANSWERS are therefore provided but here is an AI ANSWER that synthesizes David Deutsch's philosophy and your question.</span></div>
+<div class="title">Quoted QA:</div>
+<div class="info" id="quotedQA"><span id="displayQuotedQA">
+</span></div>
+<div class="title">AI Answer:</div>
+<div class="info" id="aiAnswer"><span id="displayAiAnswer">
+WAITING FOR LLM RESPONSE</span></div>
+<script src="webpage_qrag_v2_parse_json.js"></script>
+<!-- <script src="webpage_qrag_v1.js"></script> -->
+<!-- <script src="webpage_load_json.js"></script> -->
+</body>
+</html>

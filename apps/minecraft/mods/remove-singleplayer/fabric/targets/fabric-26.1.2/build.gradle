@@ -1,0 +1,60 @@
+// Fabric build for Minecraft 26.1.2 — first unobfuscated release line. Uses the new
+// `net.fabricmc.fabric-loom` plugin id (no remap step) since Mojang's shipped bytecode
+// is already in Mojang names from 26.x onward. Layout mirrors mathquest's
+// fabric-26.1.2 target but without the API-compat overrides mathquest needs — this
+// mod's single Java file is small enough to compile against both pre-26 and 26+
+// targets without any per-era source overrides.
+
+plugins {
+    id 'net.fabricmc.fabric-loom' version "${loom_version}.+"
+    id 'maven-publish'
+}
+
+base {
+    archivesName = "${project.archives_base_name}-fabric"
+}
+
+tasks.withType(AbstractArchiveTask).configureEach {
+    archiveVersion = "${project.version}-mc${project.minecraft_version}"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = [
+                rootProject.file('shared/src/main/java'),
+                rootProject.file('common/src/main/java'),
+            ]
+        }
+        resources {
+            srcDirs = [
+                'src/main/resources',                              // target-local: fabric.mod.json
+                rootProject.file('shared/src/main/resources'),     // shared (currently empty)
+            ]
+        }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 25
+}

@@ -1,0 +1,15 @@
+---
+interface Props {
+  rootId: string;
+  markdownContent: string;
+}
+
+const { rootId, markdownContent } = Astro.props;
+---
+<link rel="stylesheet" href="/styles/van11y-transcript.css" />
+<div class="van11y-transcript source-page" id={rootId}></div>
+<script is:inline src="https://unpkg.com/van11y-accessible-accordion-aria/dist/van11y-accessible-accordion-aria.min.js"></script>
+<script define:vars={{ rootId, markdownContent }}>
+  import { initVan11yTranscript } from '../lib/van11y-accordion.js';
+  initVan11yTranscript(rootId, markdownContent);
+</script>

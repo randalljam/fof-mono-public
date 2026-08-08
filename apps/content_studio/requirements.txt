@@ -1,0 +1,16 @@
+# apps/content_studio requirements.
+#
+# Install into the project venv:  .venv/bin/pip install -r apps/content_studio/requirements.txt
+#
+# Only Pillow is needed for the offline mock visuals + tests (mock audio is
+# stdlib-only). anthropic is needed for the (default) Claude vision verifier.
+# requests is needed for the real providers (fal/Replicate/Runway) and the
+# fal-Whisper speech verifier. imageio decodes mp4/webm output from the real
+# video models into frames for verification.
+
+Pillow>=10.0          # image/animation I/O, mock synthesis, frame sampling
+anthropic>=0.40       # visual verifier (Claude vision)
+requests>=2.28        # fal / Replicate / Runway HTTP providers + transcriber
+imageio>=2.31         # decode mp4/webm provider output into frames
+imageio-ffmpeg>=0.4   # ffmpeg backend for imageio video decoding
+python-dotenv>=1.0    # optional: load API keys from a .env file

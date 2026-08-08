@@ -1,0 +1,33 @@
+// Detect if Fabric Maven is reachable (blocked by proxy in some environments)
+def fabricMavenReachable = false
+if (!System.properties.containsKey('fabric.stub.mode')) {
+    try {
+        def conn = new URL('https://maven.fabricmc.net/').openConnection()
+        conn.connectTimeout = 3000
+        conn.readTimeout = 3000
+        conn.requestMethod = 'HEAD'
+        conn.connect()
+        fabricMavenReachable = (conn.responseCode < 400)
+        conn.disconnect()
+    } catch (Exception e) {
+        fabricMavenReachable = false
+    }
+}
+
+gradle.ext.useFabricLoom = fabricMavenReachable
+
+if (fabricMavenReachable) {
+    pluginManagement {
+        repositories {
+            maven {
+                name = 'Fabric'
+                url = 'https://maven.fabricmc.net/'
+            }
+            mavenCentral()
+            gradlePluginPortal()
+        }
+    }
+} else {
+    println '[MathQuest] Fabric Maven is unreachable - using stub compilation mode'
+    println '[MathQuest] This verifies compilation and runs tests, but does not produce a real Fabric mod JAR'
+}

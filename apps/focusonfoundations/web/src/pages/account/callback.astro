@@ -1,0 +1,50 @@
+---
+import SiteLayout from '../../components/SiteLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+<SiteLayout title="Signing you in — Focus on Foundations">
+  <Header />
+  <main class="auth-page">
+    <div class="container">
+      <div class="auth-card">
+        <h1>Signing you in…</h1>
+        <p class="auth-status" id="auth-status" role="status">Completing sign-in with your provider.</p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</SiteLayout>
+
+<script>
+  // Amplify completes the OAuth code exchange automatically when the redirect
+  // lands here; we just wait for the session to materialize, then move on.
+  import { configureAuth, getSessionInfo, onAuthChange } from '../../lib/auth.js';
+
+  configureAuth();
+  const statusEl = document.getElementById('auth-status');
+  let done = false;
+  function finish(signedIn) {
+    if (done) return;
+    done = true;
+    if (signedIn) {
+      window.location.replace('/account/');
+    } else {
+      statusEl.textContent = 'Sign-in didn’t complete. Returning to the sign-in page…';
+      setTimeout(() => window.location.replace('/account/sign-in/'), 1500);
+    }
+  }
+  onAuthChange((event) => {
+    if (event === 'signInWithRedirect') finish(true);
+    if (event === 'signInWithRedirect_failure') finish(false);
+  });
+  // Fallback: poll the session in case the Hub event fired before we listened.
+  (async () => {
+    for (let attempt = 0; attempt < 10 && !done; attempt += 1) {
+      const { signedIn } = await getSessionInfo();
+      if (signedIn) return finish(true);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+    finish(false);
+  })();
+</script>

@@ -1,0 +1,159 @@
+---
+import SiteLayout from '../../components/SiteLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+<SiteLayout title="Your account — Focus on Foundations">
+  <Header />
+  <main class="auth-page">
+    <div class="container">
+      <div class="auth-card">
+        <h1>Your account</h1>
+        <p class="auth-unavailable" id="auth-unavailable" hidden>
+          Accounts aren’t live yet — this page will activate when the account system is deployed.
+        </p>
+        <div id="signed-out" hidden>
+          <p>You’re not signed in.</p>
+          <p class="auth-guest-note" id="guest-note" hidden></p>
+          <p class="auth-links">
+            <a class="primary-button" href="/account/sign-in/">Sign in</a>
+            <a href="/account/create/">Create an account</a>
+          </p>
+        </div>
+        <div id="signed-in" hidden>
+          <p>Signed in as <strong id="account-email"></strong></p>
+          <h2>Your data</h2>
+          <p id="data-summary">Loading your saved data…</p>
+          <ul id="data-list" class="account-data-list"></ul>
+          <button class="primary-button" id="sign-out" type="button">Sign out</button>
+          <h2>Family</h2>
+          <p>
+            Link accounts as a family: parents can see kids’ learning progress, manage which
+            tools each child can use, and create child accounts with recorded consent.
+            <a href="/account/family/">Manage your family →</a>
+          </p>
+          <div id="delete-section">
+            <h2>Delete account</h2>
+            <p>
+              Deleting your account permanently removes your sign-in and everything saved to
+              it (chats, settings, progress). This can’t be undone.
+            </p>
+            <button class="danger-button" id="delete-account" type="button">Delete my account…</button>
+            <div id="delete-confirm" hidden>
+              <p class="auth-guest-note">
+                Are you sure? This permanently deletes your account and all saved data.
+              </p>
+              <button class="danger-button" id="delete-account-confirm" type="button">Yes, permanently delete everything</button>
+              <button class="link-button" id="delete-account-cancel" type="button">Cancel</button>
+            </div>
+          </div>
+          <p class="auth-guest-note" id="child-managed-note" hidden>
+            This account is part of a family — settings and account changes (including
+            deletion) are handled by your parent or guardian.
+          </p>
+        </div>
+        <p class="auth-status" id="auth-status" role="status"></p>
+        <p class="auth-links legal-links">
+          <a href="/terms/">Terms of Service</a>
+          <a href="/privacy/">Privacy Policy</a>
+        </p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</SiteLayout>
+
+<script>
+  import { isAuthConfigured } from '../../lib/auth-config.js';
+  import { getSessionInfo, signOutUser } from '../../lib/auth.js';
+  import { GUEST_NOTICE, hasGuestData } from '../../lib/guest-store.js';
+  import { deleteAccount, isUserDataApiConfigured, listUserData } from '../../lib/user-data.js';
+  import { listUserFiles } from '../../lib/user-files.js';
+
+  async function showDataSummary() {
+    const summary = document.getElementById('data-summary');
+    const list = document.getElementById('data-list');
+    if (!isUserDataApiConfigured()) {
+      summary.textContent = 'Saved data isn’t available in this environment yet.';
+      return;
+    }
+    try {
+      const [entries, files] = await Promise.all([listUserData(), listUserFiles()]);
+      if (!entries.length && !files.length) {
+        summary.textContent = 'Nothing saved yet — chats and app progress will appear here as you use the site signed in.';
+        return;
+      }
+      const byApp = new Map();
+      for (const entry of entries) {
+        byApp.set(entry.app, (byApp.get(entry.app) || 0) + 1);
+      }
+      summary.textContent = `${entries.length + files.length} saved item${entries.length + files.length === 1 ? '' : 's'}:`;
+      for (const [app, count] of [...byApp.entries()].sort()) {
+        const li = document.createElement('li');
+        li.textContent = `${app} — ${count} item${count === 1 ? '' : 's'}`;
+        list.appendChild(li);
+      }
+      for (const file of files) {
+        const li = document.createElement('li');
+        li.textContent = `${file.app} — file ${file.name} (${Math.max(1, Math.round(file.size / 1024))} KB)`;
+        list.appendChild(li);
+      }
+    } catch (error) {
+      summary.textContent = `Couldn’t load your saved data: ${error.message}`;
+    }
+  }
+  async function init() {
+    if (!isAuthConfigured()) {
+      document.getElementById('auth-unavailable').hidden = false;
+      return;
+    }
+    const session = await getSessionInfo();
+    if (session.signedIn) {
+      document.getElementById('signed-in').hidden = false;
+      document.getElementById('account-email').textContent = session.email || session.userId;
+      showDataSummary();
+      // Child accounts are managed by guardians: no self-serve deletion.
+      try {
+        const { getProfile } = await import('../../lib/family.js');
+        const profile = await getProfile();
+        if (profile?.familyRole === 'child') {
+          document.getElementById('delete-section').hidden = true;
+          document.getElementById('child-managed-note').hidden = false;
+        }
+      } catch {
+        // Profile lookup is best-effort; the server refuses child deletion anyway.
+      }
+    } else {
+      document.getElementById('signed-out').hidden = false;
+      if (hasGuestData()) {
+        const note = document.getElementById('guest-note');
+        note.textContent = GUEST_NOTICE;
+        note.hidden = false;
+      }
+    }
+    document.getElementById('sign-out')?.addEventListener('click', async () => {
+      await signOutUser();
+      window.location.reload();
+    });
+    const statusEl = document.getElementById('auth-status');
+    document.getElementById('delete-account')?.addEventListener('click', () => {
+      document.getElementById('delete-confirm').hidden = false;
+    });
+    document.getElementById('delete-account-cancel')?.addEventListener('click', () => {
+      document.getElementById('delete-confirm').hidden = true;
+    });
+    document.getElementById('delete-account-confirm')?.addEventListener('click', async () => {
+      statusEl.textContent = 'Deleting your account…';
+      try {
+        await deleteAccount();
+        await signOutUser();
+        statusEl.textContent = 'Your account and data are deleted.';
+        setTimeout(() => { window.location.href = '/'; }, 1500);
+      } catch (error) {
+        statusEl.textContent = `Account deletion failed: ${error.message}`;
+        statusEl.classList.add('is-error');
+      }
+    });
+  }
+  init();
+</script>

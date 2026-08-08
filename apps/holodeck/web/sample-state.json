@@ -1,0 +1,102 @@
+{
+  "updated_at": "2026-07-11T07:22:00-07:00",
+  "next_steps": [
+    {
+      "id": "a18f64c2d901",
+      "text": "Verify drag reorder against the live state API",
+      "done": false,
+      "created_at": "2026-07-11T07:05:00-07:00"
+    },
+    {
+      "id": "c02b91e5ab44",
+      "text": "Open the holodeck OpenSpec proposal in the file drawer",
+      "done": false,
+      "created_at": "2026-07-11T07:08:00-07:00"
+    },
+    {
+      "id": "f0a983d71c55",
+      "text": "Confirm sample mode disables all write controls",
+      "done": true,
+      "created_at": "2026-07-11T06:56:00-07:00"
+    }
+  ],
+  "worktrees": {
+    "feature/holodeck-commits": {
+      "active": true,
+      "order": 0,
+      "deactivated_at": null,
+      "primary_interface": "codex-cli",
+      "steps": [
+        {
+          "id": "wt-holo-01",
+          "text": "Verify to-do drag ordering against the live API",
+          "done": false,
+          "created_at": "2026-07-12T07:20:00-07:00"
+        },
+        {
+          "id": "wt-holo-02",
+          "text": "Check the session drawer jump-to-end button",
+          "done": true,
+          "created_at": "2026-07-12T07:10:00-07:00"
+        }
+      ],
+      "notes": "Iteration 4 frontend owns only apps/holodeck/web.",
+      "next_step": "Legacy field retained in stored data but not rendered",
+      "last_done": "Moved the dashboard from report-only to editable worktree cards",
+      "last_done_status": "needs-review"
+    },
+    "feature/web-site-transcript-pages": {
+      "active": true,
+      "order": 1,
+      "deactivated_at": null,
+      "primary_interface": "cursor",
+      "steps": [
+        {
+          "id": "wt-transcript-01",
+          "text": "Review transcript page deployment notes",
+          "done": false,
+          "created_at": "2026-07-12T06:35:00-07:00"
+        }
+      ],
+      "notes": null,
+      "next_step": "Legacy transcript note",
+      "last_done": "Ported the page shell to Astro fixtures",
+      "last_done_status": "tested"
+    },
+    "feature/openspec-skills": {
+      "active": false,
+      "order": null,
+      "deactivated_at": "2026-07-12T07:45:00-07:00",
+      "primary_interface": "claude-app",
+      "steps": [
+        {
+          "id": "wt-openspec-01",
+          "text": "Archive the completed bootstrap change",
+          "done": false,
+          "created_at": "2026-07-11T21:10:00-07:00"
+        },
+        {
+          "id": "wt-openspec-02",
+          "text": "Confirm archived OpenSpec paths still open",
+          "done": true,
+          "created_at": "2026-07-11T20:52:00-07:00"
+        }
+      ],
+      "notes": "Inactive until holodeck iteration 3 lands.",
+      "next_step": "Legacy archive note",
+      "last_done": "Initialized the autolearner OpenSpec store",
+      "last_done_status": "reviewed"
+    },
+    "main": {
+      "active": true,
+      "order": 2,
+      "deactivated_at": null,
+      "primary_interface": null,
+      "steps": [],
+      "notes": null,
+      "next_step": null,
+      "last_done": "Merged baseline holodeck planning notes",
+      "last_done_status": "none"
+    }
+  }
+}

@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>OpenSpec × fof-mono — the system, and how to actually apply it</title>
+<style>
+  :root{
+    --bg:#0d1117; --bg2:#131a24; --panel:#161d29; --panel2:#1c2634;
+    --border:#243040; --border2:#2f3d50;
+    --ink:#e6edf3; --muted:#9aa7b6; --dim:#6d7b8c;
+    --accent:#58a6ff; --accent2:#7ee787; --gold:#f0c674; --pink:#ff7b9c;
+    --violet:#bc8cff; --teal:#39d3c3; --red:#ff6b6b;
+    --shadow:0 8px 30px rgba(0,0,0,.4);
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:linear-gradient(180deg,#0b0f16,#0d1117 400px);color:var(--ink);font-family:var(--sans);line-height:1.55;font-size:15px}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  code{font-family:var(--mono);background:#0b1220;border:1px solid var(--border);border-radius:5px;padding:1px 5px;font-size:.86em;color:#cde3ff}
+  pre{font-family:var(--mono);background:#0b1220;border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-size:12.5px;color:#cde3ff;overflow-x:auto;line-height:1.5}
+  pre b{color:var(--violet);font-weight:700}
+  h1,h2,h3,h4{line-height:1.25;margin:0}
+  .layout{display:grid;grid-template-columns:250px 1fr;gap:0;max-width:1400px;margin:0 auto}
+  nav.side{position:sticky;top:0;height:100vh;overflow-y:auto;padding:26px 16px 40px;border-right:1px solid var(--border);background:rgba(10,14,20,.6);backdrop-filter:blur(6px)}
+  nav.side .brand{font-weight:800;font-size:16px;letter-spacing:.4px}
+  nav.side .brand span{color:var(--violet)}
+  nav.side .sub{color:var(--dim);font-size:11.5px;margin:4px 0 22px;font-family:var(--mono)}
+  nav.side a.navlink{display:block;color:var(--muted);padding:7px 11px;border-radius:8px;font-size:13.5px;margin:2px 0;border:1px solid transparent}
+  nav.side a.navlink:hover{background:var(--panel);color:var(--ink);text-decoration:none}
+  nav.side a.navlink.active{background:var(--panel2);color:#fff;border-color:var(--border2)}
+  nav.side a.navlink .n{color:var(--dim);font-family:var(--mono);font-size:11px;margin-right:8px}
+  nav.side .foot{margin-top:26px;color:var(--dim);font-size:11px;border-top:1px solid var(--border);padding-top:14px}
+  main{padding:34px 44px 120px;min-width:0}
+  section{margin-bottom:66px;scroll-margin-top:20px}
+  .eyebrow{font-family:var(--mono);color:var(--violet);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+  .hero h1{font-size:36px;margin:10px 0 6px;letter-spacing:-.5px}
+  .hero .lede{color:var(--muted);font-size:17px;max-width:800px}
+  h2.sec{font-size:26px;margin-bottom:6px;letter-spacing:-.3px}
+  .sec-lede{color:var(--muted);max-width:840px;margin-bottom:22px}
+  h3.sub{font-size:18px;margin:30px 0 12px;color:#fff;border-left:3px solid var(--violet);padding-left:10px}
+  .kicker{color:var(--violet);font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:18px 0}
+  .stat{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+  .stat .num{font-size:28px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums}
+  .stat .lbl{color:var(--muted);font-size:12.5px;margin-top:3px}
+  .stat .lbl b{color:var(--accent2);font-weight:600}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px 18px 16px;position:relative;transition:.15s}
+  .card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow)}
+  .card h4{font-size:15.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .card .desc{color:var(--muted);font-size:13.5px;margin:8px 0}
+  .card .kv{font-size:13px;margin-top:8px}
+  .card .kv b{color:var(--teal);font-weight:600}
+  .card .kv.alt b{color:var(--gold)}
+  .card ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:13px}
+  .card li{margin:4px 0}
+  .card b{color:var(--ink)}
+  .pill{font-family:var(--mono);font-size:10.5px;padding:2px 8px;border-radius:20px;border:1px solid var(--border2);color:var(--muted);white-space:nowrap}
+  .tag{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:6px;background:#0b1220;border:1px solid var(--border);color:var(--dim)}
+  .st-core{color:var(--accent2);border-color:#2b5}
+  .st-exp{color:var(--violet);border-color:#63a}
+  .st-cli{color:var(--teal);border-color:#277}
+  .st-repo{color:#0d1117;background:var(--gold);border-color:var(--gold);font-weight:700}
+  .st-miss{color:var(--dim);border-color:var(--border2)}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{color:var(--dim);font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:1px}
+  tr:hover td{background:var(--panel)}
+  td .s{font-family:var(--mono);font-size:12.5px;color:#cde3ff}
+  .scroll{overflow-x:auto;border:1px solid var(--border);border-radius:10px}
+  .callout{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-left:4px solid var(--violet);border-radius:10px;padding:16px 20px;margin:16px 0}
+  .callout.gold{border-left-color:var(--gold)}
+  .callout.pink{border-left-color:var(--pink)}
+  .callout.blue{border-left-color:var(--accent)}
+  .callout.green{border-left-color:var(--accent2)}
+  .callout h4{font-size:15px;margin-bottom:6px}
+  .callout p{margin:6px 0;color:var(--muted);font-size:14px}
+  .callout b{color:var(--ink)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:880px){.two{grid-template-columns:1fr}.layout{grid-template-columns:1fr}nav.side{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border)}main{padding:24px}}
+  ul.tidy{margin:8px 0;padding-left:20px;color:var(--muted);font-size:14px}
+  ul.tidy li{margin:5px 0}
+  ul.tidy b{color:var(--ink);font-weight:600}
+  .flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0}
+  .flow .chip{font-family:var(--mono);font-size:12px;background:#0b1220;border:1px solid var(--border2);border-radius:7px;padding:5px 11px;color:#cde3ff}
+  .flow .chip.hot{border-color:var(--violet);color:var(--violet)}
+  .flow .chip.opt{border-style:dashed;color:var(--dim)}
+  .flow .arr{color:var(--dim)}
+  .filterbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0 20px;position:sticky;top:0;background:rgba(13,17,23,.92);backdrop-filter:blur(6px);padding:12px 0;z-index:5;border-bottom:1px solid var(--border)}
+  .fbtn{font-family:var(--mono);font-size:12px;padding:6px 12px;border-radius:20px;border:1px solid var(--border2);background:var(--panel);color:var(--muted);cursor:pointer;transition:.12s}
+  .fbtn:hover{color:#fff;border-color:var(--violet)}
+  .fbtn.active{background:var(--violet);color:#120a1f;border-color:var(--violet);font-weight:700}
+  #search{flex:1;min-width:180px;background:var(--panel);border:1px solid var(--border2);border-radius:20px;padding:7px 14px;color:var(--ink);font-family:var(--sans);font-size:13px;outline:none}
+  #search:focus{border-color:var(--violet)}
+  .count{color:var(--dim);font-family:var(--mono);font-size:11.5px}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--dim);font-size:11.5px;font-family:var(--mono);margin-bottom:14px}
+  .legend span{display:flex;align-items:center;gap:6px}
+  .step{display:flex;gap:12px;margin:11px 0;align-items:flex-start}
+  .step .n{font-family:var(--mono);color:#120a1f;background:var(--violet);border-radius:7px;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex:none}
+  .step .b b{color:#fff}
+  .step .b p{margin:3px 0 0;color:var(--muted);font-size:13.5px}
+  .picker{background:var(--panel);border:1px solid var(--border2);border-radius:12px;padding:18px 20px}
+  .picker .q{margin-bottom:14px}
+  .picker .q .lab{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-bottom:7px}
+  .picker .opts{display:flex;gap:8px;flex-wrap:wrap}
+  .pbtn{font-size:12.5px;padding:6px 12px;border-radius:20px;border:1px solid var(--border2);background:#0b1220;color:var(--muted);cursor:pointer}
+  .pbtn:hover{color:#fff;border-color:var(--violet)}
+  .pbtn.on{background:var(--violet);color:#120a1f;border-color:var(--violet);font-weight:700}
+  .rec{margin-top:6px;background:#0b1220;border:1px solid var(--border);border-radius:10px;padding:15px 17px}
+  .rec .big{font-size:17px;font-weight:800;color:#fff}
+  .rec .why{color:var(--muted);font-size:13.5px;margin-top:6px}
+  .stagechip{font-family:var(--mono);font-size:10.5px;padding:2px 9px;border-radius:20px;white-space:nowrap;font-weight:700}
+  .s0{color:var(--dim);border:1px solid var(--border2)}
+  .s1{color:var(--accent);border:1px solid #357}
+  .s2{color:var(--gold);border:1px solid #a83}
+  .s3{color:var(--pink);border:1px solid #a35}
+  .divider{height:1px;background:var(--border);margin:30px 0}
+  .backlink{display:inline-block;margin-bottom:16px;font-family:var(--mono);font-size:12px;color:var(--dim)}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="side">
+    <div class="brand">OpenSpec <span>× fof-mono</span></div>
+    <div class="sub">guide + adaptation · 2026-07-10</div>
+    <a class="navlink active" href="#overview"><span class="n">00</span>Overview</a>
+    <a class="navlink" href="#model"><span class="n">01</span>The Mental Model</a>
+    <a class="navlink" href="#lifecycle"><span class="n">02</span>Lifecycle &amp; Workflows</a>
+    <a class="navlink" href="#commands"><span class="n">03</span>Commands &amp; Skills</a>
+    <a class="navlink" href="#artifacts"><span class="n">04</span>Artifacts</a>
+    <a class="navlink" href="#today"><span class="n">05</span>Your Trial Today</a>
+    <a class="navlink" href="#apply"><span class="n">06</span>How Do I Apply This ★</a>
+    <a class="navlink" href="#alternative"><span class="n">07</span>The Alternative</a>
+    <a class="navlink" href="#moves"><span class="n">08</span>Decision &amp; Next Moves</a>
+    <div class="foot">
+      Companion to the <a href="../../../../plans/2026-07-01_repo-snapshot-oss-discovery/index.html">system snapshot</a> and the <a href="../../../../plans/2026-07-01_repo-snapshot-oss-discovery/openspec.html">OpenSpec deep dive</a>.<br><br>
+      Sources: <code>skills/openspec/</code>, the autolearner trial store, the "Auto Learner spec access" Cursor thread, holodeck branch, <code>PROFILE-randy.md</code>, <code>PROJECTS.md</code>, upstream OpenSpec docs.
+    </div>
+  </nav>
+
+  <main>
+    <!-- 00 OVERVIEW -->
+    <section id="overview" class="hero">
+      <div class="eyebrow">OpenSpec · spec-driven development, sized to fit</div>
+      <h1>The spec system, and how to actually use it here</h1>
+      <p class="lede">OpenSpec is an MIT, in-repo, markdown spec system: agree on <em>what</em> to build before code is written, and keep a living spec of what each app does. This page explains the whole machine — then answers the real question: <b style="color:var(--ink)">it feels heavy for ~20 pre-production apps built by one operator and his agents. What's the right-sized version?</b> Section 06 is the proposal; section 07 is the honest alternative.</p>
+      <div class="stats">
+        <div class="stat"><div class="num">5</div><div class="lbl"><b>core</b> workflow IDs</div></div>
+        <div class="stat"><div class="num">6</div><div class="lbl"><b>expanded</b> workflow IDs</div></div>
+        <div class="stat"><div class="num">7</div><div class="lbl">artifact types</div></div>
+        <div class="stat"><div class="num">5</div><div class="lbl">repo skills authored</div></div>
+        <div class="stat"><div class="num">8</div><div class="lbl">apps opted in (<b>bootstrapped 2026-07-10</b>)</div></div>
+        <div class="stat"><div class="num">4</div><div class="lbl">spec stages in the <b>proposed model</b></div></div>
+      </div>
+      <div class="callout gold">
+        <h4>The one-paragraph verdict</h4>
+        <p>Don't adopt OpenSpec wholesale, and don't drop it. Its full ceremony is designed for production apps and multi-engineer teams — but your actual failure mode (specs untracked, <code>PROJECTS.md</code> stale within a month) is exactly what its living-spec + archive machinery fixes. The move is a <b>staged ladder</b>: no specs for sketches, one workflow-first spec file + a roadmap companion for apps in active development, and the full delta-spec change control only where an app has earned it (deployed, real users). OpenSpec's own primitives support every rung — verified against the CLI on 2026-07-10.</p>
+      </div>
+    </section>
+
+    <!-- 01 MENTAL MODEL -->
+    <section id="model">
+      <div class="kicker">01 · Orientation</div>
+      <h2 class="sec">The mental model</h2>
+      <p class="sec-lede">OpenSpec is two halves that meet in one folder. Neither half picks the AI model — your chat session does; OpenSpec just tells that model what procedure to follow.</p>
+      <div class="two">
+        <div class="card">
+          <h4><span class="pill st-cli">CLI</span> The terminal half</h4>
+          <p class="desc"><code>openspec init / list / status / validate / archive</code> — file structure, validation, and the delta-merge. Deterministic, no LLM, no API keys. Installed globally: <code>@fission-ai/openspec@1.5.0</code>.</p>
+        </div>
+        <div class="card">
+          <h4><span class="pill st-core">AI</span> The agent half</h4>
+          <p class="desc"><code>/opsx:explore</code>, <code>/opsx:propose</code>, … — workflow instructions your AI assistant follows in Cursor / Claude Code / Codex. This repo authors them as skills in <code>skills/openspec/</code> instead of generated wrappers (<code>--tools none</code>).</p>
+        </div>
+      </div>
+      <h3 class="sub">One store per opted-in app</h3>
+      <pre>apps/&lt;app&gt;/openspec/
+  config.yaml                      <b>← schema + project context + artifact rules (agent guidance)</b>
+  specs/&lt;capability&gt;/spec.md       <b>← living spec: current behavior (source of truth)</b>
+  changes/&lt;change&gt;/                <b>← one folder per proposed change (the delta)</b>
+  changes/archive/YYYY-MM-DD-&lt;change&gt;/   <b>← completed changes: the audit trail</b></pre>
+      <p class="desc" style="color:var(--muted)">The signature move is the <b style="color:var(--ink)">delta spec</b>: a change never edits <code>specs/</code> directly. It proposes ADDED / MODIFIED / REMOVED requirements that <b style="color:var(--ink)">merge into the living spec on archive</b>. Brownfield-first, small context, reviewable diffs of intent.</p>
+      <h3 class="sub">Terminology — don't mix these</h3>
+      <div class="scroll">
+      <table>
+        <thead><tr><th>Term</th><th>What it is</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td><b>Workflow ID</b></td><td>Internal selector used by profiles/config to decide which actions get installed</td><td class="s">propose, explore, verify</td></tr>
+          <tr><td><b>Command</b></td><td>User-facing action typed in an AI chat</td><td class="s">/opsx:propose</td></tr>
+          <tr><td><b>Skill</b></td><td>Instruction file teaching an assistant how to perform a command</td><td class="s">skills/openspec/opsx-propose/README.md</td></tr>
+          <tr><td><b>CLI command</b></td><td>Terminal command; inspects, validates, scaffolds, merges</td><td class="s">openspec validate --all</td></tr>
+          <tr><td><b>Capability (domain)</b></td><td>A spec folder inside one app — a behavior area, not an internet domain and not an app</td><td class="s">specs/app/, specs/auth/</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="callout blue">
+        <p style="margin:0"><b>Capability granularity, settled:</b> one app can have many spec files (<code>auth/</code>, <code>billing/</code>, <code>search/</code>) — but it doesn't have to. For an early app, one broad capability named <code>app</code> is fully supported and validated. Split only when the file gets too big or areas change independently. Autolearner's baseline uses exactly this: <code>specs/app/spec.md</code>.</p>
+      </div>
+    </section>
+
+    <!-- 02 LIFECYCLE -->
+    <section id="lifecycle">
+      <div class="kicker">02 · The loop</div>
+      <h2 class="sec">Lifecycle &amp; workflows</h2>
+      <p class="sec-lede">The core loop, with the two optional detours. Expanded workflow IDs (section 03) add finer-grained control points to the same loop — they are not extra phases.</p>
+      <div class="flow">
+        <span class="chip opt">explore</span><span class="arr">→</span>
+        <span class="chip hot">propose</span><span class="arr">→</span>
+        <span class="chip hot">apply</span><span class="arr">→</span>
+        <span class="chip opt">sync / verify</span><span class="arr">→</span>
+        <span class="chip hot">archive</span>
+      </div>
+      <div class="cards">
+        <div class="card"><h4>explore <span class="tag">optional</span></h4><p class="desc">No-stakes thinking partner. Reads code + existing specs, compares options, clarifies requirements. Creates no artifacts.</p></div>
+        <div class="card"><h4>propose</h4><p class="desc">Creates <code>changes/&lt;name&gt;/</code> with all planning artifacts in one pass: proposal, delta specs, design (when needed), tasks. <b>Progressive rigor</b>: lite for small work, full Given/When/Then for contracts, migrations, security.</p></div>
+        <div class="card"><h4>apply</h4><p class="desc">Implements <code>tasks.md</code>, checking off items as code lands. The change folder is the working memory between sessions and agents.</p></div>
+        <div class="card"><h4>sync <span class="tag">optional</span></h4><p class="desc">Merges delta specs into the living store <em>before</em> archive — mainly for parallel changes that need the baseline updated early.</p></div>
+        <div class="card"><h4>verify <span class="tag">expanded</span></h4><p class="desc">Checks the implementation against the artifacts — completeness, correctness, coherence — before closeout.</p></div>
+        <div class="card"><h4>archive</h4><p class="desc">Finalizes: merges deltas into <code>specs/</code>, moves the change to <code>changes/archive/YYYY-MM-DD-&lt;name&gt;/</code>. The living spec is now current behavior; the archive is the audit trail.</p></div>
+      </div>
+      <h3 class="sub">Which action, when</h3>
+      <div class="scroll">
+      <table>
+        <thead><tr><th>Situation</th><th>Use</th></tr></thead>
+        <tbody>
+          <tr><td>Requirements fuzzy, options need comparison, codebase needs investigation</td><td class="s">explore</td></tr>
+          <tr><td>Scope clear, one quick planning pass</td><td class="s">propose</td></tr>
+          <tr><td>Want to review each planning artifact before the next is written</td><td class="s">new + continue</td></tr>
+          <tr><td>Explicit scaffold first, then all artifacts at once</td><td class="s">new + ff</td></tr>
+          <tr><td>Planning done; write the code</td><td class="s">apply</td></tr>
+          <tr><td>Parallel changes need the living spec updated before archive</td><td class="s">sync</td></tr>
+          <tr><td>Implementation done; check it against the artifacts</td><td class="s">verify</td></tr>
+          <tr><td>One finished change becomes current behavior</td><td class="s">archive</td></tr>
+          <tr><td>Several finished changes at once</td><td class="s">bulk-archive</td></tr>
+          <tr><td>Onboard an existing un-specced app into OpenSpec</td><td class="s">bootstrap <span class="tag">repo skill</span></td></tr>
+          <tr><td>Guided first-time walkthrough on real code</td><td class="s">onboard</td></tr>
+          <tr><td>Plan changed mid-flight; revise artifacts, not code</td><td class="s">update (upstream docs; not in CLI 1.5.0)</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <!-- 03 COMMANDS -->
+    <section id="commands">
+      <div class="kicker">03 · The catalog</div>
+      <h2 class="sec">Commands &amp; skills</h2>
+      <p class="sec-lede">Everything installable or runnable, in one filterable catalog: the core profile (what's active here), the expanded set, the terminal CLI, and this repo's authored skills.</p>
+      <div class="legend">
+        <span><span class="pill st-core">CORE</span> installed profile</span>
+        <span><span class="pill st-exp">EXPANDED</span> opt-in workflow IDs</span>
+        <span><span class="pill st-cli">CLI</span> terminal command</span>
+        <span><span class="pill st-repo">REPO SKILL</span> authored in skills/openspec/</span>
+      </div>
+      <div class="filterbar" id="filterbar">
+        <button class="fbtn active" data-f="all">All</button>
+        <button class="fbtn" data-f="core">Core</button>
+        <button class="fbtn" data-f="expanded">Expanded</button>
+        <button class="fbtn" data-f="cli">CLI</button>
+        <button class="fbtn" data-f="repo">Repo skills</button>
+        <input id="search" type="text" placeholder="search e.g. archive, baseline, validate…" />
+        <span class="count" id="count"></span>
+      </div>
+      <div class="cards" id="cmdcards"></div>
+      <div class="callout" style="margin-top:18px">
+        <p style="margin:0"><b>Model selection lives outside OpenSpec.</b> No <code>model:</code> field exists anywhere in it. Explore/propose run on whatever model the chat session uses; the practical pattern here is plan in one lane (Cursor / Fable) and apply in another (Codex), with <code>config.yaml</code> <code>context:</code> carrying per-step model guidance as hints.</p>
+      </div>
+    </section>
+
+    <!-- 04 ARTIFACTS -->
+    <section id="artifacts">
+      <div class="kicker">04 · The paper trail</div>
+      <h2 class="sec">Artifacts</h2>
+      <p class="sec-lede">Seven artifact types across two areas: the living store, and per-change folders. Every one is plain markdown (plus one YAML).</p>
+      <div class="scroll">
+      <table>
+        <thead><tr><th>Path</th><th>Artifact</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td class="s">openspec/config.yaml</td><td><b>Store config</b></td><td>Schema selection, project context shown to agents, per-artifact rules</td></tr>
+          <tr><td class="s">openspec/specs/&lt;capability&gt;/spec.md</td><td><b>Living spec</b></td><td>Current behavior after changes sync/archive — the source of truth agents read first</td></tr>
+          <tr><td class="s">changes/&lt;change&gt;/proposal.md</td><td><b>Proposal</b></td><td>Why the change exists, what changes, impact, non-goals</td></tr>
+          <tr><td class="s">changes/&lt;change&gt;/specs/&lt;capability&gt;/spec.md</td><td><b>Delta spec</b></td><td>ADDED / MODIFIED / REMOVED / RENAMED requirements for this change only</td></tr>
+          <tr><td class="s">changes/&lt;change&gt;/design.md</td><td><b>Design</b></td><td>Technical approach, decisions, risks, alternatives, test strategy — when non-obvious</td></tr>
+          <tr><td class="s">changes/&lt;change&gt;/tasks.md</td><td><b>Tasks</b></td><td>Implementation checklist apply works through (holodeck counts these checkboxes)</td></tr>
+          <tr><td class="s">changes/archive/YYYY-MM-DD-&lt;change&gt;/</td><td><b>Archived change</b></td><td>Completed proposal + design + tasks + deltas, preserved for audit</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <h3 class="sub">Anatomy of a living spec — and its readability problem</h3>
+      <div class="two">
+        <div class="card">
+          <h4>Stock format</h4>
+          <pre style="margin:10px 0 0">## Purpose
+Two–four sentences.
+
+## Requirements
+### Requirement: Mastery Scheduling
+The system SHALL ...
+#### Scenario: Later rounds target
+####   unmastered concepts
+- **WHEN** ... - **THEN** ...</pre>
+          <p class="desc" style="margin-top:10px">Requirements + Given/When/Then scenarios. Precise, testable, agent-legible — but a flat requirements list <b>reads like a wall</b>: folding autolearner's 11 requirements tells you almost nothing about what the app does or which journey each requirement serves.</p>
+        </div>
+        <div class="card" style="border-color:var(--violet)">
+          <h4>Workflow-first format <span class="pill st-repo">PROPOSED</span></h4>
+          <pre style="margin:10px 0 0">## Purpose
+## Workflows                <b>← new</b>
+### Workflow: Student
+###   practices a concept
+Open → exercise → think-aloud
+→ assessment → repeat.
+Exercises requirements:
+Mastery Scheduling, Attempt
+Submission, Think-Aloud
+Assessment ...
+
+## Requirements   (unchanged)</pre>
+          <p class="desc" style="margin-top:10px">A <code>## Workflows</code> section on top: each user journey as a one-line narrative, naming the requirements it exercises. Fold to Workflows → you see what the app does. <b>Verified 2026-07-10: <code>openspec validate --all --strict</code> passes with the extra section.</b> No fork, no custom schema.</p>
+        </div>
+      </div>
+      <div class="callout pink">
+        <p style="margin:0"><b>What spec.md is <em>not</em> for (settled in the Cursor thread):</b> roadmap, vision, and intended-but-unbuilt behavior don't belong in the living spec — it's a behavior contract. Intended changes live in <b>delta specs</b>; vision/roadmap live in a companion doc (section 06) or <code>plans/</code>. Keeping the contract strict is what keeps validation and archive-merging reliable.</p>
+      </div>
+    </section>
+
+    <!-- 05 TODAY -->
+    <section id="today">
+      <div class="kicker">05 · Ground truth</div>
+      <h2 class="sec">Your trial today</h2>
+      <p class="sec-lede">Where the OpenSpec trial actually stands in this repo, as of 2026-07-10.</p>
+      <div class="cards">
+        <div class="card"><h4>Stores <span class="tag">8 apps</span></h4><p class="desc"><b>autolearner</b> (this branch; workflows section added via the archived <code>add-workflows-section</code> change) plus <b>seven apps bootstrapped 2026-07-10</b> on their open branches: holodeck, content-studio, deutsch-graph, math-quiz, voice-router, stellar-transcriber, focusonfoundations. Each: single <code>app</code> capability, workflow-first spec (11–14 requirements, every one covered by a workflow), <code>ROADMAP.md</code> companion, archived <code>baseline-current-behavior</code> change, strict validation clean.</p></div>
+        <div class="card"><h4>Skills <span class="tag">skills/openspec/</span></h4><p class="desc">Five repo skills: <code>opsx-explore</code>, <code>opsx-propose</code>, <code>opsx-apply</code>, <code>opsx-archive</code>, and (new today) <code>opsx-bootstrap</code>. No generated tool wrappers yet — deferred until the trial proves out.</p></div>
+        <div class="card"><h4>Holodeck already watches specs</h4><p class="desc">The holodeck branch's <b>specs collector</b> scans every <code>apps/*/openspec/</code> store across all worktrees: spec domains, active changes with artifact presence, task-checkbox progress, archived changes by date. The control-center integration point for any spec system you pick <b>already exists</b>.</p></div>
+        <div class="card"><h4>Holodeck registry now carries the model</h4><p class="desc"><code>stage:</code> and <code>spec_stage:</code> added to all 18 <code>registry.yaml</code> entries + the apps-collector whitelist (feature/holodeck-start, 2026-07-10); <code>tags:</code> were already there. Still future: dashboard chips for the new fields, roadmap-count collection, and <b>voice-memo</b> ingestion — section 06's remaining slots.</p></div>
+      </div>
+      <div class="callout green">
+        <h4>What the "Auto Learner spec access" thread settled</h4>
+        <p>1 · <code>init</code> creates an <b>empty container</b> — specs only appear after a propose→archive cycle (or a bootstrap). 2 · Model choice is the <b>host chat's</b>, not OpenSpec's. 3 · The expanded set is 6 extra workflow IDs (<code>update</code> documented upstream but absent from CLI 1.5.0). 4 · A <b>single capability</b> is a legitimate early shape. 5 · Roadmap/vision <b>don't go in spec.md</b>. 6 · The one-file baseline was written and validated — and reading it exposed the readability gap this page's workflow-first format fixes.</p>
+      </div>
+    </section>
+
+    <!-- 06 APPLY -->
+    <section id="apply">
+      <div class="kicker">06 · The key deliverable</div>
+      <h2 class="sec">How do I apply this ★</h2>
+      <p class="sec-lede">The honest fit assessment, then the adapted proposal: <b style="color:var(--ink)">Staged OpenSpec</b> — five moves that keep OpenSpec's machinery where it earns its ceremony and stay out of the way everywhere else.</p>
+
+      <h3 class="sub">The fit, honestly</h3>
+      <div class="two">
+        <div class="card">
+          <h4>Why full OpenSpec is too heavy right now</h4>
+          <ul class="tidy">
+            <li>~20 apps, most <b>pre-deployment</b>, built rapidly in parallel — full propose→apply→archive per change is ceremony the work hasn't earned.</li>
+            <li>Solo operator + agents, not a multi-engineer team needing granular change control.</li>
+            <li>Stock spec format is <b>hard to read</b> as "what does this app do" — the exact judgment you need to make ("am I happy? what next?").</li>
+            <li>No native home for <b>roadmap/vision</b>, your dominant mode of thinking about these apps.</li>
+            <li>Per-app stores have no <b>composability</b> — nothing shares stack/UI/deploy knowledge across apps (Stores, the cross-repo feature, is beta).</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Why "just drop it" is wrong too</h4>
+          <ul class="tidy">
+            <li>Your actual history: specs <b>untracked</b>, or written once and stale (<code>PROJECTS.md</code> doesn't know half the current apps). The living-spec + merge-on-archive loop is the only mechanism on the table that <b>keeps</b> specs current.</li>
+            <li>The end-state vision — <b>"Randy approves the spec, not the code"</b> — needs a durable, reviewable spec artifact. That's OpenSpec's whole product.</li>
+            <li>Validation, task-checkbox progress, and dated archives are <b>free machine-readable signals</b> — holodeck already consumes them.</li>
+            <li>QRAG is production-like today; more apps will get there. The heavy rung will be needed — just not everywhere at once.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 class="sub">Move 1 · Two axes + tags — app stage, spec stage, and everything else</h3>
+      <p class="desc" style="color:var(--muted);max-width:840px">Three different things were tangled in the first draft of this ladder; they come apart cleanly. <b>App stage</b> says where the app is in its life. <b>Spec stage</b> says how much spec machinery it carries. <b>Tags</b> hold everything cross-cutting (activity, users, money, minors…). All three are curated per app in holodeck's <code>registry.yaml</code> and shown on the dashboard. Promotion on either axis is deliberate — a small, reviewable event.</p>
+      <div class="two">
+        <div class="card">
+          <h4>Axis 1 · App stage</h4>
+          <div class="scroll" style="margin-top:8px">
+          <table>
+            <thead><tr><th>Stage</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td><span class="stagechip s0">S0 · experiment</span></td><td>Spike / swing-for-the-fences; may be abandoned</td></tr>
+              <tr><td><span class="stagechip s1">S1 · dev</span></td><td>Real app being built; not deployed <em>(most apps today)</em></td></tr>
+              <tr><td><span class="stagechip s2">S2 · deployed</span></td><td>Live somewhere with a <b>dev + production path</b> — the defining marker (lesson-dash, prism-sync, the FOF site; QRAG sits at this stage's upper end)</td></tr>
+              <tr><td><span class="stagechip s3">S3 · real</span></td><td>Real users beyond yourself/household, real stakes — obligations, money, or minors at scale. <b>Nothing is here yet.</b></td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+        <div class="card">
+          <h4>Axis 2 · Spec stage</h4>
+          <div class="scroll" style="margin-top:8px">
+          <table>
+            <thead><tr><th>Spec stage</th><th>Machinery</th></tr></thead>
+            <tbody>
+              <tr><td><span class="stagechip s0">readme-only</span></td><td>No OpenSpec. README "What it does" (3 lines) + "Roadmap" section. Git is the change control.</td></tr>
+              <tr><td><span class="stagechip s1">openspec-single-spec</span></td><td>One living spec (<code>specs/app/</code>, workflow-first) + <code>ROADMAP.md</code>, via <code>opsx-bootstrap</code>. Changes = lite propose, or spec-edit-with-commit for small shifts.</td></tr>
+              <tr><td><span class="stagechip s2">openspec-core</span></td><td>Full core loop per change: explore → propose → apply → archive. One or a few capabilities. This is where real change control switches on.</td></tr>
+              <tr><td><span class="stagechip s3">openspec-strict</span></td><td>Capability-split specs, full-rigor deltas with scenarios, <code>verify</code> before archive (expanded profile). Nothing merges without a validated change.</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+      <div class="callout blue">
+        <h4>Tags — the flexible third dimension <span class="tag">iterate freely</span></h4>
+        <p>Cross-cutting attributes don't belong in either stage — an app can be deployed <em>and</em> dormant, or in dev <em>and</em> destined for kid users. Keep them as <b>tags</b> in the registry, provisional by design: <code>active-dev</code> · <code>dormant</code> · <code>done</code> (deployed, simple, finished) · <code>real-users</code> · <code>revenue</code> · <code>minors</code> · <code>education</code> · <code>internal</code> · <code>public-facing</code>. The registry treats tags as free-form strings precisely so renaming, splitting, or redefining them is a one-line edit, never a schema change — expect this vocabulary to be iterated.</p>
+      </div>
+      <p class="desc" style="color:var(--muted);margin-top:10px"><b>Typical mapping</b> — S0→readme-only, S1→openspec-single-spec, S2→openspec-core, S3→openspec-strict — but the axes deliberately move independently: a deployed-and-done utility can stay at <code>openspec-single-spec</code> forever, and a dev app heading somewhere serious can adopt <code>openspec-core</code> early.</p>
+      <p class="desc" style="color:var(--muted)">Suggested initial placements (to confirm): <span class="stagechip s2">S2 · deployed</span> QRAG (upper end), math-quiz, lesson-logger, prism-sync, FOF site · <span class="stagechip s1">S1 · dev</span> autolearner, holodeck, minecraft mods, content-studio, voice-router, stellar-transcriber, deutsch-graph · <span class="stagechip s0">S0 · experiment</span> family/games experiments and other fresh swings.</p>
+
+      <h3 class="sub">Move 2 · Workflow-first specs — fix the readability problem</h3>
+      <p class="desc" style="color:var(--muted);max-width:840px">Every living spec gets a <code>## Workflows</code> section above <code>## Requirements</code>: each user journey as a one-line narrative naming the requirements it exercises. Reading folded = what the app does; every requirement is reachable from a journey, so "is this doing what I want, and what do I expand next?" is answerable from the spec alone. Validator-verified (strict mode) — this is a house style encoded in <code>config.yaml</code> rules, not a fork. First act: reshape autolearner's baseline via a proper change (which also creates the missing audit trail).</p>
+
+      <h3 class="sub">Move 3 · Roadmap &amp; vision companions — where "where I'm going" lives</h3>
+      <div class="two">
+        <div class="card">
+          <h4><code>apps/&lt;app&gt;/ROADMAP.md</code></h4>
+          <p class="desc">Vision paragraph · <b>Now / Next / Later</b> · dated <b>idea inbox</b>. Deliberately outside the OpenSpec store: the spec stays a strict behavior contract, the roadmap holds everything aspirational. Cross-app/portfolio roadmap stays in <code>plans/</code>.</p>
+        </div>
+        <div class="card">
+          <h4>The graduation pipeline</h4>
+          <p class="desc"><b>voice memo → idea inbox → Now/Next/Later → <code>opsx-propose</code> → delta spec → living spec.</b> SuperWhisper transcripts get captured (dated) and triaged into idea inboxes; ideas graduate upward; only when work is real does one become an OpenSpec change. Holodeck later grows a memo/roadmap collector — its registry and specs layers already prove the pattern.</p>
+        </div>
+      </div>
+
+      <h3 class="sub">Move 4 · Composable profiles — the hierarchical, reusable layer</h3>
+      <p class="desc" style="color:var(--muted);max-width:840px">The monorepo already layers context (repo <code>AGENTS.md</code> → app <code>AGENTS.md</code>/README → change). Extend that to specs with a shared profile library — <code>specs-shared/</code> (or under <code>skills/openspec/profiles/</code>): stack lanes (the four from <a href="../../../../plans/2026-07-01_repo-snapshot-oss-discovery/webstacks.html">Web Stacks × Design</a>), UI-template profiles, style guides, deployment guides. An app's <code>config.yaml</code> context and spec Purpose declare which profiles it inherits; agents state those inherited assumptions when they start work. An app spec then only records <b>what's different</b> — so comparing two apps is "same lane, these deltas," and progression toward deployment = swapping/adding profiles. When OpenSpec's cross-repo <b>Stores</b> feature matures, profiles can migrate into it; until then plain referenced markdown does the job.</p>
+
+      <h3 class="sub">Move 5 · Bootstrap + holodeck wiring</h3>
+      <div class="two">
+        <div class="card">
+          <h4><code>opsx-bootstrap</code> <span class="pill st-repo">SHIPPED TODAY</span></h4>
+          <p class="desc">One pass per app: init store → explore → workflow-first baseline via a <code>baseline-current-behavior</code> change → <code>ROADMAP.md</code> scaffold → validate → archive → register stage. The repeatable version of what the Cursor agent did ad hoc for autolearner. <code>skills/openspec/opsx-bootstrap/README.md</code>.</p>
+        </div>
+        <div class="card">
+          <h4>Holodeck as the spec HQ</h4>
+          <p class="desc">Add <code>stage:</code> to <code>registry.yaml</code> (S0–S3 chips on the dashboard); the existing specs layer already shows domains, change artifacts, and task progress. Later: roadmap counts and a voice-memo inbox as collectors. The control center becomes where you <em>see</em> the whole ladder at a glance.</p>
+        </div>
+      </div>
+
+      <h3 class="sub">Try it — what does this app need?</h3>
+      <div class="picker">
+        <div class="q"><div class="lab">App stage?</div><div class="opts" data-k="stage">
+          <button class="pbtn" data-v="s0">S0 · experiment</button>
+          <button class="pbtn" data-v="s1">S1 · dev (not deployed)</button>
+          <button class="pbtn" data-v="s2">S2 · deployed (dev+prod path)</button>
+          <button class="pbtn" data-v="s3">S3 · real (users, stakes)</button>
+        </div></div>
+        <div class="q"><div class="lab">What are you about to do?</div><div class="opts" data-k="work">
+          <button class="pbtn" data-v="capture">Capture an idea / vision</button>
+          <button class="pbtn" data-v="small">Small behavior change</button>
+          <button class="pbtn" data-v="feature">Real feature</button>
+          <button class="pbtn" data-v="baseline">First spec for the app</button>
+        </div></div>
+        <div class="rec" id="rec"><div class="big">Pick both above ↑</div><div class="why">The right-sized process appears here.</div></div>
+      </div>
+    </section>
+
+    <!-- 07 ALTERNATIVE -->
+    <section id="alternative">
+      <div class="kicker">07 · The other road</div>
+      <h2 class="sec">The alternative: SPEC.md + git, no OpenSpec</h2>
+      <p class="sec-lede">The credible non-OpenSpec paradigm isn't another framework — it's the pattern this repo already invented for prism-sync: <b style="color:var(--ink)">one living <code>SPEC.md</code> per app, git as the only change control.</b></p>
+      <div class="two">
+        <div class="card">
+          <h4>The shape</h4>
+          <ul class="tidy">
+            <li>One <code>apps/&lt;app&gt;/SPEC.md</code>: what it is · workflows · current behavior (light requirements) · milestones (M1 ✓, M2, M3) · Now/Next/Later roadmap.</li>
+            <li>Machine-readable header (stage, lane, status) that a holodeck collector reads — same dashboard, different source.</li>
+            <li>Change control = commits and PRs touching SPEC.md alongside code; review the SPEC.md diff instead of a proposal.</li>
+            <li>Same composable profiles layer (Move 4) — it's tool-agnostic markdown either way.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>The trade</h4>
+          <ul class="tidy">
+            <li><b>Pro:</b> zero new tooling or lifecycle; one file per app; matches proven habits (prism-sync's SPEC.md, milestone plans); nothing to keep in sync.</li>
+            <li><b>Pro:</b> roadmap and behavior live on one page — the readability you wanted, by default.</li>
+            <li><b>Con:</b> no validation, no structured deltas, no dated change archive — history is commit-grained, and "what changed in intent" means archaeology in <code>git log</code>.</li>
+            <li><b>Con:</b> parallel agents editing one SPEC.md collide; OpenSpec's change folders exist precisely to prevent that.</li>
+            <li><b>Con:</b> no enforced separation of "current" vs "intended" — the drift that made past specs go stale.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout gold">
+        <h4>The reconciliation — you don't actually have to choose</h4>
+        <p>Look closely and the alternative <b>is</b> the <code>readme-only</code> / <code>openspec-single-spec</code> rungs with the OpenSpec folder shape removed. The staged proposal keeps those rungs almost exactly this light (one readable spec + roadmap, git-driven) while preserving a <b>no-migration upgrade path</b>: when an app earns <code>openspec-core</code>, its spec is already in the store format, and delta change control switches on without rewriting anything. Run the ladder; if after a few months the core/strict machinery still isn't earning its keep, collapsing back to plain SPEC.md files is a rename, not a rebuild. Worth a side-glance later: Agent OS's three-layer standards/product/specs model — but it's a heavier system, not a lighter one.</p>
+      </div>
+    </section>
+
+    <!-- 08 MOVES -->
+    <section id="moves">
+      <div class="kicker">08 · From here</div>
+      <h2 class="sec">Decision &amp; next moves</h2>
+      <p class="sec-lede">Recommended: adopt <b style="color:var(--ink)">Staged OpenSpec</b>. Sequenced so each step is small, reversible, and immediately visible in holodeck.</p>
+      <div class="step"><span class="n">1</span><div class="b"><b>Confirm the placements and the tag vocabulary.</b><p>Approve/adjust the app-stage placements above and the provisional tag list. The registry fields (<code>stage</code>, <code>spec_stage</code>, <code>tags</code>) are in holodeck's <code>registry.yaml</code> as of 2026-07-10 — iterating them is a one-line edit.</p></div></div>
+      <div class="step"><span class="n">2</span><div class="b"><b>Reshape autolearner's baseline, workflow-first — via a real change.</b><p><b style="color:var(--accent2)">✓ Done 2026-07-10</b> — the <code>add-workflows-section</code> change is archived; the store has its first genuine audit trail and the spec now folds to six readable workflows.</p></div></div>
+      <div class="step"><span class="n">3</span><div class="b"><b>Bootstrap the active-branch apps.</b><p><b style="color:var(--accent2)">✓ Done 2026-07-10</b> — <code>opsx-bootstrap</code> run (Codex-executed, Fable-reviewed) across seven apps on their open branches: holodeck, content-studio, deutsch-graph, math-quiz, voice-router, stellar-transcriber, focusonfoundations.</p></div></div>
+      <div class="step"><span class="n">4</span><div class="b"><b>Start the memo pipeline manually.</b><p>Next SuperWhisper session about an app: save the transcript dated, drop distilled bullets into that app's <code>ROADMAP.md</code> idea inbox. Prove the graduation path by hand before any tooling.</p></div></div>
+      <div class="step"><span class="n">5</span><div class="b"><b>Create the first two profiles when a pair of apps shares a lane.</b><p>Likely Lane 3 (FastAPI internal tools) and Lane 4 (vanilla/static kids' apps) from the web-stacks map — write each once, reference from both apps' configs.</p></div></div>
+      <div class="step"><span class="n">6</span><div class="b"><b>Re-evaluate at the first S3 promotion.</b><p>When something beyond QRAG approaches production, decide expanded-profile adoption (verify, capability splits) with real stakes on the table — and check whether upstream shipped <code>update</code> and Stores by then.</p></div></div>
+      <div class="callout pink" style="margin-top:22px">
+        <h4>The through-line</h4>
+        <p>The goal was never "have specs." It's <b>"Randy approves the spec, not the code"</b> — which requires specs that are readable (workflow-first), current (living store + archive), right-sized (the ladder), composable (profiles), fed by how you actually think (voice memos → roadmaps), and visible in one place (holodeck). Every move above serves that end-state; none blocks the others; and the exit — plain SPEC.md files — stays open the whole way.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const CMDS = [
+  {name:"/opsx:explore", type:["core","repo"], skill:"opsx-explore",
+   what:"Think through ideas, investigate code and existing specs, compare options. Creates no artifacts.",
+   when:"Requirements are fuzzy or the codebase needs investigation before committing to scope."},
+  {name:"/opsx:propose", type:["core","repo"], skill:"opsx-propose",
+   what:"Create a change folder with all planning artifacts in one pass: proposal, delta specs, design, tasks. Progressive rigor: lite or full.",
+   when:"Scope is clear and you want one quick planning pass before code."},
+  {name:"/opsx:apply", type:["core","repo"], skill:"opsx-apply",
+   what:"Implement tasks.md, checking off items as code lands. The change folder is shared working memory across sessions and agents.",
+   when:"Planning is complete and code should be written."},
+  {name:"/opsx:sync", type:["core"], skill:null,
+   what:"Merge delta specs into the living openspec/specs/ store while the change stays active.",
+   when:"Parallel changes need the baseline updated before archive. No repo skill yet — CLI/upstream workflow only."},
+  {name:"/opsx:archive", type:["core","repo"], skill:"opsx-archive",
+   what:"Finalize a completed change: merge deltas into the living specs, move the folder to the dated archive.",
+   when:"One finished change should become current behavior."},
+  {name:"/opsx:new", type:["expanded"], skill:null,
+   what:"Create an empty change scaffold only — no artifacts generated yet.",
+   when:"You want an explicit container first, then control artifact generation."},
+  {name:"/opsx:continue", type:["expanded"], skill:null,
+   what:"Generate the next missing artifact one at a time, following the schema dependency order (proposal then specs/design then tasks).",
+   when:"You want to review each planning artifact before the next exists."},
+  {name:"/opsx:ff", type:["expanded"], skill:null,
+   what:"Fast-forward: generate all missing planning artifacts at once (propose's speed after new's explicit scaffold).",
+   when:"Explicit scaffold, but no need to review artifact-by-artifact."},
+  {name:"/opsx:verify", type:["expanded"], skill:null,
+   what:"Check the implementation against the artifacts: completeness, correctness, coherence.",
+   when:"Implementation is done and should be validated before closeout. Candidate for S2/S3 rungs of the ladder."},
+  {name:"/opsx:bulk-archive", type:["expanded"], skill:null,
+   what:"Archive multiple completed changes together, resolving spec conflicts against the implemented code.",
+   when:"Several parallel changes finished at once."},
+  {name:"/opsx:onboard", type:["expanded"], skill:null,
+   what:"Guided end-to-end tutorial walkthrough on your real codebase (~15–30 min).",
+   when:"A new user (or collaborator — EA) learning the whole loop for the first time."},
+  {name:"/opsx:update", type:["expanded"], skill:null,
+   what:"Revise an existing change's planning artifacts when scope shifts — planning only, no code edits. Documented upstream; NOT in the CLI 1.5.0 installer list.",
+   when:"Plan changed mid-flight. Until the CLI ships it: edit artifacts manually with user approval."},
+  {name:"opsx-bootstrap", type:["repo"], skill:"opsx-bootstrap",
+   what:"Repo-authored composite (no upstream equivalent): init store if missing, explore, author a workflow-first single-capability baseline via a baseline-current-behavior change, scaffold ROADMAP.md, validate, archive, register stage.",
+   when:"Onboarding an existing un-specced app — the on-ramp for the ~20-app portfolio, one approval per app."},
+  {name:"openspec init", type:["cli"], skill:null,
+   what:"Create the store skeleton for an app: config.yaml, empty specs/, changes/, changes/archive/. Flags: --tools none, --profile core.",
+   when:"Opting an app in (human-run, once per app). Creates an empty container — no spec content."},
+  {name:"openspec list / status", type:["cli"], skill:null,
+   what:"list: active changes (--specs for spec files). status --change <name>: artifact completion for one change.",
+   when:"Orientation at session start; agents run these freely."},
+  {name:"openspec validate", type:["cli"], skill:null,
+   what:"Validate specs and changes against the schema. --all for everything, --strict for full rigor. Tolerates extra sections like ## Workflows (verified 2026-07-10).",
+   when:"After any spec/delta edit; before archive; in a future CI gate."},
+  {name:"openspec archive <change>", type:["cli"], skill:null,
+   what:"The deterministic half of archiving: merge deltas into specs/, move the change folder to the dated archive.",
+   when:"Called by the archive skill/command at closeout."},
+  {name:"openspec config / update", type:["cli"], skill:null,
+   what:"config: manage profile (core vs expanded selection), delivery, openers. update: regenerate tool wrappers after a profile change — a CLI maintenance action, unrelated to /opsx:update.",
+   when:"Changing which workflow IDs are installed, or refreshing generated wrappers (none generated in this repo yet)."},
+  {name:"openspec view / spec show", type:["cli"], skill:null,
+   what:"view: interactive terminal dashboard of the store. spec show <id>: print one spec.",
+   when:"Human browsing; holodeck's specs layer is the richer cross-app equivalent."},
+];
+
+const cardsEl = document.getElementById('cmdcards');
+const countEl = document.getElementById('count');
+const typeLabel = {core:"CORE", expanded:"EXPANDED", cli:"CLI", repo:"REPO SKILL"};
+const typeClass = {core:"st-core", expanded:"st-exp", cli:"st-cli", repo:"st-repo"};
+
+function render(list){
+  cardsEl.innerHTML = list.map(c=>{
+    const pills = c.type.map(t=>'<span class="pill '+typeClass[t]+'">'+typeLabel[t]+'</span>').join(' ');
+    const skill = c.skill
+      ? '<div class="kv"><b>Repo skill →</b> <code>skills/openspec/'+c.skill+'/README.md</code></div>'
+      : (c.type.includes('cli') ? '' : '<div class="kv alt"><b>Repo skill →</b> not authored yet</div>');
+    return '<div class="card">'
+      + '<h4><code style="font-size:13px">'+c.name+'</code> '+pills+'</h4>'
+      + '<div class="desc">'+c.what+'</div>'
+      + '<div class="kv"><b>When →</b> '+c.when+'</div>'
+      + skill
+      + '</div>';
+  }).join('');
+  countEl.textContent = list.length + ' shown';
+}
+let curFilter='all', curSearch='';
+function applyFilter(){
+  let list = CMDS.filter(c=>{
+    const f = curFilter==='all' || c.type.includes(curFilter);
+    const blob = (c.name+' '+c.what+' '+c.when+' '+c.type.join(' ')).toLowerCase();
+    return f && (!curSearch || blob.includes(curSearch));
+  });
+  render(list);
+}
+document.querySelectorAll('#filterbar .fbtn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('#filterbar .fbtn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); curFilter=b.dataset.f; applyFilter();
+  });
+});
+document.getElementById('search').addEventListener('input',e=>{curSearch=e.target.value.trim().toLowerCase();applyFilter();});
+applyFilter();
+
+/* ---------- stage picker ---------- */
+const sel={stage:null,work:null};
+document.querySelectorAll('.picker .opts').forEach(row=>{
+  const k=row.dataset.k;
+  row.querySelectorAll('.pbtn').forEach(b=>b.addEventListener('click',()=>{
+    row.querySelectorAll('.pbtn').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); sel[k]=b.dataset.v; recommend();
+  }));
+});
+function recommend(){
+  const {stage,work}=sel;
+  if(!stage||!work) return;
+  let big='', why='';
+  if(stage==='s0'){
+    big = (work==='capture') ? 'README roadmap section — one dated bullet'
+        : (work==='baseline') ? 'Hold off — a README "What it does" IS the readme-only spec'
+        : 'Just build it';
+    why = 'Experiments stay at spec stage readme-only: a 3-line "What it does" and a Roadmap section in the README; git is the change control. If the app keeps surviving your attention, promote it to S1 · dev and run opsx-bootstrap then.';
+  } else if(stage==='s1'){
+    if(work==='baseline'){ big='opsx-bootstrap → openspec-single-spec';
+      why='One pass: init store, explore, workflow-first baseline spec (single app capability) via a baseline-current-behavior change, ROADMAP.md scaffold, validate, archive, register stage + spec stage.'; }
+    else if(work==='capture'){ big='ROADMAP.md idea inbox';
+      why='Dated bullet in the app’s idea inbox (from the voice memo transcript). Graduate it to Now/Next/Later when it firms up; it only becomes an OpenSpec change when you’re ready to build.'; }
+    else if(work==='small'){ big='Spec-edit-with-commit (or lite propose)';
+      why='At openspec-single-spec a small behavior shift can edit the living spec in the same commit as the code — git is the audit trail. If you want the intent reviewable first, a lite propose (proposal + delta only) is the ceiling.'; }
+    else { big='Lite propose → apply → archive';
+      why='Real features get the core loop, lite rigor: short proposal + compact delta; design.md only if non-obvious; tasks sized for one session. Archive keeps the living spec current.'; }
+  } else if(stage==='s2'){
+    if(work==='capture'){ big='ROADMAP.md → next propose';
+      why='Same inbox pipeline, but deployed apps have a production path — ideas that touch existing behavior should graduate into a proposed change rather than a quick spec edit.'; }
+    else if(work==='baseline'){ big='opsx-bootstrap, then promote to openspec-core';
+      why='Deployed but never specced: bootstrap now, with scenarios on the requirements that guard user-visible behavior, then adopt the core loop for subsequent changes.'; }
+    else { big='openspec-core: explore → propose → apply → archive';
+      why='A dev+production path earns the ceremony: every behavior change goes through a change folder with delta specs, and archive keeps the audit trail. Small change = lite artifacts, but still a change.'; }
+  } else {
+    big = (work==='capture') ? 'ROADMAP.md + a proposed change for anything user-visible'
+        : 'openspec-strict + verify';
+    why = 'Real users, real stakes (nothing is here yet — QRAG sits at upper S2): capability-split specs, Given/When/Then scenarios, verify before archive, expanded profile when its workflow IDs are installed. Nothing merges without a validated change.';
+  }
+  document.getElementById('rec').innerHTML='<div class="big">'+big+'</div><div class="why">'+why+'</div>';
+}
+
+/* scroll-spy */
+const links=[...document.querySelectorAll('nav.side a.navlink')];
+const secs=links.map(l=>document.querySelector(l.getAttribute('href'))).filter(Boolean);
+const obs=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){const id='#'+e.target.id;links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')===id));}})},{rootMargin:'-20% 0px -70% 0px'});
+secs.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

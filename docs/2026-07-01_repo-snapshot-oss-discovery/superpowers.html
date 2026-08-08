@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Superpowers (obra) — deep dive for fof-mono</title>
+<style>
+  :root{--bg:#0d1117;--panel:#161d29;--panel2:#1c2634;--border:#243040;--border2:#2f3d50;--ink:#e6edf3;--muted:#9aa7b6;--dim:#6d7b8c;--accent:#58a6ff;--accent2:#7ee787;--gold:#f0c674;--red:#ff6b6b;--acc:#ff7b9c;--shadow:0 8px 30px rgba(0,0,0,.4);--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  *{box-sizing:border-box}html{scroll-behavior:smooth}
+  body{margin:0;background:linear-gradient(180deg,#0b0f16,#0d1117 400px);color:var(--ink);font-family:var(--sans);line-height:1.55;font-size:15px}
+  a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+  code{font-family:var(--mono);background:#0b1220;border:1px solid var(--border);border-radius:5px;padding:1px 5px;font-size:.86em;color:#cde3ff}
+  h1,h2,h3,h4{line-height:1.25;margin:0}
+  .layout{display:grid;grid-template-columns:250px 1fr;max-width:1440px;margin:0 auto}
+  nav.side{position:sticky;top:0;height:100vh;overflow-y:auto;padding:26px 16px 40px;border-right:1px solid var(--border);background:rgba(10,14,20,.6);backdrop-filter:blur(6px)}
+  nav.side .brand{font-weight:800;font-size:16px}.brand span{color:var(--acc)}
+  nav.side .sub{color:var(--dim);font-size:11.5px;margin:4px 0 22px;font-family:var(--mono)}
+  nav.side a.navlink{display:block;color:var(--muted);padding:7px 11px;border-radius:8px;font-size:13.5px;margin:2px 0;border:1px solid transparent}
+  nav.side a.navlink:hover{background:var(--panel);color:var(--ink);text-decoration:none}
+  nav.side a.navlink.active{background:var(--panel2);color:#fff;border-color:var(--border2)}
+  nav.side a.navlink .n{color:var(--dim);font-family:var(--mono);font-size:11px;margin-right:8px}
+  nav.side .foot{margin-top:22px;color:var(--dim);font-size:11px;border-top:1px solid var(--border);padding-top:14px}
+  main{padding:34px 44px 120px;min-width:0}
+  section{margin-bottom:52px;scroll-margin-top:20px}
+  .eyebrow{font-family:var(--mono);color:var(--acc);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+  .hero h1{font-size:33px;margin:10px 0 6px;letter-spacing:-.5px}
+  .hero .lede{color:var(--muted);font-size:17px;max-width:820px}
+  .kicker{color:var(--acc);font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+  h2.sec{font-size:23px;margin-bottom:6px}h3.sub{font-size:16px;margin:24px 0 10px;color:#fff;border-left:3px solid var(--acc);padding-left:10px}
+  .sec-lede{color:var(--muted);max-width:840px;margin-bottom:16px}
+  .callout{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-left:4px solid var(--acc);border-radius:10px;padding:16px 20px;margin:16px 0}
+  .callout.gold{border-left-color:var(--gold)}.callout.blue{border-left-color:#58a6ff}
+  .callout h4{font-size:15px;margin-bottom:6px}.callout p{margin:6px 0;color:var(--muted);font-size:14px}.callout b{color:var(--ink)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px}.card:hover{border-color:var(--border2)}
+  .card h4{font-size:15px}.card .desc{color:var(--muted);font-size:13.5px;margin:8px 0}.card b{color:var(--ink)}
+  .card ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:13px}.card li{margin:4px 0}
+  ul.tidy{margin:8px 0;padding-left:20px;color:var(--muted);font-size:14px}ul.tidy li{margin:6px 0}ul.tidy b{color:var(--ink)}
+  table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{color:var(--dim);font-family:var(--mono);font-size:10.5px;text-transform:uppercase}tr:hover td{background:var(--panel)}
+  td .s{font-family:var(--mono);font-size:12px;color:#cde3ff}.scroll{overflow-x:auto;border:1px solid var(--border);border-radius:10px}
+  .tag{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:6px;background:#0b1220;border:1px solid var(--border);color:var(--dim)}
+  .uv{font-family:var(--mono);font-size:9.5px;padding:1px 6px;border-radius:5px;border:1px solid #a83;color:var(--gold);text-transform:uppercase;white-space:nowrap}
+  .verdict{font-family:var(--mono);font-size:10.5px;padding:2px 9px;border-radius:20px;white-space:nowrap}.v-yes{color:var(--accent2);border:1px solid #2b5}.v-partial{color:var(--gold);border:1px solid #a83}.v-no{color:var(--red);border:1px solid #a33}
+  .step{display:flex;gap:12px;margin:11px 0;align-items:flex-start}.step .n{font-family:var(--mono);color:#0d1117;background:var(--acc);border-radius:7px;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex:none}
+  .step .b b{color:#fff}.step .b p{margin:3px 0 0;color:var(--muted);font-size:13.5px}
+  .backlink{display:inline-block;margin-bottom:16px;font-family:var(--mono);font-size:12px;color:var(--dim)}
+  .flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0}.flow .chip{font-family:var(--mono);font-size:11.5px;background:#0b1220;border:1px solid var(--border2);border-radius:7px;padding:4px 9px;color:#cde3ff}.flow .arr{color:var(--dim)}
+  @media(max-width:820px){.layout{grid-template-columns:1fr}nav.side{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border)}main{padding:24px}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="side">
+    <div class="brand">Superpowers <span>· deep dive</span></div>
+    <div class="sub">obra/superpowers · for fof-mono</div>
+    <a class="navlink active" href="#tldr"><span class="n">00</span>The practical read</a>
+    <a class="navlink" href="#how"><span class="n">01</span>How it works</a>
+    <a class="navlink" href="#fit"><span class="n">02</span>The uncanny fit</a>
+    <a class="navlink" href="#friction"><span class="n">03</span>Frictions</a>
+    <a class="navlink" href="#try"><span class="n">04</span>How to adopt</a>
+    <div class="foot"><a href="index.html">← system snapshot</a> · <a href="index.html#discovery">OSS discovery</a><br><br>Sources: <code>obra/superpowers</code> README + SKILL.md files + release notes (v6.1.1). Star count / "journal" claim <span class="uv">verify</span>.</div>
+  </nav>
+  <main>
+    <a class="backlink" href="index.html#discovery">← OSS discovery</a>
+    <section id="tldr" class="hero">
+      <div class="eyebrow">Deep dive · skills + methodology</div>
+      <h1>Superpowers</h1>
+      <p class="lede">Jesse Vincent's (obra) MIT <b style="color:var(--ink)">skills framework and software-development methodology</b>: a folder of Markdown skills — built on Anthropic's <code>SKILL.md</code> standard — that auto-trigger to enforce a disciplined sequence: <b style="color:var(--ink)">brainstorm → plan → verify-first (TDD) → implement → review</b>, with a hard gate that the agent must <em>earn the right to write code</em>. It auto-creates a git worktree per task, and as of v6 it's vendor-neutral (Claude Code, Codex, Cursor, Pi, and more). It hit #1 on GitHub Trending.</p>
+      <div class="callout">
+        <h4>The one-paragraph fit for you</h4>
+        <p>This is the <b>uncanny-alignment</b> pick. Superpowers' <code>using-git-worktrees</code> skill does almost exactly what your <code>worktree_bootstrap.sh</code> does — default <code>.worktrees/</code>, verify-git-ignored-before-creating, auto stack setup, a clean test baseline per task. Its <code>SKILL.md</code> model is your "one source of truth, many platform wrappers" convention. Its planning gate is your convergence-planning discipline, enforced. In other words: it's a battle-tested, packaged version of the exact workflow you've been hand-building — worth mining even if you don't adopt it whole.</p>
+      </div>
+      <div class="cards" style="margin-top:8px">
+        <div class="card"><h4>✅ Why it's a standout for you</h4><ul class="tidy" style="font-size:13px"><li>Native worktree-per-task that mirrors your bootstrap conventions.</li><li>Skills as <code>SKILL.md</code> — same standard your <code>skills/</code> targets.</li><li>Hard planning gate = your "plan before code" made enforceable.</li><li>Vendor-neutral: runs on Claude Code <em>and</em> Codex.</li></ul></div>
+        <div class="card"><h4>⚠️ What to weigh</h4><ul class="tidy" style="font-size:13px"><li>Its <code>.worktrees/</code> vs your <code>Documents/Code/</code> + Codex worktrees = a 3rd scheme.</li><li>Opinionated TDD gate can be heavy for throwaway work.</li><li>Prescriptive — Fable 5 prefers lighter prompts; adopt selectively.</li></ul></div>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="kicker">01 · Technical</div>
+      <h2 class="sec">How it works</h2>
+      <h3 class="sub">Skills &amp; install</h3>
+      <p class="desc" style="color:var(--muted)">Skills are Markdown files following Anthropic's Agent Skills convention — one folder per skill, <code>skills/&lt;name&gt;/SKILL.md</code> — distributed as a plugin (Claude Code: <code>/plugin install superpowers@claude-plugins-official</code>; Cursor, Codex, Copilot CLI, Gemini CLI, Kimi, Pi, OpenCode, Antigravity, Factory Droid also supported). A bootstrap skill, <code>using-superpowers</code>, is what makes the agent actually reach for the others. <code>writing-skills</code> is the meta-skill for authoring more.</p>
+      <h3 class="sub">The methodology (auto-triggered)</h3>
+      <div class="flow"><span class="chip">brainstorm (gate)</span><span class="arr">→</span><span class="chip">writing-plans</span><span class="arr">→</span><span class="chip">TDD</span><span class="arr">→</span><span class="chip">execute</span><span class="arr">→</span><span class="chip">subagent review</span></div>
+      <ul class="tidy">
+        <li><b>Planning gate ("earn the right to write code"):</b> the <code>brainstorming</code> skill blocks code until a design is approved — explore context → ask clarifying questions one at a time → propose 2–3 approaches with trade-offs → present the design in sections, approval after each → write a <b>dated design doc to <code>docs/superpowers/specs/YYYY-MM-DD-&lt;name&gt;-design.md</code></b> and commit it → hand off to <code>writing-plans</code>, which breaks work into 2–5-minute tasks with exact paths and verification steps.</li>
+        <li><b>Verify-first:</b> <code>test-driven-development</code> enforces RED-GREEN-REFACTOR and will delete code written before its tests; <code>verification-before-completion</code> gates "done."</li>
+        <li><b>Subagent-driven development:</b> a fresh subagent per task, two-stage review (spec compliance, then code quality) designed to be "cheaper, stricter, harder to game"; agents can run autonomously for hours on plan.</li>
+        <li><b>Durable memory:</b> the committed dated design docs, plus a progress ledger so a controller that loses context can resume instead of redoing finished work.</li>
+      </ul>
+      <h3 class="sub">Worktree-per-task, in detail</h3>
+      <ul class="tidy">
+        <li><b>Step 0 detection:</b> compares <code>git rev-parse --git-dir</code> vs <code>--git-common-dir</code>; if they differ (already in a worktree), it <b>skips creation</b> — "already in isolated workspace."</li>
+        <li><b>Native-first:</b> prefers the harness's own worktree tooling (e.g. an <code>EnterWorktree</code> tool) before manual git.</li>
+        <li><b>Git fallback + safety:</b> default location <code>.worktrees/</code> at project root; verifies it's git-ignored (<code>git check-ignore</code>), adds to <code>.gitignore</code> and commits first if not; <code>git worktree add "$path" -b "$BRANCH"</code>.</li>
+        <li><b>Setup + baseline:</b> auto-detects the stack and runs install (<code>npm/pip/cargo/go</code>), then runs the test suite to confirm a clean start before work begins.</li>
+      </ul>
+    </section>
+
+    <section id="fit">
+      <div class="kicker">02 · Application</div>
+      <h2 class="sec">The uncanny fit — and where it diverges</h2>
+      <div class="scroll">
+      <table>
+        <thead><tr><th>Superpowers</th><th>Your equivalent</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr><td class="s"><code>using-git-worktrees</code> (default .worktrees/, verify-ignored, stack setup, baseline tests)</td><td><code>scripts/worktree_bootstrap.sh</code> (shared venv, publish, hooks, baseline)</td><td><span class="verdict v-yes">near-identical intent</span></td></tr>
+          <tr><td class="s">Skills as <code>SKILL.md</code> folders</td><td>Your <code>skills/</code> "one source, many wrappers" + provenance</td><td><span class="verdict v-yes">same standard</span></td></tr>
+          <tr><td class="s">Hard planning gate before code</td><td>Convergence planning; Fable operating-contract pace rules</td><td><span class="verdict v-partial">enforces what you do informally</span></td></tr>
+          <tr><td class="s">TDD / verification gates</td><td>Your pre-PR testing mandate (not auto-enforced)</td><td><span class="verdict v-yes">makes it automatic</span></td></tr>
+          <tr><td class="s">Worktree location <code>.worktrees/</code> in-repo</td><td>Sibling <code>Documents/Code/</code> worktrees + <code>~/.codex/worktrees/</code></td><td><span class="verdict v-no">a different scheme</span></td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="callout blue">
+        <h4>The move: harvest, don't wholesale-swap</h4>
+        <p>Because your worktree conventions are deliberate (shared venv via <code>_LOCAL_FILES</code>, publish-to-origin bootstrap, Cursor windows), you probably <b>don't</b> want to switch to Superpowers' in-repo <code>.worktrees/</code> scheme. But its <b>planning gate</b>, its <b>TDD/verification skills</b>, and its <b>subagent-review structure</b> are exactly the disciplines your operating contract asks for informally. The highest-value adoption is to <b>port those specific skills into your own <code>skills/</code></b> (with your provenance headers), keeping your worktree setup. It's the single best library to mine because it's the closest to what you already do.</p>
+      </div>
+    </section>
+
+    <section id="friction">
+      <div class="kicker">03 · Honest</div>
+      <h2 class="sec">Frictions</h2>
+      <div class="cards">
+        <div class="card"><h4>A third worktree scheme</h4><p class="desc">Its <code>.worktrees/</code>-in-repo default competes with your sibling-folder + Codex worktree conventions. <b>Handle:</b> disable/ignore its worktree skill (it detects an existing worktree and skips), or keep Superpowers only for its non-worktree skills. Don't run two worktree managers on one branch.</p></div>
+        <div class="card"><h4>Prescriptive vs. Fable 5</h4><p class="desc">Heavy, step-enforced methodology. Fable 5 guidance says over-prescriptive prompts reduce its quality. <b>Handle:</b> use the full gate on Claude Code/Opus; give Fable the goal and let it self-organize.</p></div>
+        <div class="card"><h4>Skill-system stacking</h4><p class="desc">Superpowers + compound-engineering + your <code>skills/</code> = three overlapping systems. <b>Handle:</b> one canonical home (yours); harvest the best skills from each rather than running all three live.</p></div>
+      </div>
+    </section>
+
+    <section id="try">
+      <div class="kicker">04 · Do this</div>
+      <h2 class="sec">How to adopt</h2>
+      <div class="step"><span class="n">1</span><div class="b"><b>Install and run one gated cycle on a non-prod feature.</b><p>In a Claude Code session on <code>math-quiz</code>, install Superpowers and let <code>brainstorming → writing-plans → TDD</code> run once. Feel the planning gate and the TDD discipline first-hand.</p></div></div>
+      <div class="step"><span class="n">2</span><div class="b"><b>Compare its worktree skill to your bootstrap.</b><p>See how <code>using-git-worktrees</code> handles detection, ignore-safety, and baseline tests. Decide whether any of it improves <code>worktree_bootstrap.sh</code> — then keep your scheme.</p></div></div>
+      <div class="step"><span class="n">3</span><div class="b"><b>Port the planning gate + TDD skills into <code>skills/</code>.</b><p>Copy the ideas (not necessarily the files) into your own skills with provenance headers, so your one canonical skills system gains the enforced brainstorm-and-verify discipline without adopting a competing framework.</p></div></div>
+      <div class="callout gold" style="margin-top:18px"><p style="margin:0"><b>Bottom line:</b> Superpowers is the closest existing library to the workflow you invented — which makes it the best one to <em>mine</em>. Harvest its planning gate, TDD, and subagent-review skills into your own <code>skills/</code>; keep your deliberate worktree/venv setup; and don't stack it live alongside compound-engineering and your own skills. Pairs naturally with OpenSpec (it governs <em>how</em>; OpenSpec governs <em>what</em>).</p></div>
+    </section>
+  </main>
+</div>
+<script>
+const links=[...document.querySelectorAll('nav.side a.navlink')];const secs=links.map(l=>document.querySelector(l.getAttribute('href'))).filter(Boolean);
+const obs=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){const id='#'+e.target.id;links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')===id));}})},{rootMargin:'-20% 0px -70% 0px'});secs.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

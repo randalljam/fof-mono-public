@@ -1,0 +1,18 @@
+---
+import '../styles/global.css';
+const { title = 'Focus on Foundations', description = 'Deep Optimism — AI Q&A demos for education, public safety, and serious contexts.', noindex = false, favicon = '/favicon.svg' } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <title>{title}</title>
+    <link rel="icon" href={favicon} type="image/svg+xml" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

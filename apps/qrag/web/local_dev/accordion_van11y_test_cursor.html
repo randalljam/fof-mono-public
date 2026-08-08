@@ -1,0 +1,176 @@
+<!-- START OF FILE accordion_van11y_test_cursor.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Van11y Accordion Test</title>
+
+    <script>
+        var fileInfo = 'accordion_van11y_test.html  10-26 1418';
+        console.log('HTML File loaded: ', fileInfo);
+    </script>
+
+    <!-- Include Marked.js -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"
+      onload="console.log('Marked js library loaded successfully')"
+      onerror="console.error('Failed to load Marked js library')">
+    </script>
+
+    <!-- Include Van11y Accessible Accordion -->
+    <script 
+      defer
+      src="https://unpkg.com/van11y-accessible-accordion-aria@3.0.1/dist/van11y-accessible-accordion-aria.min.js" 
+      onload="console.log('Van11y Accordion js library loaded successfully')" 
+      onerror="console.error('Failed to load Van11y Accordion js library')">
+    </script>
+
+    <style>
+        /* Base styles */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
+            max-width: 60em;
+            margin: 0 auto;
+            padding: 1em;
+        }
+
+        /* Accordion styles matching the demo */
+        .minimalist-accordion__header {
+            display: block;
+            background: none;
+            border: 0;
+            font-family: inherit;
+            cursor: pointer;
+            font-size: 1.5em;
+            line-height: 1.8462;
+            margin: 0;
+            padding: .25em 0;
+            text-align: left;
+            width: 100%;
+            font-weight: normal;
+            color: #148297;
+        }
+
+        /* Indentation for different levels */
+        .js-accordion__header[data-level="2"] {
+            margin-left: 1em;
+        }
+
+        .js-accordion__header[data-level="3"] {
+            margin-left: 2em;
+        }
+
+        .minimalist-accordion__header::before {
+            content: '▶';
+            display: inline-block;
+            margin-right: .5em;
+            transform: rotate(0deg);
+        }
+
+        [aria-expanded="true"].minimalist-accordion__header::before {
+            transform: rotate(90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .minimalist-accordion__panel {
+            display: block;
+            margin-left: 1.5em;
+        }
+
+        [aria-hidden=true].minimalist-accordion__panel {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="markdown-container"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sample markdown content
+            var markdownContent = `
+# Heading Level 1
+
+Some introductory text under Heading Level 1.
+
+## Heading Level 2
+
+Content under Heading Level 2.
+
+### Heading Level 3
+
+Content under Heading Level 3.
+
+## Another Heading Level 2
+
+More content under another Heading Level 2.
+
+# Another Heading Level 1
+
+Final content under another Heading Level 1.
+`;
+
+            function processContentToAccordion(htmlContent) {
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(htmlContent, 'text/html');
+
+                var rootAccordion = document.createElement('div');
+                rootAccordion.className = 'js-accordion';
+                rootAccordion.setAttribute('data-accordion-prefix-classes', 'minimalist');
+                rootAccordion.setAttribute('data-accordion-multiselectable', 'true');
+
+                var headingElements = doc.body.querySelectorAll('h1, h2, h3');
+                
+                headingElements.forEach((heading, index) => {
+                    var level = parseInt(heading.tagName.substring(1));
+                    
+                    // Get content up to next heading
+                    var content = '';
+                    var nextHeading = headingElements[index + 1];
+                    var current = heading.nextElementSibling;
+                    
+                    while (current && current !== nextHeading) {
+                        content += current.outerHTML || current.textContent;
+                        current = current.nextElementSibling;
+                    }
+
+                    // Create header using h2 element (matching demo)
+                    var header = document.createElement('h2');
+                    header.className = 'js-accordion__header';
+                    header.setAttribute('data-level', level);
+                    header.textContent = heading.textContent;
+
+                    // Create panel
+                    var panel = document.createElement('div');
+                    panel.className = 'js-accordion__panel';
+                    panel.innerHTML = content;
+
+                    rootAccordion.appendChild(header);
+                    rootAccordion.appendChild(panel);
+                });
+
+                return rootAccordion;
+            }
+
+            // Parse markdown and create HTML
+            var htmlContent = marked.parse(markdownContent);
+            var container = document.getElementById('markdown-container');
+            var accordionContent = processContentToAccordion(htmlContent);
+            container.appendChild(accordionContent);
+
+            // Initialize Van11y
+            if (typeof van11yAccessibleAccordionAria === 'function') {
+                van11yAccessibleAccordionAria().attach();
+            } else {
+                console.error('Van11y Accordion library not properly loaded');
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+

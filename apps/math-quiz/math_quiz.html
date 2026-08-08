@@ -1,0 +1,59 @@
+<!-- START OF FILE math_quiz.html  -->
+ 
+<script>
+// File version tracking
+var fileInfo = `${window.location.pathname.split('/').pop()} 1-31-2025 1032 renamed user-inputs to app-screens`;
+console.log('HTML file loaded. ', fileInfo);
+</script>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Arithmetic Fluency Assessment Tool</title>
+    <link rel="stylesheet" href="math_quiz.css">
+</head>
+
+<body>
+    <!-- *** START OF PAGE CODE EMBED CONTENT *** -->
+    <div id="container" class="quiz-container">
+        <div id="messages" class="messages"></div>
+        <div id="app-screens" class="app-screens">
+            <button id="download-all-json-initial" class="btn btn-download">Download All Sessions Data</button>
+            <br><br>
+            <button id="clear-all-sessions-initial" class="btn btn-clear">Clear All Sessions</button>
+            <br><br>
+            <button id="do-analysis-initial" class="btn btn-primary do-analysis-button">Go To Analysis</button>
+        </div>
+        <div id="quiz-section" class="quiz-section hidden">
+            <div id="problem" class="problem"></div>
+            <div id="feedback-container" class="feedback-container"></div>
+        </div>
+        <div id="summary" class="summary hidden"></div>
+        <div id="additional-note-section" class="additional-note-section hidden">
+            <label for="additional-note-input">Add anything to the note? (optional): </label>
+            <input type="text" id="additional-note-input" class="input-note">
+            <button id="submit-additional-note" class="btn btn-submit">Finish</button>
+        </div>
+        <div id="download-section" class="download-section hidden">
+            <button id="download-json" class="btn btn-download">Download This Session Data</button>
+            <button id="download-all-json-final" class="btn btn-download">Download All Sessions Data</button>
+            <br><br>
+            <button id="clear-all-sessions-final" class="btn btn-clear">Clear All Sessions</button>
+            <br><br>
+            <button id="do-analysis-final" class="btn btn-primary do-analysis-button">Go To Analysis</button>
+            <button id="start-another-quiz" class="btn btn-primary">Start Another Quiz</button>
+        </div>
+    </div>
+    <!-- *** END OF PAGE CODE EMBED CONTENT *** -->
+
+    <!-- Add these audio elements -->
+    <audio id="correct-sound" src="sounds/old-horn-honking-ballhupe.mp3" preload="auto"></audio>
+    <audio id="incorrect-sound" src="sounds/vibration-springs-vibrate.mp3" preload="auto"></audio>
+
+    <script src="math_utils.js"></script>
+    <script src="math_quiz.js?v=20250131_problem_list"></script>
+
+</body>
+</html>

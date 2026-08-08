@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>holodeck — fof-mono control center</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="style.css" onerror="this.onerror=null;this.href='/static/style.css'" />
+</head>
+<body>
+<div class="layout">
+  <nav class="side" aria-label="Holodeck sections">
+    <div class="brand">holo<span>deck</span></div>
+    <div class="sub">fof-mono control center</div>
+    <div class="side-snapshot" role="region" aria-label="Refresh controls">
+      <div class="side-snapshot-head">
+        <div class="snapshot-status-stack">
+          <div id="snapshot-status" class="snapshot-status">loading</div>
+          <div id="snapshot-timestamp" class="snapshot-timestamp hidden"></div>
+        </div>
+        <button id="refresh-btn" class="action-btn" type="button">Refresh</button>
+      </div>
+      <div id="ai-sync-status" class="ai-sync-status hidden" role="status"></div>
+      <div id="side-snapshot-tooltip" class="side-snapshot-tooltip hidden" role="tooltip"></div>
+    </div>
+    <a class="navlink active" href="#active-ai">Active AI</a>
+    <a class="navlink" href="#todos">To-do</a>
+    <a class="navlink" href="#active">Worktrees</a>
+    <a class="navlink" href="#universe">Universe</a>
+    <a class="navlink" href="#sessions">AI Sessions</a>
+    <div class="nav-more">More ▾</div>
+    <a class="navlink more-link" href="#branches">Branches</a>
+    <a class="navlink more-link" href="#core">Core</a>
+    <a class="navlink more-link" href="#skills">Skills</a>
+    <a class="navlink more-link" href="#specs">Specs</a>
+    <a class="navlink more-link" href="#deploy">Deploy</a>
+    <div class="foot">
+      Local dashboard for parallel AI-coding work across worktrees, apps, specs, skills, sessions, and deploy surfaces.<br /><br />
+      Sample mode: <code>?src=sample</code>
+    </div>
+  </nav>
+
+  <main>
+    <div id="cloud-auth-banner" class="cloud-auth-banner hidden" role="status"></div>
+    <div id="warning-strip" class="warning-strip hidden" role="status"></div>
+    <div id="error-panel" class="callout red hidden" role="alert"></div>
+
+    <section id="active-ai">
+      <h2 class="sec" title="Recent agent turns across Claude, Codex, and Cursor. Blue = thinking, green = done, yellow = needs you (paused for your input), red = reserved. Filter platforms to keep big important turns visible above the day-to-day chatter.">Active AI</h2>
+      <div id="agent-platform-filter" class="agent-platform-filter"></div>
+      <div id="deck-summary" class="deck-summary"></div>
+      <div id="agent-deck" class="agent-deck"></div>
+      <div id="agent-deck-toggle" class="deck-toggle"></div>
+    </section>
+
+    <section id="todos">
+      <div class="section-head">
+        <h2 class="sec" title="Global to-do list. Items promoted from a work card carry that project's tag.">To-do</h2>
+        <span id="todo-mode" class="small muted"></span>
+      </div>
+      <div class="card static-card todo-panel">
+        <div id="todo-root"></div>
+      </div>
+    </section>
+
+    <section id="active">
+      <h2 class="sec" title="Active worktrees selected for the current operator session.">Worktrees</h2>
+      <div id="worktree-cards" class="cards"></div>
+    </section>
+
+    <section id="universe">
+      <h2 class="sec" title="Inactive worktrees, branches without checkouts, apps, and latest repository activity.">Universe</h2>
+      <div id="universe-stats" class="stats universe-stats"></div>
+
+      <h3 class="sub">Parked worktrees</h3>
+      <div id="universe-parked" class="universe-list"></div>
+
+      <h3 class="sub">Branches without a checkout</h3>
+      <div id="universe-branches" class="universe-list"></div>
+
+      <h3 class="sub">Apps</h3>
+      <div id="universe-apps">
+        <div id="app-filterbar" class="filterbar"></div>
+        <div id="app-cards" class="cards app-grid"></div>
+      </div>
+
+      <div class="universe-activity">
+        <div class="panel-head">
+          <h3>Latest activity</h3>
+          <button id="activity-toggle" class="copy-btn" type="button">Show activity</button>
+        </div>
+        <div id="activity-card" class="card static-card">
+          <div id="activity-feed" class="activity-feed"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sessions">
+      <h2 class="sec" title="Recent Claude, Cursor, and Codex sessions matched to this repo. Click a row for a lazy detail preview.">AI Sessions</h2>
+      <div id="session-filterbar" class="filterbar"></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Session</th><th>Worktree/Branch</th><th>Exchanges</th><th>When</th></tr>
+          </thead>
+          <tbody id="sessions-table"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="branches">
+      <div class="section-head branch-section-head">
+        <h2 class="sec" title="Lineage groups stay together (child above parent). Each group has its own fork-date rail scaled to the full oldest→newest range. Solid L-arrows mark parent links; dashed arrows map each fork onto that group's rail. Only accepted lineage creates parent connections; every other declaration stays visible and unlinked.">Branches</h2>
+        <div id="branch-timeline-controls" class="branch-timeline-controls">
+          <div class="branch-sort-control" role="group" aria-label="Sort branch groups">
+            <span class="small muted">Sort</span>
+            <button id="branch-sort-date" class="copy-btn" type="button" aria-pressed="true" title="Newest tip activity in the group first (most recent commit time among members)">Activity</button>
+            <button id="branch-sort-alphabetical" class="copy-btn" type="button" aria-pressed="false" title="First-level groups A–Z">Alphabetical</button>
+          </div>
+          <button id="branch-validation-toggle" class="copy-btn" type="button" aria-expanded="false" aria-controls="branch-timeline">Show validation details</button>
+        </div>
+      </div>
+      <div id="branch-timeline-status" class="branch-timeline-status" role="status">Loading branch timeline…</div>
+      <div id="branch-timeline-legend" class="branch-timeline-legend" aria-label="Branch timeline legend"></div>
+      <div id="branch-timeline" class="branch-timeline" aria-label="Validated branch timeline"></div>
+    </section>
+
+    <section id="core">
+      <h2 class="sec" title="Shared Python modules used across file processing, transcription, LLM integration, RAG, archive, and application workflows.">Core</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Module</th><th>Description</th><th>Commits 30d</th><th>Last commit</th></tr>
+          </thead>
+          <tbody id="core-table"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="skills">
+      <h2 class="sec" title="Reusable procedures and commands exposed across shared, Claude, and Hermes skill surfaces.">Skills</h2>
+      <div id="skill-groups" class="skill-groups"></div>
+    </section>
+
+    <section id="specs">
+      <h2 class="sec" title="OpenSpec stores found across worktrees, including active change progress and archived changes.">Specs</h2>
+      <div id="spec-cards" class="cards"></div>
+    </section>
+
+    <section id="deploy">
+      <h2 class="sec" title="Deployment surfaces, commands, config paths, URLs, and recent deploy activity.">Deploy</h2>
+      <div class="callout">
+        <h3>Webflow → AWS migration in progress</h3>
+        <p>feature/web-site-transcript-pages</p>
+      </div>
+      <div id="deploy-groups" class="deploy-groups"></div>
+    </section>
+  </main>
+</div>
+
+<div id="session-backdrop" class="drawer-backdrop hidden"></div>
+<aside id="session-drawer" class="session-drawer" aria-hidden="true" aria-label="Session detail">
+  <div class="drawer-head">
+    <div>
+      <div id="drawer-tool" class="drawer-tool"></div>
+      <h2 id="drawer-title">Session</h2>
+    </div>
+    <div class="drawer-actions">
+      <button id="drawer-close" class="icon-btn" type="button" aria-label="Close session detail">×</button>
+      <button id="drawer-jump-end" class="icon-btn" type="button" aria-label="Jump to end of session">↓</button>
+    </div>
+  </div>
+  <div id="drawer-body" class="drawer-body"></div>
+</aside>
+
+<div id="file-backdrop" class="drawer-backdrop hidden"></div>
+<aside id="file-drawer" class="session-drawer file-drawer" aria-hidden="true" aria-label="File detail">
+  <div class="drawer-head">
+    <div>
+      <div id="file-drawer-status" class="drawer-tool"></div>
+      <h2 id="file-drawer-title">File</h2>
+    </div>
+    <button id="file-drawer-close" class="icon-btn" type="button" aria-label="Close file detail">×</button>
+  </div>
+  <div id="file-drawer-body" class="drawer-body"></div>
+</aside>
+
+<div id="commit-backdrop" class="drawer-backdrop hidden"></div>
+<aside id="commit-drawer" class="session-drawer commit-drawer" aria-hidden="true" aria-label="Branch commits">
+  <div class="drawer-head">
+    <div>
+      <div id="commit-drawer-status" class="drawer-tool"></div>
+      <h2 id="commit-drawer-title">Commits</h2>
+    </div>
+    <button id="commit-drawer-close" class="icon-btn" type="button" aria-label="Close branch commits">×</button>
+  </div>
+  <div id="commit-drawer-body" class="drawer-body"></div>
+</aside>
+
+<script type="module">
+  import("./app.js").catch(() => import("/static/app.js"));
+</script>
+</body>
+</html>

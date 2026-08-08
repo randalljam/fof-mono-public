@@ -1,0 +1,283 @@
+{
+  "unit": "PreCalc Test 1 — Chapters 2–3",
+  "source": "apps/autolearner/Math PreCalc Test 1 Study Guide.md",
+  "mastery_threshold": 85,
+  "concepts": [
+    {
+      "id": "covariation",
+      "section": "2.1",
+      "title": "Quantities & Co-variation",
+      "summary": "Identify the two quantities, determine which is independent (input) vs dependent (output), and describe how they change together.",
+      "exercises": [
+        {
+          "id": "covariation-1",
+          "prompt": "A hot air balloon rises after launch. Consider the relationship between time since launch and the balloon's height. Identify the independent and dependent variables, and describe how the quantities co-vary.",
+          "reference_solution": "Time is the independent variable (input); height is the dependent variable (output). As time increases, height increases: Increase → Increase."
+        },
+        {
+          "id": "covariation-2",
+          "prompt": "A car's gas tank holds 14 gallons. Consider the relationship between miles driven and gallons of gas remaining. Name the independent and dependent variables and describe the co-variation.",
+          "reference_solution": "Miles driven is independent; gallons remaining is dependent. As miles driven increases, gas remaining decreases: Increase → Decrease."
+        },
+        {
+          "id": "covariation-3",
+          "prompt": "You pay a $30 monthly gym membership no matter how many times you visit. Consider the relationship between number of visits in a month and the monthly fee. Describe the co-variation and identify the variables.",
+          "reference_solution": "Visits is the independent variable, fee is dependent, but the fee is constant: as visits increase, the fee does not change (Constant relationship)."
+        }
+      ]
+    },
+    {
+      "id": "representations",
+      "section": "2.2",
+      "title": "Representing Quantities (Words / Table / Graph / Equation)",
+      "summary": "Translate a quantitative relationship between words, a table, a graph, and an equation; identify what is changing and whether the change is constant.",
+      "exercises": [
+        {
+          "id": "representations-1",
+          "prompt": "A table shows x-values 0, 1, 2, 3 with y-values 7, 10, 13, 16. Describe the relationship in words and write the equation.",
+          "reference_solution": "y increases by 3 each time x increases by 1 (constant change, so linear), starting at 7 when x = 0. Equation: y = 3x + 7."
+        },
+        {
+          "id": "representations-2",
+          "prompt": "A rideshare costs a $2.50 pickup fee plus $1.75 per mile. Write the equation for total cost C in terms of miles m, then make a small table for m = 0, 2, 4.",
+          "reference_solution": "C = 1.75m + 2.50. Table: m=0 → C=2.50; m=2 → C=6.00; m=4 → C=9.50."
+        },
+        {
+          "id": "representations-3",
+          "prompt": "The equation y = -2x + 12 describes water draining from a tank (y = gallons, x = minutes). Describe in words what the -2 and the 12 each represent, and state when the tank is empty.",
+          "reference_solution": "12 is the starting amount (12 gallons at x = 0); -2 means the tank loses 2 gallons per minute. Empty when 0 = -2x + 12 → x = 6 minutes."
+        }
+      ]
+    },
+    {
+      "id": "slope",
+      "section": "2.3",
+      "title": "Slope from Two Points",
+      "summary": "Compute slope as change in y over change in x between two points; interpret it as a rate of change.",
+      "exercises": [
+        {
+          "id": "slope-1",
+          "prompt": "Find the slope of the line through (2, 5) and (6, 17).",
+          "reference_solution": "m = (17 - 5) / (6 - 2) = 12 / 4 = 3."
+        },
+        {
+          "id": "slope-2",
+          "prompt": "Find the slope of the line through (-3, 4) and (5, -2).",
+          "reference_solution": "m = (-2 - 4) / (5 - (-3)) = -6 / 8 = -3/4."
+        },
+        {
+          "id": "slope-3",
+          "prompt": "A candle is 20 cm tall after burning 1 hour and 14 cm tall after burning 4 hours. What is the rate of change of the candle's height, and what does it mean?",
+          "reference_solution": "m = (14 - 20) / (4 - 1) = -6 / 3 = -2 cm per hour: the candle loses 2 cm of height each hour."
+        }
+      ]
+    },
+    {
+      "id": "linear-equations",
+      "section": "2.3",
+      "title": "Writing Linear Equations (y = mx + b)",
+      "summary": "Find the slope from two points, solve for b, and write the equation in slope-intercept form.",
+      "exercises": [
+        {
+          "id": "linear-equations-1",
+          "prompt": "Write the equation of the line through (2, 7) and (5, 16) in slope-intercept form. Check your answer.",
+          "reference_solution": "m = (16-7)/(5-2) = 3. Plug in (2,7): 7 = 3(2) + b → b = 1. Equation: y = 3x + 1. Check: 3(5)+1 = 16 ✓."
+        },
+        {
+          "id": "linear-equations-2",
+          "prompt": "A plumber charges a fixed visit fee plus an hourly rate. A 2-hour job costs $190 and a 5-hour job costs $400. Write the linear equation for cost C in terms of hours h.",
+          "reference_solution": "m = (400-190)/(5-2) = 210/3 = 70 dollars/hour. 190 = 70(2) + b → b = 50. C = 70h + 50."
+        },
+        {
+          "id": "linear-equations-3",
+          "prompt": "Write the equation of the line with slope -4 passing through (0, 9), and the equation of the line through (1, 2) and (3, -6).",
+          "reference_solution": "First: b is given directly since x = 0, so y = -4x + 9. Second: m = (-6-2)/(3-1) = -4; 2 = -4(1) + b → b = 6, so y = -4x + 6."
+        }
+      ]
+    },
+    {
+      "id": "point-slope",
+      "section": "3.3",
+      "title": "Point-Slope Form & the \"Don't Find the Y-intercept\" Trick",
+      "summary": "Write a linear function directly from a point and slope using f(x) = m(x - x1) + y1, without solving for b. Linear equations only.",
+      "exercises": [
+        {
+          "id": "point-slope-1",
+          "prompt": "A line has slope 4 and passes through (2, 9). Write the function without solving for the y-intercept, then simplify it.",
+          "reference_solution": "f(x) = 4(x - 2) + 9. Simplified: f(x) = 4x + 1. Check: f(2) = 9 ✓."
+        },
+        {
+          "id": "point-slope-2",
+          "prompt": "In a word problem you deduce the slope is -2 and you are given the point (3, 13). Write the function immediately in point-slope style, then simplify to slope-intercept form.",
+          "reference_solution": "f(x) = -2(x - 3) + 13. Simplified: f(x) = -2x + 19."
+        },
+        {
+          "id": "point-slope-3",
+          "prompt": "Why does the shortcut f(x) = m(x - x1) + y1 work, and for what kind of equation is it valid? Explain in your own words, then use it for slope 1/2 through (4, -1).",
+          "reference_solution": "You translate the graph horizontally by x1 and vertically by y1 so the line passes through the given point; it only works for linear equations. f(x) = (1/2)(x - 4) - 1 = (1/2)x - 3."
+        }
+      ]
+    },
+    {
+      "id": "proportionality",
+      "section": "2.4",
+      "title": "Proportionality (y = kx)",
+      "summary": "Test whether y/x is constant; proportional relationships pass through (0,0) with no y-intercept.",
+      "exercises": [
+        {
+          "id": "proportionality-1",
+          "prompt": "A table gives the pairs (2, 5), (4, 10), (6, 15). Is y proportional to x? If so find k and write the equation.",
+          "reference_solution": "5/2 = 2.5, 10/4 = 2.5, 15/6 = 2.5 — constant ratio, so proportional with k = 2.5: y = 2.5x."
+        },
+        {
+          "id": "proportionality-2",
+          "prompt": "Is the relationship y = 3x + 2 proportional? Is y = 3x? Explain how you can tell, both from the equation and from the graph.",
+          "reference_solution": "y = 3x + 2 is linear but NOT proportional (b = 2 ≠ 0; doesn't pass through origin; y/x isn't constant). y = 3x is proportional with k = 3, passing through (0,0)."
+        },
+        {
+          "id": "proportionality-3",
+          "prompt": "A recipe uses 3 cups of flour for every 2 cups of sugar. Write the proportional equation relating flour F to sugar S, and find how much flour goes with 7 cups of sugar.",
+          "reference_solution": "F = (3/2)S, so k = 1.5. For S = 7: F = 10.5 cups."
+        }
+      ]
+    },
+    {
+      "id": "average-speed",
+      "section": "2.5",
+      "title": "Average Speed",
+      "summary": "Average speed = total distance / total time. Never average the speeds directly unless equal times are spent at each speed.",
+      "exercises": [
+        {
+          "id": "average-speed-1",
+          "prompt": "You drive 60 miles at 30 mph, then 60 miles at 60 mph. What is your average speed for the whole trip? (Hint: it is not 45 mph.)",
+          "reference_solution": "Leg 1: 60/30 = 2 h. Leg 2: 60/60 = 1 h. Total 120 miles / 3 h = 40 mph."
+        },
+        {
+          "id": "average-speed-2",
+          "prompt": "A cyclist rides 24 miles in 1.5 hours, rests for 30 minutes, then rides 16 miles in 1 hour. What is the average speed for the entire outing including the rest?",
+          "reference_solution": "Total distance = 40 miles. Total time = 1.5 + 0.5 + 1 = 3 h. Average speed = 40/3 ≈ 13.3 mph."
+        },
+        {
+          "id": "average-speed-3",
+          "prompt": "When IS it valid to average two speeds directly? Give the condition and a quick example showing it works.",
+          "reference_solution": "Only when equal TIMES are spent at each speed. Example: 1 hour at 30 mph + 1 hour at 60 mph → 90 miles / 2 h = 45 mph, which equals (30+60)/2."
+        }
+      ]
+    },
+    {
+      "id": "drt",
+      "section": "2.5",
+      "title": "Distance = Rate × Time",
+      "summary": "Use d = rt and its rearrangements r = d/t and t = d/r; rate equations are always quantity over time.",
+      "exercises": [
+        {
+          "id": "drt-1",
+          "prompt": "A train travels at 80 mph for 2.5 hours. How far does it go? Then: how long would 300 miles take at that speed?",
+          "reference_solution": "d = rt = 80 × 2.5 = 200 miles. t = d/r = 300/80 = 3.75 hours."
+        },
+        {
+          "id": "drt-2",
+          "prompt": "You jog 4.5 miles in 45 minutes. What is your rate in miles per hour? Be careful with units.",
+          "reference_solution": "45 minutes = 0.75 h. r = d/t = 4.5/0.75 = 6 mph."
+        },
+        {
+          "id": "drt-3",
+          "prompt": "Two hikers leave the same trailhead in opposite directions, one at 3 mph and one at 4 mph. How long until they are 10.5 miles apart?",
+          "reference_solution": "They separate at 3 + 4 = 7 mph combined. t = d/r = 10.5/7 = 1.5 hours."
+        }
+      ]
+    },
+    {
+      "id": "box-problem",
+      "section": "3.1",
+      "title": "Modeling: The Box Problem",
+      "summary": "Model an open-top box by cutting squares of side x from a sheet: V(x) = x(L-2x)(W-2x), domain [0, shortest side / 2]. Draw, label, write the function.",
+      "exercises": [
+        {
+          "id": "box-problem-1",
+          "prompt": "A 10-inch by 8-inch sheet of cardboard has squares of side x cut from each corner, and the sides are folded up to make an open-top box. Draw the figure, write V(x), and give its domain.",
+          "reference_solution": "V(x) = x(10 - 2x)(8 - 2x). Shortest side is 8, so domain is [0, 4]."
+        },
+        {
+          "id": "box-problem-2",
+          "prompt": "For the box made from a 12 by 12 sheet with corner squares of side x: write V(x), give the domain, and compute the volume when x = 2.",
+          "reference_solution": "V(x) = x(12-2x)(12-2x) = x(12-2x)^2, domain [0, 6]. V(2) = 2 × 8 × 8 = 128 cubic units."
+        },
+        {
+          "id": "box-problem-3",
+          "prompt": "Explain WHY the length becomes L - 2x when squares of side x are cut from the corners, and why the domain ends at (shortest side)/2. Then set up V(x) for a 15 by 9 sheet.",
+          "reference_solution": "Cutting a square from each end of a side removes x twice, so length is L - 2x; the height after folding is x. If x exceeds half the shortest side the width would be negative, so domain is [0, 4.5] here. V(x) = x(15 - 2x)(9 - 2x)."
+        }
+      ]
+    },
+    {
+      "id": "function-definition",
+      "section": "3.2",
+      "title": "Function Definition & Line Tests",
+      "summary": "A function assigns exactly one output to each input. y as a function of x uses the vertical line test; x as a function of y uses the horizontal line test.",
+      "exercises": [
+        {
+          "id": "function-definition-1",
+          "prompt": "State the definition of a function. Then: a circle of radius 3 centered at the origin — is y a function of x? Explain using the appropriate test.",
+          "reference_solution": "A function gives exactly one output for every input. A circle fails the vertical line test (a vertical line hits it twice), so y is NOT a function of x."
+        },
+        {
+          "id": "function-definition-2",
+          "prompt": "For the sideways parabola x = y^2: is y a function of x? Is x a function of y? Explain which test you use for each.",
+          "reference_solution": "y is NOT a function of x (fails vertical line test: x = 4 gives y = ±2). x IS a function of y (passes horizontal line test: each y gives exactly one x)."
+        },
+        {
+          "id": "function-definition-3",
+          "prompt": "The table (1, 4), (2, 7), (1, 9), (3, 2) is proposed as a function from x to y. Is it a function? What single change would fix it?",
+          "reference_solution": "Not a function: the input 1 has two outputs (4 and 9). Removing or changing one of the two x = 1 rows fixes it."
+        }
+      ]
+    },
+    {
+      "id": "domain-range",
+      "section": "3.2",
+      "title": "Domain & Range Restrictions",
+      "summary": "Domain: all allowable x-values (denominator ≠ 0, inside of square root ≥ 0, context limits). Range: all allowable y-values (squares and roots ≥ 0, reciprocals ≠ 0, physical sense). When in doubt, graph it.",
+      "exercises": [
+        {
+          "id": "domain-range-1",
+          "prompt": "Give the domain of f(x) = √(x - 2) / (x - 5). Explain each restriction.",
+          "reference_solution": "Square root needs x - 2 ≥ 0 so x ≥ 2; denominator needs x ≠ 5. Domain: [2, 5) ∪ (5, ∞)."
+        },
+        {
+          "id": "domain-range-2",
+          "prompt": "State the range of each: y = x^2, y = √x, y = 1/x. Give a one-line reason for each.",
+          "reference_solution": "y = x^2: y ≥ 0 (squares can't be negative). y = √x: y ≥ 0 (root outputs are never negative). y = 1/x: y ≠ 0 (a fraction with nonzero numerator can't equal zero)."
+        },
+        {
+          "id": "domain-range-3",
+          "prompt": "For the box function V(x) = x(10-2x)(8-2x) as a model of a real box: give the domain and explain the range restriction that context puts on V.",
+          "reference_solution": "Domain [0, 4] since dimensions can't be negative (8 is the shortest side). Context requires V ≥ 0: a physical volume cannot be negative."
+        }
+      ]
+    },
+    {
+      "id": "function-notation",
+      "section": "3.3",
+      "title": "Function Notation & Evaluation",
+      "summary": "f(x) = expression; evaluate by replacing every x with the value, using parentheses, and simplifying carefully. f(2) means the value of f when x = 2, not f times 2.",
+      "exercises": [
+        {
+          "id": "function-notation-1",
+          "prompt": "Given f(x) = 3x - 2, find f(5). Then explain in words what f(5) means — and what it does NOT mean.",
+          "reference_solution": "f(5) = 3(5) - 2 = 13. It means the value of the function when x = 5; it does NOT mean f times 5."
+        },
+        {
+          "id": "function-notation-2",
+          "prompt": "Given g(x) = -2x^2 + 4x - 1, evaluate g(-3). Use parentheses at every substitution and simplify step by step.",
+          "reference_solution": "g(-3) = -2(-3)^2 + 4(-3) - 1 = -2(9) - 12 - 1 = -18 - 12 - 1 = -31."
+        },
+        {
+          "id": "function-notation-3",
+          "prompt": "Given f(x) = x^2 + 1, find f(a + 2). Show every substitution step.",
+          "reference_solution": "f(a+2) = (a+2)^2 + 1 = a^2 + 4a + 4 + 1 = a^2 + 4a + 5."
+        }
+      ]
+    }
+  ]
+}

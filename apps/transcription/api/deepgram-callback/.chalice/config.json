@@ -1,0 +1,14 @@
+{
+  "version": "2.0",
+  "app_name": "deepgram-callback",
+  "stages": {
+    "dev": {
+      "api_gateway_stage": "api",
+      "lambda_memory_size": 512,
+      "lambda_timeout": 300,
+      "environment_variables": {
+        "DEEPGRAM_API_KEY_ID": "DEEPGRAM_API_KEY_ID"
+      }
+    }
+  }
+}

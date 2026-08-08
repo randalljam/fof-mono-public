@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quest 01 Cave Escape</title>
+  <link rel="stylesheet" href="/control-panel.css">
+</head>
+<body>
+  <main>
+    <header class="topbar">
+      <div>
+        <h1>Quest 01: Cave Escape</h1>
+        <p id="server-line">Connecting...</p>
+      </div>
+      <div class="global-controls">
+        <a class="button-link" href="/" target="_blank" rel="noreferrer">MathQuest Panel</a>
+        <a class="button-link" href="/mob-spawn.html" target="_blank" rel="noreferrer">Mob Spawn Panel</a>
+        <button id="refresh">Refresh</button>
+        <button id="save-all">Save</button>
+        <button id="save-version">Save Version</button>
+        <button id="continue-run">Continue Current Run</button>
+        <button id="start-run" class="primary-action">Start Fresh Run</button>
+      </div>
+    </header>
+    <section class="quest-page">
+      <section class="panel-section quest-command">
+        <div class="section-head">
+          <h2>Command</h2>
+          <button id="run-command" class="primary-action">Run</button>
+        </div>
+        <div class="command-grid">
+          <input id="immediate-command" class="full" list="command-suggestions" placeholder="tp {player} 1375 -18 1311">
+          <datalist id="command-suggestions"></datalist>
+          <button class="command-preset" data-command="tp {player} 1375 -18 1311">TP Start</button>
+          <button class="command-preset" data-command="clear_inventory">Clear + Survival</button>
+          <button class="command-preset" data-command="start_quiz">Start Quiz</button>
+          <button class="command-preset" data-command="gamemode adventure {player}">Adventure</button>
+          <button class="command-preset" data-command="gamemode survival {player}">Survival</button>
+        </div>
+        <div class="status compact-status" id="command-status"></div>
+      </section>
+      <section class="panel-section quest-run">
+        <div class="section-head">
+          <h2>Run</h2>
+          <div class="plan-actions">
+            <button id="clear-run-log">Clear Log</button>
+            <button id="restore-player">Restore Player</button>
+            <button id="reset-run" class="danger-action">Reset</button>
+          </div>
+        </div>
+        <div class="entry-grid">
+          <label class="wide">Online player <select id="online-player"></select></label>
+          <label>Player <input id="learner-player" value="WildPetal"></label>
+          <label>Real name <input id="learner-real" value="Kid1"></label>
+          <label>Next try <input id="try-number" type="number" min="1"></label>
+          <label>Problems <input id="problems-per-quiz" type="number" min="1" max="50"></label>
+          <label>Fluency ms <input id="green-ms" type="number" min="250" step="250"></label>
+          <label>Red ms <input id="red-ms" type="number" min="250" step="250"></label>
+          <label>Min accuracy <input id="min-accuracy" type="number" min="0" max="1" step="0.01"></label>
+        </div>
+        <div class="status" id="run-status"></div>
+      </section>
+      <section class="panel-section quest-wide">
+        <div class="section-head">
+          <h2>Milestones</h2>
+          <button id="advance-milestone">Advance</button>
+        </div>
+        <div id="milestones-list" class="milestone-grid"></div>
+      </section>
+      <section class="panel-section">
+        <div class="section-head">
+          <h2>Problem Progress</h2>
+          <button id="open-quiz">Open Quest Quiz</button>
+        </div>
+        <div id="category-list" class="quest-list"></div>
+      </section>
+      <section class="panel-section">
+        <div class="section-head">
+          <h2>Content Cues</h2>
+          <button id="add-cue">Add Cue</button>
+        </div>
+        <div id="cue-list" class="quest-list"></div>
+      </section>
+      <section class="panel-section quest-wide">
+        <div class="section-head">
+          <h2>Mechanics</h2>
+          <button id="add-mechanic">Add Mechanic</button>
+        </div>
+        <div id="mechanic-list" class="mechanic-grid"></div>
+      </section>
+    </section>
+  </main>
+  <script src="/quest.js"></script>
+</body>
+</html>

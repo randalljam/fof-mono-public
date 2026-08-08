@@ -1,0 +1,41 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Open terminal with .venv",
+      "type": "shell",
+      "command": "if [ -f \"${workspaceFolder}/.venv/bin/activate\" ]; then source \"${workspaceFolder}/.venv/bin/activate\"; fi; exec bash -i",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "echo": false,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false
+      },
+      "problemMatcher": [],
+      "runOptions": {
+        "runOn": "folderOpen",
+        "instanceLimit": 1
+      }
+    },
+    {
+      "label": "Run All Unittests",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/bin/python -m unittest discover -s tests",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run CodeIndex Graph",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/bin/python docs/codeindex/create_codeindex.py && ${workspaceFolder}/.venv/bin/python docs/vis/codebase_graph_vis.py",
+      "problemMatcher": []
+    }
+  ]
+}

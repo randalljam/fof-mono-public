@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Milestone Map</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <div class="window">
+      <div class="window-header">
+        <div class="title-wrap">
+          <div class="window-title" id="page-title">Milestones</div>
+          <div class="window-subtitle" id="page-subtitle"></div>
+        </div>
+
+        <div class="header-actions">
+          <button class="btn" id="reload-btn" title="Reload milestones.md (R)">Reload</button>
+        </div>
+      </div>
+
+      <div class="window-body">
+        <div class="left">
+          <div class="grid-titlebar">
+            <div class="grid-title" id="grid-title">Milestone Map</div>
+            <div class="grid-status" id="grid-status"></div>
+          </div>
+
+          <div class="grid-frame">
+            <div id="grid" class="grid" aria-label="Milestone Grid"></div>
+          </div>
+
+        </div>
+
+        <aside class="right" aria-label="Details Tooltip">
+          <div class="tooltip" id="tooltip">
+            <div class="tt-title" id="tt-title">Hover a milestone</div>
+            <div class="tt-line" id="tt-xp-line" style="display:none;">
+              <span class="tt-label">Required XP:</span>
+              <span class="tt-xp" id="tt-xp"></span>
+            </div>
+
+            <div class="tt-section" id="tt-objective"></div>
+            <div class="tt-section" id="tt-rewards"></div>
+            <div class="tt-section" id="tt-notes"></div>
+
+            <div class="tt-footer" id="tt-footer"></div>
+            <div class="tt-hint" id="tt-hint">
+              Tip: click a block to pin the tooltip.
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="window-footer">
+        <div class="legend">
+          <div class="legend-item"><span class="swatch swatch-current"></span>Current</div>
+          <div class="legend-item"><span class="swatch swatch-done"></span>Done</div>
+          <div class="legend-item"><span class="swatch swatch-locked"></span>Locked</div>
+        </div>
+        <div class="footer-note">
+          Edit <code>milestones.md</code> to update. Then hit Reload (or refresh).
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

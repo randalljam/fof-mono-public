@@ -1,0 +1,27 @@
+schema: spec-driven
+context: |
+  Tech stack: Python 3.12 backend using stdlib collectors, PyYAML, FastAPI, Uvicorn, pytest, and a vanilla HTML/CSS/JavaScript frontend with no build step.
+  App stage: S1-dev. Holodeck is a local-only control center for Randy's fof-mono AI-coding workflow.
+  Spec stage: openspec-single-spec. Keep one capability named "app" until the living spec becomes too large or separate behavior areas need independent change control.
+  Snapshot convention: collect.py writes apps/holodeck/data/snapshot.json, which is local data covered by the repo's gitignored data/ rule. Do not store session bodies or generated snapshots in git.
+  Source of truth: implementation wins over planning docs. Baseline specs describe observable behavior only; future dashboard ideas belong in ROADMAP.md or a new OpenSpec change.
+  Repo conventions: avoid new dependencies unless explicitly approved, use the existing collector/module patterns, and keep local developer commands rooted at the monorepo root.
+
+# Project context (optional)
+# This is shown to AI when creating artifacts.
+# Add your tech stack, conventions, style guides, domain knowledge, etc.
+# Example:
+#   context: |
+#     Tech stack: TypeScript, React, Node.js
+#     We use conventional commits
+#     Domain: e-commerce platform
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours

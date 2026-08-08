@@ -1,0 +1,37 @@
+<!-- START OF FILE webflow-privacy-consent-embed.html -->
+<!-- deploy: copy to home page instance > click on embed element > Edit Pencil icon > Settings Gear icon > paste all -->
+<!--         automatically propagates to all instances on QRAG or other pages -->
+<!-- contains: frontend component containing user consent checkbox -->
+
+<!-- 12-17 1616 RT create new component -->
+
+<div class="privacy-consent-box">
+  <label class="w-checkbox checkbox-field">
+      <input type="checkbox" id="privacy-consent" class="w-checkbox-input" 
+             onchange="handleConsentChange(this)">
+      <span class="checkbox-label w-form-label">
+          I agree to the <a href="/terms-of-service" target="_blank">Terms of Service</a> 
+          and <a href="/privacy-policy" target="_blank">Privacy Policy</a>
+      </span>
+  </label>
+  <div class="consent-error" style="color: red; display: none;">
+      Please review and accept the Terms of Service and Privacy Policy to continue.
+  </div>
+</div>
+
+<script>
+function handleConsentChange(checkbox) {
+  if (checkbox.checked) {
+      setPrivacyConsent();
+  }
+}
+
+// On page load, hide consent box if already consented
+document.addEventListener('DOMContentLoaded', function() {
+  if (checkPrivacyConsent()) {
+      document.querySelector('.privacy-consent-box').style.display = 'none';
+  }
+});
+</script>
+
+<!-- END OF FILE webflow-privacy-consent-embed.html -->

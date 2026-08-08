@@ -1,0 +1,41 @@
+---
+const { demo } = Astro.props;
+const showDateRange = demo.dateRange?.show ?? false;
+---
+<div class="qrag-input-component" data-show-date-range={showDateRange}>
+  <div class="num-chunks-container">
+    <span class="num-chunks-label">Choose the number of quoted selections:</span>
+    <div class="num-chunks-options">
+      <span class="num-chunks-option" data-value="5">5</span>
+      <span class="num-chunks-option" data-value="10">10</span>
+      <span class="num-chunks-option" data-value="20">20</span>
+      <span class="num-chunks-option" data-value="50">50</span>
+    </div>
+  </div>
+
+  <div class="date-range-container" style={showDateRange ? undefined : 'display:none'}>
+    <span class="num-chunks-label">Select date range:</span>
+    <label for={`start-date-${demo.id}`}>From:</label>
+    <input type="date" id={`start-date-${demo.id}`} class="date-input start-date" />
+    <label for={`end-date-${demo.id}`}>To:</label>
+    <input type="date" id={`end-date-${demo.id}`} class="date-input end-date" />
+  </div>
+
+  <div class="botsubmit-container">
+    <p class="botsubmit-error"></p>
+    <textarea
+      class="botsubmit-textarea"
+      placeholder="Enter your question here"
+      rows="1"
+    ></textarea>
+    <button type="button" class="botsubmit-button button-initial">
+      <span class="material-symbols-rounded botsubmit-button-icon icon-arrow-up">arrow_upward</span>
+    </button>
+  </div>
+</div>
+
+<script define:vars={{ demoId: demo.id }}>
+  document.querySelectorAll(`#start-date-${demoId}, #end-date-${demoId}`).forEach((el, index) => {
+    el.id = index === 0 ? 'start-date' : 'end-date';
+  });
+</script>

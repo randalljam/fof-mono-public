@@ -1,0 +1,28 @@
+---
+import PrivacyConsent from './PrivacyConsent.astro';
+import QragInput from './QragInput.astro';
+
+const { demo } = Astro.props;
+---
+<section class="bot-container" id={demo.containerId} data-demo-slug={demo.slug}>
+  <PrivacyConsent />
+  <QragInput demo={demo} />
+  <div class="results-box">
+    <div class="accordion-container">
+      <div class="accordion-card"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initQragDemo } from '../lib/qrag-demo.js';
+  import { initPrivacyConsent } from '../lib/privacy-consent.js';
+  import { getDemoBySlug } from '../lib/demo-config.js';
+
+  document.querySelectorAll('.bot-container[data-demo-slug]').forEach((el) => {
+    const demoConfig = getDemoBySlug(el.dataset.demoSlug);
+    if (!demoConfig) return;
+    initPrivacyConsent(el);
+    initQragDemo(demoConfig);
+  });
+</script>

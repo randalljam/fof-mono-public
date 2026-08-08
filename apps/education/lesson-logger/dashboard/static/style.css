@@ -1,0 +1,178 @@
+:root {
+  --rounded-btn: 0.5rem;
+}
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Family Schedule card headings sit above both day and subsection headings. */
+.schedule-card {
+  overflow: visible;
+}
+.schedule-card-title {
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+/* Markdown body for Family Schedule — fallback if typography plugin is slow/unavailable */
+.schedule-md h1,
+.schedule-md h2,
+.schedule-md h3,
+.schedule-md h4 {
+  font-weight: 650;
+  line-height: 1.3;
+  margin: 1.1em 0 0.45em;
+  color: oklch(var(--bc) / 0.92);
+}
+.schedule-md h1 { font-size: 1.25rem; }
+.schedule-md h2 { font-size: 1.1rem; }
+.schedule-md h3 { font-size: 1rem; }
+.schedule-md h4 { font-size: 0.95rem; }
+.schedule-md h2.schedule-day-past {
+  color: oklch(var(--bc) / 0.38);
+}
+.schedule-md p {
+  margin: 0.45em 0;
+  line-height: 1.55;
+}
+.schedule-md ul,
+.schedule-md ol {
+  margin: 0.4em 0 0.7em 1.25em;
+  padding: 0;
+}
+.schedule-md ul { list-style: disc; }
+.schedule-md ol { list-style: decimal; }
+.schedule-md li {
+  margin: 0.25em 0;
+  line-height: 1.5;
+}
+.schedule-md li > ul,
+.schedule-md li > ol {
+  margin-top: 0.2em;
+  margin-bottom: 0.2em;
+}
+/* Times are authored as **…**; bold dark orange. */
+.schedule-md.prose strong,
+.schedule-md strong {
+  color: #c2410c;
+  font-weight: 700;
+}
+.schedule-md em { font-style: italic; }
+.schedule-md del {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+.schedule-md hr {
+  margin: 1em 0;
+  border: 0;
+  border-top: 1px solid oklch(var(--bc) / 0.12);
+}
+.schedule-md code {
+  font-size: 0.9em;
+  padding: 0.1em 0.35em;
+  border-radius: 0.25rem;
+  background: oklch(var(--b2));
+}
+.schedule-md table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.75em 0;
+  font-size: 0.9em;
+}
+.schedule-md th,
+.schedule-md td {
+  border: 1px solid oklch(var(--bc) / 0.15);
+  padding: 0.35em 0.5em;
+  text-align: left;
+}
+.schedule-md th {
+  font-weight: 600;
+  background: oklch(var(--b2));
+}
+.schedule-tooltip-heading {
+  cursor: help;
+  position: relative;
+  width: fit-content;
+}
+.schedule-tooltip-heading:focus-visible {
+  border-radius: 0.2rem;
+  outline: 2px solid currentColor;
+  outline-offset: 0.2rem;
+}
+.schedule-tooltip-icon {
+  align-items: center;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 0.65em;
+  height: 1.15em;
+  justify-content: center;
+  margin-left: 0.4em;
+  opacity: 0.6;
+  vertical-align: 0.1em;
+  width: 1.15em;
+}
+.schedule-tooltip {
+  background: oklch(var(--bc));
+  border-radius: 0.4rem;
+  box-shadow: 0 0.5rem 1.25rem oklch(var(--bc) / 0.18);
+  box-sizing: border-box;
+  color: oklch(var(--b1));
+  font-size: 0.78rem;
+  font-weight: 400;
+  left: 0;
+  line-height: 1.4;
+  max-width: min(20rem, calc(100vw - 4rem));
+  opacity: 0;
+  padding: 0.5rem 0.65rem;
+  pointer-events: none;
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  transform: translateY(-0.2rem);
+  transition: opacity 120ms ease, transform 120ms ease, visibility 120ms;
+  visibility: hidden;
+  white-space: normal;
+  width: max-content;
+  z-index: 20;
+}
+.schedule-tooltip-heading:hover .schedule-tooltip,
+.schedule-tooltip-heading:focus .schedule-tooltip,
+.schedule-tooltip-heading:focus-within .schedule-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+@media (prefers-reduced-motion: reduce) {
+  .schedule-tooltip {
+    transition: none;
+  }
+}
+
+/* Log section: closed-by-default disclosure (native triangle via <summary>).
+   Indent to match schedule list text (ul margin-left: 1.25em). */
+.schedule-log {
+  margin: 1.1em 0 0 1.25em;
+}
+.schedule-log-summary {
+  color: oklch(var(--bc) / 0.92);
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 650;
+  line-height: 1.3;
+  list-style-position: outside;
+  user-select: none;
+}
+.schedule-log-summary::-webkit-details-marker {
+  color: oklch(var(--bc) / 0.55);
+}
+.schedule-log-body {
+  margin-top: 0.35em;
+}
+.schedule-log-body > :first-child {
+  margin-top: 0;
+}

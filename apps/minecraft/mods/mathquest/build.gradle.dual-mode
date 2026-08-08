@@ -1,0 +1,407 @@
+buildscript {
+    if (gradle.ext.useFabricLoom) {
+        repositories {
+            maven {
+                name = 'Fabric'
+                url = 'https://maven.fabricmc.net/'
+            }
+            mavenCentral()
+            gradlePluginPortal()
+        }
+        dependencies {
+            classpath 'net.fabricmc:fabric-loom:1.13.+'
+        }
+    }
+}
+
+if (gradle.ext.useFabricLoom) {
+    // Normal Fabric Loom build - requires maven.fabricmc.net access
+    apply plugin: 'fabric-loom'
+    apply plugin: 'maven-publish'
+
+    version = project.mod_version
+    group = project.maven_group
+
+    base {
+        archivesName = project.archives_base_name
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        minecraft "com.mojang:minecraft:${project.minecraft_version}"
+        mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+        modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+        modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+        include implementation("org.xerial:sqlite-jdbc:3.49.1.0")
+        testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
+        testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+        testImplementation "org.xerial:sqlite-jdbc:3.49.1.0"
+        testImplementation "com.google.code.gson:gson:2.11.0"
+    }
+
+    processResources {
+        inputs.property "version", project.version
+        filesMatching("fabric.mod.json") {
+            expand "version": project.version
+        }
+    }
+
+    // Auto-regenerate stubs from the real Minecraft/Fabric/Brigadier APIs on every local build.
+    // This keeps stubs/src/main/java/ in sync with whatever Minecraft/Fabric/Yarn version is
+    // configured in gradle.properties, so the remote proxy-blocked environment can still compile
+    // the mod against accurate stub classes. Commit the regenerated stubs when they change.
+    tasks.register('updateStubs') {
+        group = 'build'
+        description = 'Regenerates stub classes in stubs/src/main/java/ from the real API classpath'
+        dependsOn 'compileJava'
+
+        // Inputs: mod source files (determines which classes to stub) + gradle.properties (versions)
+        inputs.files(fileTree('src/main/java') { include '**/*.java' })
+        inputs.file('gradle.properties')
+        outputs.dir('stubs/src/main/java')
+        outputs.file('stubs/VERSIONS')
+
+        doLast {
+            def stubsDir = file('stubs/src/main/java')
+            def externalPrefixes = ['net.minecraft.', 'net.fabricmc.', 'com.mojang.brigadier.']
+
+            // 1. Scan mod source for imported external classes
+            def importedClasses = new TreeSet<String>()
+            fileTree('src/main/java').matching { include '**/*.java' }.each { f ->
+                f.eachLine { line ->
+                    def m = line =~ /^import\s+([\w.]+)\s*;/
+                    if (m.find()) {
+                        def imp = m.group(1)
+                        if (externalPrefixes.any { imp.startsWith(it) }) {
+                            importedClasses << imp
+                        }
+                    }
+                }
+            }
+            println "[MathQuest] updateStubs: found ${importedClasses.size()} external imports in mod source"
+
+            // 2. Load classes from the resolved compile classpath
+            def cpUrls = sourceSets.main.compileClasspath.collect { it.toURI().toURL() } as URL[]
+            def loader = new URLClassLoader(cpUrls, ClassLoader.systemClassLoader)
+
+            // 3. Transitively resolve classes: imports + their inner classes + types referenced in
+            //    public method signatures and fields (limited to external packages)
+            def allClasses = new LinkedHashMap<String, Class>()
+            def queue = new ArrayDeque<String>(importedClasses)
+            def isExternal = { String name -> externalPrefixes.any { name.startsWith(it) } }
+
+            while (!queue.isEmpty()) {
+                def fqcn = queue.poll()
+                if (allClasses.containsKey(fqcn)) continue
+                Class cls
+                try {
+                    cls = loader.loadClass(fqcn)
+                } catch (Throwable t) {
+                    println "[MathQuest] updateStubs: cannot load ${fqcn}: ${t.message}"
+                    continue
+                }
+                allClasses[fqcn] = cls
+
+                def addIfExternal = { Class t ->
+                    if (t == null) return
+                    def c = t.isArray() ? t.componentType : t
+                    if (c.isPrimitive()) return
+                    if (isExternal(c.name) && !allClasses.containsKey(c.name)) queue << c.name
+                }
+
+                addIfExternal(cls.superclass)
+                cls.interfaces.each { addIfExternal(it) }
+                cls.declaredClasses.each { inner ->
+                    if (!allClasses.containsKey(inner.name)) queue << inner.name
+                }
+                cls.declaredMethods.each { meth ->
+                    def mod = meth.modifiers
+                    if (!java.lang.reflect.Modifier.isPublic(mod) && !java.lang.reflect.Modifier.isProtected(mod)) return
+                    addIfExternal(meth.returnType)
+                    meth.parameterTypes.each { addIfExternal(it) }
+                }
+                cls.declaredConstructors.each { ctor ->
+                    def mod = ctor.modifiers
+                    if (!java.lang.reflect.Modifier.isPublic(mod) && !java.lang.reflect.Modifier.isProtected(mod)) return
+                    ctor.parameterTypes.each { addIfExternal(it) }
+                }
+                cls.declaredFields.each { field ->
+                    def mod = field.modifiers
+                    if (!java.lang.reflect.Modifier.isPublic(mod) && !java.lang.reflect.Modifier.isProtected(mod)) return
+                    addIfExternal(field.type)
+                }
+            }
+            println "[MathQuest] updateStubs: resolved ${allClasses.size()} total classes (including transitive types)"
+
+            // 4. Helpers for type name rendering and default-value generation
+            def knownSet = allClasses.keySet() as Set
+            def typeName
+            typeName = { Class t ->
+                if (t.isArray()) return typeName(t.componentType) + '[]'
+                if (t.isPrimitive()) return t.name
+                if (t == String.class) return 'String'
+                if (t == Object.class) return 'Object'
+                if (t.name.startsWith('java.lang.')) return t.simpleName
+                if (knownSet.contains(t.name)) {
+                    // For inner classes, use Outer.Inner notation
+                    if (t.enclosingClass != null && knownSet.contains(t.enclosingClass.name)) {
+                        return t.enclosingClass.simpleName + '.' + t.simpleName
+                    }
+                    return t.simpleName
+                }
+                return 'Object'
+            }
+
+            def defaultValue = { Class t ->
+                if (t == void.class) return ''
+                if (t == boolean.class) return 'false'
+                if (t == char.class) return "'\\0'"
+                if (t.isPrimitive()) return '0'
+                return 'null'
+            }
+
+            def returnStmt = { Class t ->
+                if (t == void.class) return ''
+                return "return ${defaultValue(t)};"
+            }
+
+            // 5. Stub rendering (recursive, handles nested inner classes)
+            def renderClass
+            renderClass = { Class cls, int indent ->
+                def ind = '    ' * indent
+                def sb = new StringBuilder()
+                def simpleName = cls.simpleName
+
+                if (cls.isEnum()) {
+                    sb << "${ind}public enum ${simpleName} {\n"
+                    def constants = cls.enumConstants
+                    constants.eachWithIndex { c, i ->
+                        sb << "${ind}    ${c}"
+                        sb << (i < constants.length - 1 ? ",\n" : "\n")
+                    }
+                    sb << "${ind}}\n"
+                    return sb.toString()
+                }
+
+                sb << "${ind}@SuppressWarnings({\"rawtypes\", \"unchecked\"})\n"
+                def isInterface = cls.isInterface()
+                def isAbstract = !isInterface && java.lang.reflect.Modifier.isAbstract(cls.modifiers)
+
+                if (isInterface) {
+                    sb << "${ind}public interface ${simpleName}"
+                    def extIfaces = cls.interfaces.findAll { knownSet.contains(it.name) }
+                    if (extIfaces) sb << " extends ${extIfaces.collect { typeName(it) }.join(', ')}"
+                } else {
+                    sb << "${ind}public "
+                    if (cls.enclosingClass != null) sb << "static "
+                    if (isAbstract) sb << "abstract "
+                    sb << "class ${simpleName}"
+                    if (cls.superclass && cls.superclass != Object.class && knownSet.contains(cls.superclass.name)) {
+                        sb << " extends ${typeName(cls.superclass)}"
+                    }
+                    def implIfaces = cls.interfaces.findAll { knownSet.contains(it.name) }
+                    if (implIfaces) sb << " implements ${implIfaces.collect { typeName(it) }.join(', ')}"
+                }
+                sb << " {\n"
+
+                // Fields (public/protected)
+                cls.declaredFields.each { field ->
+                    def mod = field.modifiers
+                    if (!java.lang.reflect.Modifier.isPublic(mod) && !java.lang.reflect.Modifier.isProtected(mod)) return
+                    if (field.isSynthetic()) return
+                    if (field.isEnumConstant()) return
+                    def modStr = java.lang.reflect.Modifier.toString(mod & (java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.PROTECTED | java.lang.reflect.Modifier.STATIC | java.lang.reflect.Modifier.FINAL))
+                    def t = typeName(field.type)
+                    def initVal = defaultValue(field.type)
+                    if (isInterface || java.lang.reflect.Modifier.isStatic(mod)) {
+                        sb << "${ind}    ${modStr} ${t} ${field.name} = ${initVal};\n"
+                    } else {
+                        sb << "${ind}    ${modStr} ${t} ${field.name};\n"
+                    }
+                }
+
+                // Constructors (classes only)
+                if (!isInterface) {
+                    def ctors = cls.declaredConstructors.findAll { c ->
+                        def mod = c.modifiers
+                        (java.lang.reflect.Modifier.isPublic(mod) || java.lang.reflect.Modifier.isProtected(mod)) && !c.isSynthetic()
+                    }
+                    if (ctors.isEmpty() && !isAbstract) {
+                        // Default constructor is fine
+                    } else {
+                        ctors.each { ctor ->
+                            def mod = ctor.modifiers
+                            def modStr = java.lang.reflect.Modifier.isPublic(mod) ? 'public' : 'protected'
+                            def params = ctor.parameterTypes.toList().withIndex().collect { p, i -> "${typeName(p)} arg${i}" }.join(', ')
+                            sb << "${ind}    ${modStr} ${simpleName}(${params}) {}\n"
+                        }
+                    }
+                }
+
+                // Methods (public/protected, not synthetic, not bridge)
+                def seenSigs = new HashSet<String>()
+                cls.declaredMethods.each { meth ->
+                    def mod = meth.modifiers
+                    if (!java.lang.reflect.Modifier.isPublic(mod) && !java.lang.reflect.Modifier.isProtected(mod)) return
+                    if (meth.isSynthetic() || meth.isBridge()) return
+                    // Deduplicate by erased signature
+                    def sig = "${meth.name}(${meth.parameterTypes.collect { it.name }.join(',')})"
+                    if (!seenSigs.add(sig)) return
+
+                    def visibility = java.lang.reflect.Modifier.isPublic(mod) ? 'public' : 'protected'
+                    def isStatic = java.lang.reflect.Modifier.isStatic(mod)
+                    def isAbs = java.lang.reflect.Modifier.isAbstract(mod)
+                    def retType = typeName(meth.returnType)
+                    def params = meth.parameterTypes.toList().withIndex().collect { p, i -> "${typeName(p)} arg${i}" }.join(', ')
+
+                    sb << "${ind}    ${visibility} "
+                    if (isStatic) sb << "static "
+                    if (isInterface && !isStatic && !meth.isDefault()) {
+                        // Abstract interface method
+                        sb << "${retType} ${meth.name}(${params});\n"
+                    } else {
+                        sb << "${retType} ${meth.name}(${params}) { ${returnStmt(meth.returnType)} }\n"
+                    }
+                }
+
+                // Nested inner classes
+                def inners = allClasses.values().findAll { it.enclosingClass == cls }
+                inners.each { inner ->
+                    sb << "\n"
+                    sb << renderClass(inner, indent + 1)
+                }
+
+                sb << "${ind}}\n"
+                return sb.toString()
+            }
+
+            // 6. Clear out old stubs and write new ones
+            if (stubsDir.exists()) {
+                stubsDir.deleteDir()
+            }
+            stubsDir.mkdirs()
+
+            def topLevel = allClasses.values().findAll { it.enclosingClass == null }
+            topLevel.each { cls ->
+                def pkg = cls.package?.name ?: ''
+                def relPath = cls.name.replace('.', '/') + '.java'
+                def outFile = new File(stubsDir, relPath)
+                outFile.parentFile.mkdirs()
+
+                def content = new StringBuilder()
+                content << "// AUTO-GENERATED by Gradle updateStubs task. Do not edit by hand.\n"
+                content << "// Regenerated from the real Minecraft/Fabric/Brigadier API on every local build.\n"
+                content << "package ${pkg};\n\n"
+                content << renderClass(cls, 0)
+                outFile.text = content.toString()
+            }
+
+            loader.close()
+
+            // 7. Write a version stamp so offline builds can detect staleness
+            def versions = file('stubs/VERSIONS')
+            versions.text = "# Auto-generated by updateStubs task\n" +
+                "minecraft=${project.minecraft_version}\n" +
+                "yarn_mappings=${project.yarn_mappings}\n" +
+                "loader=${project.loader_version}\n" +
+                "fabric_api=${project.fabric_version}\n" +
+                "generated=${new Date().format('yyyy-MM-dd HH:mm:ss')}\n"
+
+            println "[MathQuest] updateStubs: wrote ${topLevel.size()} stub files to stubs/src/main/java/"
+        }
+    }
+
+    // Run stub regeneration as part of every local build so the committed stubs stay in sync
+    tasks.named('build').configure { dependsOn 'updateStubs' }
+} else {
+    // Stub compilation mode - used when Fabric Maven is unreachable
+    // Compiles mod source against stub APIs to verify correctness
+    apply plugin: 'java-library'
+
+    version = project.mod_version
+    group = project.maven_group
+
+    base {
+        archivesName = project.archives_base_name
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    // Add stub sources to the main source set
+    sourceSets {
+        main {
+            java {
+                srcDir 'stubs/src/main/java'
+            }
+        }
+    }
+
+    dependencies {
+        implementation "org.xerial:sqlite-jdbc:3.49.1.0"
+        implementation "com.google.code.gson:gson:2.11.0"
+        implementation "org.slf4j:slf4j-api:2.0.9"
+        testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
+        testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+        testImplementation "org.xerial:sqlite-jdbc:3.49.1.0"
+        testImplementation "com.google.code.gson:gson:2.11.0"
+    }
+
+    processResources {
+        inputs.property "version", project.version
+        filesMatching("fabric.mod.json") {
+            expand "version": project.version
+        }
+    }
+
+    // Warn if the committed stubs were generated for a different Minecraft/Fabric version
+    // than what gradle.properties currently says. Indicates a local build is needed to refresh.
+    tasks.register('checkStubVersions') {
+        doLast {
+            def versions = file('stubs/VERSIONS')
+            if (!versions.exists()) {
+                println "[MathQuest] WARNING: stubs/VERSIONS not found - stubs may be hand-written or stale"
+                return
+            }
+            def props = new Properties()
+            versions.withReader { props.load(it) }
+            def mismatches = []
+            if (props.minecraft != project.minecraft_version) mismatches << "minecraft: stubs=${props.minecraft} vs gradle.properties=${project.minecraft_version}"
+            if (props.yarn_mappings != project.yarn_mappings) mismatches << "yarn_mappings: stubs=${props.yarn_mappings} vs gradle.properties=${project.yarn_mappings}"
+            if (props.loader != project.loader_version) mismatches << "loader: stubs=${props.loader} vs gradle.properties=${project.loader_version}"
+            if (props.fabric_api != project.fabric_version) mismatches << "fabric_api: stubs=${props.fabric_api} vs gradle.properties=${project.fabric_version}"
+            if (mismatches) {
+                println "[MathQuest] WARNING: stubs are out of date:"
+                mismatches.each { println "  - ${it}" }
+                println "[MathQuest] Run './gradlew build' on a machine with access to maven.fabricmc.net to regenerate."
+            } else {
+                println "[MathQuest] Stubs are in sync with gradle.properties (generated ${props.generated})"
+            }
+        }
+    }
+    tasks.named('compileJava').configure { dependsOn 'checkStubVersions' }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
+}
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.base.archivesName.get()}" }
+    }
+}

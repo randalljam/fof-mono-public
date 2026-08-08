@@ -1,0 +1,25 @@
+{
+  "version": "2.0",
+  "app_name": "hmac-hash",
+  "stages": {
+    "dev": {
+      "api_gateway_stage": "dev",
+      "manage_iam_role": false,
+      "autogen_policy": false,
+      "iam_role_arn": "arn:aws:iam::[AWS-ACCOUNT-ID]:role/hmac-hash-dev",
+      "environment_variables": {
+        "USERS_HMAC_SECRET_KEY": "USERS_HMAC_SECRET_KEY"
+      }
+    },
+    "prod": {
+      "api_gateway_stage": "prod",
+      "manage_iam_role": false,
+      "autogen_policy": false,
+      "iam_role_arn": "arn:aws:iam::[AWS-ACCOUNT-ID]:role/hmac-hash-prod",
+      "environment_variables": {
+        "USERS_HMAC_SECRET_KEY": "USERS_HMAC_SECRET_KEY"
+      }
+    }
+  }
+}
+

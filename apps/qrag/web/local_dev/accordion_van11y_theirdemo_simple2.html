@@ -1,0 +1,156 @@
+<!-- START OF FILE accordion_van11y_theirdemo_simple2.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Van11y Accordion Simplified Demo</title>
+ 
+    <link href="accordion_van11y_theirdemo_styles_onlyused2.css" rel="stylesheet" media="all" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <style>
+        html {
+        font-size: 62.5%;
+        font-size: calc(1em * 0.625);
+        box-sizing: border-box;
+        }
+
+        *,
+        *:before,
+        *:after {
+        box-sizing: inherit;
+        }
+
+        body {
+        background: #fff;
+        color: #444;
+        font-family: Arial, sans-serif;
+        font-size: 1.8em;
+        line-height: 1.5;
+        }
+
+        .mw960e {
+        max-width: 60em;
+        margin: 0 auto;
+        }
+
+        .aligncenter {
+        text-align: center;
+        }
+
+        h1 {
+        font-size: 1.5em;
+        margin: 0 0 1em 0;
+        }
+
+        h2 {
+        font-size: 1.3em;
+        margin: 0 0 1em 0;
+        }
+
+        /* --------------- styles for accordion -----------------------*/
+
+        .minimalist-accordion__header {
+        display: block;
+        background: none;
+        border: 0;
+        /** fix typo inputs **/
+        font-family: inherit;
+        cursor: pointer;
+        font-size: 1.5em;
+        line-height: 1.8462;
+        margin: 0;
+        padding: .25em 0;
+        text-align: left;
+        width: 100%;
+        font-weight: normal;
+        color: #148297;
+        }
+
+        .minimalist-accordion__header::before {
+        content: '▶';
+        display: inline-block;
+        margin-right: .5em;
+        transform: rotate(0deg);
+        }
+
+        [aria-expanded="true"].minimalist-accordion__header::before {
+        transform: rotate(90deg);
+        transform-origin: 50% 50%;
+        }
+
+        .minimalist-accordion__panel {
+        display: block;
+        }
+
+        [aria-hidden=true].minimalist-accordion__panel {
+        display: none;
+        }
+    </style>
+</head>
+
+<body role="document">
+
+<div id="page" class="mw960e" role="main">
+
+<h1 class="aligncenter">Simple Demo of Van11y Accordion JavaScript Library</h1>
+
+<!-- First accordion: not animated, multi-selectable, not open by default -->
+<div class="js-accordion" data-accordion-prefix-classes="minimalist" data-accordion-multiselectable="true">
+    <h2 class="js-accordion__header">First accordion - multi-selectable…</h2>
+    <div class="js-accordion__panel">
+        <p>Yes, it rocks.</p>
+    </div>
+
+    <h2 class="js-accordion__header">… not open by default</h2>
+    <div class="js-accordion__panel">
+        <p><span tabindex="0">Yes, it rocks too.</span></p>
+    </div>
+</div>
+
+<br><hr /><br>
+
+<!-- Second accordion: not animated, multi-selectable, open by default -->
+<div class="js-accordion2" data-accordion-prefix-classes="minimalist" data-accordion-multiselectable="true">
+    <h2 class="js-accordion__header" data-accordion-opened="true">Second accordion - multi-selectable</h2>
+    <div class="js-accordion__panel">
+        <p>Yes, it rocks.</p>
+    </div>
+
+    <h2 class="js-accordion__header" data-accordion-opened="true">… and open by default</h2>
+    <div class="js-accordion__panel">
+        <p>Yes, it rocks anyway.</p>
+
+        <div class="js-accordion" data-accordion-prefix-classes="minimalist">
+            <h3 class="js-accordion__header">Sub-accordion 1</h3>
+            <div class="js-accordion__panel">
+                <p>Stop please, too cool.</p>
+            </div>
+            <h3 class="js-accordion__header">Sub-accordion 2</h3>
+            <div class="js-accordion__panel">
+                <p><span tabindex="0">Even cooler.</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<!-- Include Van11y Accessible Accordion -->
+<script 
+defer
+src="https://unpkg.com/van11y-accessible-accordion-aria@3.0.1/dist/van11y-accessible-accordion-aria.min.js" 
+onload="
+    console.log('Van11y Accordion js library loaded successfully');
+    var other_accordion = van11yAccessibleAccordionAria({
+        ACCORDION_PREFIX_IDS: 'peekaboo_',
+        ACCORDION_JS: 'js-accordion2'
+    });
+    other_accordion.attach();
+"
+onerror="console.error('Failed to load Van11y Accordion js library')">
+</script>
+
+</body>
+</html>

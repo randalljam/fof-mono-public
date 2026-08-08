@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>fof-mono — Docs Hub</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --panel: #161d29;
+      --ink: #e6edf3;
+      --muted: #9aa7b6;
+      --accent: #58a6ff;
+      --accent-2: #7ee787;
+      --border: #243040;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #0b0f16, var(--bg) 320px);
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 20px 64px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.8rem, 5vw, 2.4rem);
+      letter-spacing: -0.03em;
+    }
+    .sub {
+      margin: 0 0 36px;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+    a.doc-btn {
+      display: block;
+      padding: 22px 24px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 1.25rem;
+      font-weight: 650;
+      box-shadow: var(--shadow);
+      transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+    }
+    a.doc-btn:hover,
+    a.doc-btn:focus-visible {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      background: #1a2433;
+      outline: none;
+    }
+    a.doc-btn span {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--muted);
+    }
+    footer {
+      margin-top: 40px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+      color: var(--accent-2);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Docs Hub</h1>
+    <p class="sub">Interactive docs and research sites served locally. Open on a phone or iPad via your Mac's LAN address.</p>
+
+    <div class="grid">
+      <a class="doc-btn" href="/docs/2026-07-01_repo-snapshot-oss-discovery/index.html">
+        Snapshot 07-01
+        <span>Repo snapshot &amp; OSS discovery</span>
+      </a>
+      <a class="doc-btn" href="/docs/2026-07-01_repo-snapshot-oss-discovery/webstacks.html">
+        Web Stacks
+        <span>Design review, options, and how they intersect</span>
+      </a>
+      <a class="doc-btn" href="/docs/research/graphs/index.html">
+        Graphs
+        <span>Graphs as data structures</span>
+      </a>
+    </div>
+
+    <footer>
+      Run <code>python3 docs/docs_server.py</code> from the repo root. See <code>docs/README.md</code> for LAN access and adding more links.
+    </footer>
+  </main>
+</body>
+</html>

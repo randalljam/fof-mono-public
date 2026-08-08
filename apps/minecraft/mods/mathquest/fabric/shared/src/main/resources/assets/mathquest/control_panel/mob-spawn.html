@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MathQuest Mob Spawn Control Panel</title>
+  <link rel="stylesheet" href="/control-panel.css">
+</head>
+<body>
+  <main>
+    <header class="topbar">
+      <div>
+        <h1>Mob Spawn Control Panel</h1>
+        <p id="server-line">Connecting...</p>
+      </div>
+      <div class="global-controls">
+        <a class="button-link" href="/quest.html" target="_blank" rel="noreferrer">Quest Panel</a>
+        <a class="button-link" href="/" target="_blank" rel="noreferrer">MathQuest Panel</a>
+        <button id="refresh">Refresh</button>
+      </div>
+    </header>
+    <section class="mob-page">
+      <section class="panel-section">
+        <div class="section-head">
+          <h2>Location</h2>
+          <button id="capture-player">Use Player Location</button>
+        </div>
+        <div class="location-grid">
+          <label class="wide">Player <select id="player-source"></select></label>
+          <label>Dimension <select id="dimension"></select></label>
+          <label>View radius <input id="view-radius" type="number" min="16" max="256" value="64"></label>
+          <label>X <input id="center-x" type="number" step="1"></label>
+          <label>Y <input id="center-y" type="number" step="1"></label>
+          <label>Z <input id="center-z" type="number" step="1"></label>
+          <button id="use-map-target">Use Map Target</button>
+        </div>
+        <div class="map-wrap">
+          <canvas id="mob-map" width="620" height="620"></canvas>
+          <div class="hint" id="map-hint">Drag to pan, scroll to zoom, click to choose an offset from the center for the next entry.</div>
+        </div>
+      </section>
+      <section class="panel-section">
+        <div class="section-head">
+          <h2>Spawn Recipe</h2>
+          <button id="add-entry">Add Entry</button>
+        </div>
+        <div class="entry-grid">
+          <label class="wide">Mob <input id="mob-id" list="mob-list" value="zombie"></label>
+          <label>Shape <select id="shape">
+            <option value="circle">Circle fill</option>
+            <option value="rim">Circle rim</option>
+            <option value="line">Line</option>
+            <option value="point">Point</option>
+          </select></label>
+          <label>Count <input id="count" type="number" min="1" max="300" value="10"></label>
+          <label>Radius <input id="radius" type="number" min="1" max="256" value="20"></label>
+          <label>Line length <input id="line-length" type="number" min="1" max="512" value="40"></label>
+          <label>Angle <input id="angle" type="number" step="5" value="0"></label>
+          <label>Offset X <input id="offset-x" type="number" step="1" value="0"></label>
+          <label>Offset Z <input id="offset-z" type="number" step="1" value="0"></label>
+          <label>Y override <input id="target-y" type="number" step="1"></label>
+          <button id="spawn-entry">Spawn Entry Now</button>
+        </div>
+        <div class="run-log" id="entry-log"></div>
+        <div class="section-head">
+          <h2>Queued Entries</h2>
+          <div class="plan-actions">
+            <button id="spawn-all" class="primary-action">Spawn All</button>
+            <button id="clear-plan">Clear</button>
+          </div>
+        </div>
+        <div id="plan-list" class="plan-list"></div>
+        <div class="section-head">
+          <h2>Recent Runs</h2>
+          <button id="clear-history">Clear History</button>
+        </div>
+        <div id="history-list" class="history-list"></div>
+        <div class="section-head">
+          <h2>Kill Area</h2>
+          <button id="kill-area" class="danger-action">Kill Selected Mob</button>
+        </div>
+        <div class="entry-grid">
+          <label class="wide">Mob <input id="kill-mob-id" list="mob-list" value="zombie"></label>
+          <label>Shape <select id="kill-shape">
+            <option value="circle">Circle</option>
+            <option value="square">Square</option>
+          </select></label>
+          <label>Radius <input id="kill-radius" type="number" min="1" max="512" value="30"></label>
+        </div>
+        <div class="run-log" id="kill-log"></div>
+      </section>
+    </section>
+  </main>
+  <datalist id="mob-list"></datalist>
+  <script src="/mob-list.js"></script>
+  <script src="/terrain-map.js"></script>
+  <script src="/mob-spawn.js"></script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prism Sync</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+  <header class="app-header">
+    <h1>Prism Sync</h1>
+    <p class="subtitle">Push Prism Launcher instances from host4 to family Macs</p>
+  </header>
+
+  <section class="panel" id="options-panel">
+    <div class="panel-row">
+      <label class="toggle"><input type="checkbox" id="opt-prompt-update"> Prompt to update</label>
+      <label class="toggle"><input type="checkbox" id="opt-sync-icons" checked> Push Prism icons</label>
+    </div>
+    <div class="panel-row hide-filter-row">
+      <label class="hide-filter">
+        <input type="checkbox" id="filter-hide-active">
+        <span>Hide instances with substring</span>
+        <input type="text" id="filter-hide" placeholder="comma-separated substrings">
+      </label>
+    </div>
+    <div class="panel-row">
+      <span class="label">Excluded folders:</span>
+      <span id="exclude-chips" class="chips"></span>
+    </div>
+    <div class="panel-row">
+      <label class="toggle"><input type="checkbox" id="opt-mods-only"> Mod jar files only</label>
+      <span class="hint">Auto-checked when updating instances that already exist on targets; only syncs <code>.jar</code> files in <code>minecraft/mods/</code> for those (pull is always jar-only). Uncheck to force a full instance push.</span>
+    </div>
+    <div class="panel-row actions">
+      <div class="action-buttons">
+        <button type="button" id="btn-refresh">Refresh</button>
+        <button type="button" id="btn-sync" class="btn-push" disabled>Push Selected</button>
+        <button type="button" id="btn-pull" class="btn-pull" disabled>Pull Selected</button>
+      </div>
+      <div id="status-message" class="status-message"></div>
+    </div>
+  </section>
+
+  <div class="matrix-area">
+    <section class="matrix-wrap">
+      <table id="matrix-table">
+        <thead id="matrix-head"></thead>
+        <tbody id="matrix-body"></tbody>
+      </table>
+    </section>
+
+    <aside class="status-legend panel">
+      <h3>Status</h3>
+      <div class="legend-row"><span class="cell-state same_mods">=</span> Same mods</div>
+      <div class="legend-row"><span class="cell-state different_mods">≠</span> Different mods</div>
+      <div class="legend-row"><span class="cell-state missing">✗</span> Not present</div>
+      <div class="legend-row"><span class="cell-state unreachable">—</span> Computer offline</div>
+    </aside>
+  </div>
+
+  <dialog id="sync-dialog">
+    <form method="dialog">
+      <h2>Push preview</h2>
+      <pre id="sync-preview-text"></pre>
+      <div class="dialog-actions">
+        <button value="cancel">Cancel</button>
+        <button value="confirm" id="sync-confirm-btn" class="primary">Run push</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="update-prompt-dialog">
+    <form method="dialog">
+      <h2>Update existing instances?</h2>
+      <p id="update-prompt-text"></p>
+      <div class="dialog-actions">
+        <button value="cancel">Cancel</button>
+        <button value="confirm" class="primary">Continue</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="mods-tooltip" class="mods-tooltip" hidden></div>
+
+  <script src="/static/app.js"></script>
+  </div>
+</body>
+</html>

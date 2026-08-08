@@ -1,0 +1,16 @@
+# Cron alternative to launchd (use launchd on macOS — see core/cron/README.md).
+# Generic template: any fof-mono job can be scheduled this way. Edit `crontab -e`
+# and paste, adjusting REPO and the script/args. cron uses the machine's local
+# time zone; set TZ above the entries if you need a specific one.
+#
+# REPO=/Users/randytrue/Documents/Code/fof-mono
+#
+# --- Example: Hermes S3 backups (agents/hermes/hermes_backup.py) ---
+# Weekly — Sunday 03:00
+# 0 3 * * 0  cd $REPO && .venv/bin/python3 agents/hermes/hermes_backup.py backup --tier weekly  >> ~/Library/Logs/fof-mono/hermes-backup-weekly.log 2>&1
+#
+# Monthly — 1st of month 04:00
+# 0 4 1 * *  cd $REPO && .venv/bin/python3 agents/hermes/hermes_backup.py backup --tier monthly >> ~/Library/Logs/fof-mono/hermes-backup-monthly.log 2>&1
+#
+# Preferred on macOS: launchd via
+#   .venv/bin/python3 core/cron/install_launchd_plist.py --jobs agents/hermes/cron_jobs.json install hermes_backup_weekly

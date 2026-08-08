@@ -1,0 +1,8 @@
+# Test-only dependencies for the dashboard (installed on top of requirements.txt).
+# One-time setup:
+#   cd apps/education/lesson-logger/dashboard
+#   python3 -m venv .venv
+#   .venv/bin/pip install -r requirements.txt -r requirements-dev.txt
+pytest==8.3.4
+httpx==0.28.1
+anyio==4.7.0

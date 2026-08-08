@@ -1,0 +1,55 @@
+# Shared .gitignore for every mod under minecraft/mods/. Patterns cascade to all
+# subdirectories, so a single rule here covers mathquest, remove-singleplayer, and any
+# future mod added alongside them. Mod-specific overrides can still live in a per-mod
+# .gitignore if ever needed; this file is intentionally generic.
+
+# Deprecated build artifacts (old JARs, loom-cache from pre-multi-target era)
+_deprecated/
+**/_deprecated/
+
+# Gradle local workspace cache: task history, file-system probes, Loom cache bits,
+# per-machine state. Always regeneratable; never appropriate to commit.
+.gradle/
+**/.gradle/
+
+# Gradle build output: compiled classes, processed resources, packaged jars, reports.
+# The root-level <mod>/build/ is created by the coordinator project; per-target jars
+# live under <mod>/targets/<target>/build/libs/. Both are local artifacts. Release jars
+# should be distributed via GitHub Releases or CI artifacts, not the Git history.
+/build/
+**/build/
+
+# Tracked exception: the Gradle wrapper jar must stay tracked so a fresh checkout can
+# run ./gradlew without a system Gradle install. The leading `!` re-includes it after
+# the `**/build/` rule above would have caught it on some layouts.
+!gradle/wrapper/gradle-wrapper.jar
+!**/gradle/wrapper/gradle-wrapper.jar
+
+# IDE metadata: machine- and workspace-specific; produces noisy diffs. Shared editor
+# defaults should live in tracked config files (e.g. .editorconfig), not local state.
+.idea/
+*.iml
+.vscode/
+
+# Minecraft / Loom / Forge run directories. Created when launching the game from
+# Gradle for local playtesting; contains game state, world saves, logs, temp files.
+# Useful while testing, not portable, not source.
+run/
+**/run/
+
+# Per-target build log captures (stdout/stderr). Useful while debugging a local
+# failure, not source.
+logs/
+**/logs/
+
+# Loom / ForgeGradle remap output. Generated from tracked source against the selected
+# mappings; commit the promoted source, not the intermediate remapped tree.
+remappedSrc/
+**/remappedSrc/
+
+# Standalone test-runner output: throwaway compiled classes and copied test libraries.
+test-build/
+test-libs/
+
+# Python bytecode cache from the build dispatcher.
+__pycache__/

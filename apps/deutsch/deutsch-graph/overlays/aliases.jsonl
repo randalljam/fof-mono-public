@@ -1,0 +1,7 @@
+# Identity aliases for renamed corpus files (wiki-redirect pattern).
+# One JSON object per line: {"type": "work", "from": "<old base name>", "to": "<current base name>"}
+# Applied by the inventory step so historical names keep resolving to the same node id.
+{"type": "work", "from": "2016-10-17_Closer to Truth - What is Truth", "to": "2013-05-08_Closer to Truth - What is Truth"}
+{"type": "work", "from": "2019-09-30_Closer to Truth - Can Science Provide Ultimate Answers", "to": "2013-05-08_Closer to Truth - Can Science Provide Ultimate Answers"}
+{"type": "work", "from": "2021-06-02_Conversations with Tyler Cowen interview", "to": "2021-06-02_Tyler Cowen - Multiple Worlds and Our Place in Them"}
+{"type": "work", "from": "2011-09-01_Sci-Fi London interview", "to": "2011-09-28_Sci-Fi London Fringe Event with Chris Patmore"}

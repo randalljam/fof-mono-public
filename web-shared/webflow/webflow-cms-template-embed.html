@@ -1,0 +1,161 @@
+<!-- START OF FILE webflow-cms-template-embed.html -->
+
+<!-- ================ START Embed Code  ================ -->
+<div class="source-page">
+  <div id="transcript-container"></div>
+  <div id="qa-container" style="display: none;"></div>
+</div>
+
+<script>
+(function() {
+  console.log('Loading webflow-cms-template-embed.html: 2-4 1710 buttons off for branch without h4 sections');
+
+  var transcriptContainer = document.getElementById('transcript-container');
+  var qaContainer = document.getElementById('qa-container');
+  
+  // Variable to store whether document has h4 sections
+  let hasH4Sections = false;
+  
+  // Function to fetch and insert content
+  async function fetchContent(url, container) {
+    try {
+      const response = await fetch(url);
+      const html = await response.text();
+      container.innerHTML = html;
+      
+      // Check for h4 sections after content is loaded
+      if (container === transcriptContainer) {
+        hasH4Sections = container.querySelector('h4') !== null;
+        console.log('Has H4 sections:', hasH4Sections);
+        
+        // Hide the entire control panel if no h4 sections
+        const controlPanel = container.querySelector('.control-panel');
+        if (!hasH4Sections && controlPanel) {
+          controlPanel.style.display = 'none';
+        }
+      }
+      
+      // Hide Questions/Answers buttons in QA view if no h4 sections
+      if (container === qaContainer && !hasH4Sections) {
+        const controlPanel = container.querySelector('.control-panel');
+        if (controlPanel) {
+          const buttons = controlPanel.querySelectorAll('button');
+          buttons.forEach(button => {
+            if (button.textContent.includes('Questions') || 
+                button.textContent.includes('Answers')) {
+              button.style.display = 'none';
+            }
+          });
+        }
+      }
+      
+      // Set up toggle document button click handler
+      const toggleDocButton = container.querySelector('#toggleDocButton');
+      if (toggleDocButton) {
+        toggleDocButton.addEventListener('click', function() {
+          var transcriptVisible = (transcriptContainer.style.display !== 'none');
+          
+          if (transcriptVisible) {
+            transcriptContainer.style.display = 'none';
+            qaContainer.style.display = 'block';
+            this.textContent = 'View Q&A';
+          } else {
+            qaContainer.style.display = 'none';
+            transcriptContainer.style.display = 'block';
+            this.textContent = 'View Transcript';
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error loading content:', error);
+      container.innerHTML = '<p>Error loading content. Please try again later.</p>';
+    }
+  }
+  
+  window.toggleLevel = function(level) {
+    const visibleContainer = transcriptContainer.style.display !== 'none' ? 
+      transcriptContainer : qaContainer;
+      
+    if (hasH4Sections) {
+      // Handle documents with section titles (like FDA town halls)
+      const allDetails = visibleContainer.querySelectorAll('details');
+      
+      switch(level) {
+        case 'collapse':
+          // Close everything
+          allDetails.forEach(detail => {
+            detail.removeAttribute('open');
+          });
+          break;
+          
+        case 'sections':
+          // For transcript view - open all sections
+          allDetails.forEach(detail => {
+            detail.setAttribute('open', '');
+          });
+          break;
+          
+        case 'questions':
+          // First level details (questions) only
+          allDetails.forEach(detail => {
+            if (detail.parentElement.tagName !== 'DETAILS') {
+              detail.setAttribute('open', '');
+            } else {
+              detail.removeAttribute('open');
+            }
+          });
+          break;
+          
+        case 'answers':
+          // Second level details (answers)
+          allDetails.forEach(detail => {
+            if (detail.parentElement.tagName === 'DETAILS' && 
+                detail.parentElement.parentElement.tagName !== 'DETAILS') {
+              detail.setAttribute('open', '');
+              // Also open parent to show answer
+              detail.parentElement.setAttribute('open', '');
+            }
+          });
+          break;
+          
+        case 'all':
+          // All levels
+          allDetails.forEach(detail => {
+            detail.setAttribute('open', '');
+          });
+          break;
+      }
+    } else {
+      // Handle documents without section titles (like David Deutsch interviews)
+      console.log('Handling HTML document without h4 sections');
+      const details = visibleContainer.querySelectorAll('details');
+      
+      switch(level) {
+        case 'collapse':
+          details.forEach(detail => {
+            detail.removeAttribute('open');
+          });
+          break;
+          
+        case 'all':
+          details.forEach(detail => {
+            detail.setAttribute('open', '');
+          });
+          break;
+      }
+    }
+  };
+  
+  // Get URLs from Webflow CMS
+  const transcriptUrl = "{{wf {&quot;path&quot;:&quot;s3-transcript-html-url&quot;,&quot;type&quot;:&quot;Link&quot;\} }}";
+  const qaUrl = "{{wf {&quot;path&quot;:&quot;s3-qa-html-url&quot;,&quot;type&quot;:&quot;Link&quot;\} }}";
+  
+  // Load initial content
+  fetchContent(transcriptUrl, transcriptContainer);
+  fetchContent(qaUrl, qaContainer);
+})();
+</script>
+<!-- ================ END Embed Code  ================ -->
+
+
+<!-- END OF FILE webflow-cms-template-embed.html -->

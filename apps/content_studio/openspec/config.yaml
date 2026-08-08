@@ -1,0 +1,12 @@
+schema: spec-driven
+context: |
+  App directory: apps/content_studio
+  Tech stack: Python package with command-line entry points; unittest and pytest coverage outside the app directory; lazy optional dependencies for Pillow, imageio/OpenCV, requests, anthropic, and Blender.
+  Generation providers: fal.ai and Replicate are the primary aggregators; Runway is optional image-to-video only; mock runs offline for tests and demos.
+  Verification providers: Claude vision via Anthropic for visual candidates; fal-hosted Whisper for speech transcription when FAL_KEY is available; pure policy functions decide pass/fail.
+  3D pipeline: Hyper3D Rodin or Meshy image-to-GLB generation, Blender headless rig/export/preview scripts, and a stdlib GLB validator for the dragon asset contract.
+  App stage: S1-dev.
+  Spec stage: openspec-single-spec.
+  OpenSpec convention: keep one capability named "app" until the app is mature enough to split; baseline requirements describe current observable behavior only, while roadmap and future ideas stay in ROADMAP.md.
+  Repo conventions: generated media lives under apps/content_studio/_data/ and remains gitignored; do not create a source package named data; this app directory is snake_case because it is importable; secrets belong in env vars, not config.py.
+  Engineering conventions: imports of apps.content_studio must remain dependency-light; providers stay thin and model-specific fields travel through request.extra; verifiers and transcribers are injectable; apply_policy, audio_policy, and frame math stay pure and testable.

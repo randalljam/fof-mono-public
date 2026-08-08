@@ -1,0 +1,132 @@
+{
+    "metadata": {
+        "speaker_names": [],
+        "link": "https://youtu.be/abc123DEF45",
+        "request_id": "synthetic-request",
+        "created": "2026-08-05T12:00:00.000Z",
+        "duration": 12.0,
+        "channels": 1,
+        "models": [
+            "synthetic-model"
+        ],
+        "model_info": {
+            "synthetic-model": {
+                "name": "synthetic-nova",
+                "version": "1.0",
+                "arch": "synthetic"
+            }
+        }
+    },
+    "results": {
+        "channels": [
+            {
+                "alternatives": [
+                    {
+                        "transcript": "The garden sensor recorded seven samples. A second sensor confirmed the result. Both devices completed the synthetic trial.",
+                        "confidence": 0.99,
+                        "words": [
+                            {"word": "The", "start": 0.0, "end": 0.3, "punctuated_word": "The", "speaker": 0},
+                            {"word": "garden", "start": 0.3, "end": 0.7, "punctuated_word": "garden", "speaker": 0},
+                            {"word": "sensor", "start": 0.7, "end": 1.1, "punctuated_word": "sensor", "speaker": 0},
+                            {"word": "recorded", "start": 1.1, "end": 1.6, "punctuated_word": "recorded", "speaker": 0},
+                            {"word": "seven", "start": 1.6, "end": 2.0, "punctuated_word": "seven", "speaker": 0},
+                            {"word": "samples", "start": 2.0, "end": 2.5, "punctuated_word": "samples.", "speaker": 0},
+                            {"word": "A", "start": 4.0, "end": 4.2, "punctuated_word": "A", "speaker": 1},
+                            {"word": "second", "start": 4.2, "end": 4.7, "punctuated_word": "second", "speaker": 1},
+                            {"word": "sensor", "start": 4.7, "end": 5.1, "punctuated_word": "sensor", "speaker": 1},
+                            {"word": "confirmed", "start": 5.1, "end": 5.7, "punctuated_word": "confirmed", "speaker": 1},
+                            {"word": "the", "start": 5.7, "end": 5.9, "punctuated_word": "the", "speaker": 1},
+                            {"word": "result", "start": 5.9, "end": 6.4, "punctuated_word": "result.", "speaker": 1},
+                            {"word": "Both", "start": 8.0, "end": 8.4, "punctuated_word": "Both", "speaker": 0},
+                            {"word": "devices", "start": 8.4, "end": 8.9, "punctuated_word": "devices", "speaker": 0},
+                            {"word": "completed", "start": 8.9, "end": 9.5, "punctuated_word": "completed", "speaker": 0},
+                            {"word": "the", "start": 9.5, "end": 9.7, "punctuated_word": "the", "speaker": 0},
+                            {"word": "synthetic", "start": 9.7, "end": 10.2, "punctuated_word": "synthetic", "speaker": 0},
+                            {"word": "trial", "start": 10.2, "end": 10.7, "punctuated_word": "trial.", "speaker": 0}
+                        ],
+                        "summaries": [
+                            {
+                                "summary": "The garden sensor completed a synthetic measurement.",
+                                "start_word": 0,
+                                "end_word": 5
+                            },
+                            {
+                                "summary": "A second device confirmed the generated result.",
+                                "start_word": 6,
+                                "end_word": 17
+                            }
+                        ],
+                        "paragraphs": {
+                            "transcript": "The garden sensor recorded seven samples. A second sensor confirmed the result. Both devices completed the synthetic trial.",
+                            "paragraphs": [
+                                {
+                                    "sentences": [{"text": "The garden sensor recorded seven samples.", "start": 0.0, "end": 2.5}],
+                                    "start": 0.0,
+                                    "end": 2.5,
+                                    "num_words": 6,
+                                    "speaker": 0
+                                },
+                                {
+                                    "sentences": [{"text": "A second sensor confirmed the result.", "start": 4.0, "end": 6.4}],
+                                    "start": 4.0,
+                                    "end": 6.4,
+                                    "num_words": 6,
+                                    "speaker": 1
+                                },
+                                {
+                                    "sentences": [{"text": "Both devices completed the synthetic trial.", "start": 8.0, "end": 10.7}],
+                                    "start": 8.0,
+                                    "end": 10.7,
+                                    "num_words": 6,
+                                    "speaker": 0
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        ],
+        "sentiments": {
+            "segments": [
+                {
+                    "text": "The synthetic measurement completed normally.",
+                    "start_word": 0,
+                    "end_word": 5,
+                    "sentiment": "positive",
+                    "sentiment_score": 0.75
+                },
+                {
+                    "text": "The confirmation contained no source material.",
+                    "start_word": 6,
+                    "end_word": 11,
+                    "sentiment": "neutral",
+                    "sentiment_score": 0.0
+                }
+            ]
+        },
+        "topics": {
+            "segments": [
+                {
+                    "text": "The sensors measured generated markers.",
+                    "start_word": 0,
+                    "end_word": 5,
+                    "topics": [
+                        {"topic": "Synthetic measurement", "confidence_score": 0.95}
+                    ]
+                }
+            ]
+        },
+        "intents": {
+            "segments": [
+                {
+                    "text": "Confirm the generated sensor result.",
+                    "start_word": 6,
+                    "end_word": 11,
+                    "intents": [
+                        {"intent": "Confirm result", "confidence_score": 0.9}
+                    ]
+                }
+            ]
+        }
+    }
+}

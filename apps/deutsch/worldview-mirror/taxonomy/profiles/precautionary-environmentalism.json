@@ -1,0 +1,29 @@
+{
+  "id": "profile:precautionary-environmentalism",
+  "label": "Precautionary Environmentalism / Degrowth",
+  "summary": "A family of views holding that Earth's biosphere has intrinsic value and finite limits that industrial growth is overshooting. Deep ecology rejects anthropocentrism; degrowth economics advocates planned contraction of material throughput in rich countries; the precautionary principle shifts the burden of proof onto new technologies.",
+  "thinkers": ["Arne Naess", "Donella Meadows", "Hans Jonas", "Jason Hickel", "Giorgos Kallis"],
+  "sources": [
+    {"title": "Deep ecology — Wikipedia", "url": "https://en.wikipedia.org/wiki/Deep_ecology"},
+    {"title": "SEP: Environmental Ethics", "url": "https://plato.stanford.edu/entries/ethics-environmental/"},
+    {"title": "Degrowth — Wikipedia", "url": "https://en.wikipedia.org/wiki/Degrowth"}
+  ],
+  "variants": "Deep ecology (spiritual-ecocentric) vs degrowth (political-economic, often eco-socialist) vs mainstream sustainability (reformist, growth-compatible) vs ecomodernism (which defects to the proactionary side). The bright-green/dark-green split is fundamental; social ecology (Bookchin) attacks deep ecology as misanthropic.",
+  "cited_from_graph": false,
+  "positions": [
+    {"axis": "axis:epistemology", "position": -0.5, "summary": "Mixed: systems science and planetary-boundaries research plus appeals to intuition, indigenous knowledge, and ecological experience; skeptical of reductionist knowledge claims.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Deep_ecology", "title": "Deep ecology"}]},
+    {"axis": "axis:knowledge-reach", "position": -1.0, "summary": "Limits are the organizing idea: overshoot models and planetary boundaries imply knowledge cannot indefinitely outrun biophysical constraints.", "evidence": [{"url": "https://en.wikipedia.org/wiki/The_Limits_to_Growth", "title": "The Limits to Growth"}]},
+    {"axis": "axis:authority-of-belief", "position": -0.5, "summary": "Ecological science plus ethical intuition and traditional ecological wisdom; distrust of corporate and technocratic authority.", "evidence": [{"url": "https://plato.stanford.edu/entries/ethics-environmental/", "title": "SEP: Environmental Ethics"}]},
+    {"axis": "axis:realism", "position": 0.5, "summary": "Realist about ecological limits and biophysical facts, while critical of technocratic framings of what counts as knowledge.", "evidence": [{"url": "https://en.wikipedia.org/wiki/The_Limits_to_Growth", "title": "The Limits to Growth"}]},
+    {"axis": "axis:progress", "position": -1.8, "summary": "Growth-driven 'progress' is overshoot heading toward collapse; hope attaches only to a transformed, sufficiency-based society.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Degrowth", "title": "Degrowth"}]},
+    {"axis": "axis:risk", "position": -2.0, "summary": "Maximal precaution — the defining position: irreversible ecological harms justify restraint even without scientific certainty; opposes geoengineering, often nuclear and GMOs.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Precautionary_principle", "title": "Precautionary principle"}]},
+    {"axis": "axis:agency", "position": -1.0, "summary": "Structural: growth imperatives of capitalism and industrialism drive outcomes; change requires systemic transformation, not individual choices.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Degrowth", "title": "Degrowth"}]},
+    {"axis": "axis:human-significance", "position": -1.5, "summary": "Ecocentric anti-anthropocentrism: all living systems have value independent of usefulness to humans; humanity should reduce its impact and footprint.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Deep_ecology", "title": "Naess-Sessions platform"}]},
+    {"axis": "axis:morality", "position": 1.0, "summary": "Objective intrinsic value in nature (biocentric egalitarianism) and strong intergenerational duties — a realism that decenters humans.", "evidence": [{"url": "https://plato.stanford.edu/entries/ethics-environmental/", "title": "SEP: Environmental Ethics"}]},
+    {"axis": "axis:metaphysics", "position": 0.5, "summary": "Naturalist but holistic and ecocentric; some strands (Self-realization, Gaia-inflected ecology) shade toward the spiritual or pantheist.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Deep_ecology", "title": "Deep ecology"}]},
+    {"axis": "axis:change", "position": -0.5, "summary": "Seeks systemic transformation of the economy while conserving natural systems and opposing the innovation treadmill — conservation-oriented about nature, radical about institutions.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Degrowth", "title": "Degrowth"}]},
+    {"axis": "axis:nature", "position": -2.0, "summary": "Harmony within limits — the other defining position: humans must fit within the biosphere's boundaries; the wild has intrinsic normative authority.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Deep_ecology", "title": "Deep ecology"}]},
+    {"axis": "axis:meaning", "position": -0.5, "summary": "Meaning found in harmonious, sufficient relation with the living Earth — 'richer in ends, simpler in means'.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Deep_ecology", "title": "Naess"}]},
+    {"axis": "axis:social", "position": -1.5, "summary": "Collectivist and systemic: community, commons, and civilizational-scale coordination over individual consumer choice.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Degrowth", "title": "Degrowth"}]}
+  ]
+}

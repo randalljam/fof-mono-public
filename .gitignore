@@ -1,0 +1,335 @@
+# ============================================================
+# corpus-tools .gitignore
+# ============================================================
+# Policy: this repo is a source-code + reproducibility repo, not
+# a remote file store. Code, tests, docs, prompts, schemas, and
+# manifests belong in git. Large/raw/generated data belongs in
+# S3 with a row in manifests/s3_archive_manifest.jsonl.
+#
+# Reference policy: docs/2026-04-09_repos-reorg/2026-05-19_chatgpt-guide-to-file-types-to-exclude-in-repo.md
+# Reference plan:   docs/2026-04-09_repos-reorg/2026-05-25_pare-down-log.md
+# Reference rules:  AGENTS.md (Agents / Always require approval section)
+# ============================================================
+
+
+# ============================================================
+# Canonical local-file mount points -- never commit
+# ------------------------------------------------------------
+# Durable local-only files live under:
+# /Users/randytrue/Documents/Code/_LOCAL_FILES/fof-mono/
+#
+# Worktrees expose the paths below as symlinks into that canonical
+# folder. Keep these ignore rules in sync with the configured mount
+# points so local files stay out of git even when a symlink is missing.
+# ============================================================
+
+# Data lake -- bulk of the historical bloat (~5.7 GB tracked)
+# Git tracks the catalog/manifests/schemas/small samples, not the data.
+/data
+data/
+!data/README.md
+!data/manifests/
+!data/manifests/**
+!data/schemas/
+!data/schemas/**
+!data/samples/
+!data/samples/**
+
+# Exchange captures -- archived to S3, keep local-only.
+/exchanges
+/exchanges/
+
+# Archive/log roots -- local/S3-backed state, not source.
+_archive
+_archive/
+logs
+logs/
+*.log
+
+# App-local data folders (_data).
+# Any directory named _data is gitignored at any depth. Apps can
+# add <app>/_data/ (or nested paths) for session DBs, fixtures, and
+# other local-only assets without a per-app .gitignore entry.
+**/_data
+**/_data/
+**/_data/**
+
+# math-quiz keeps local run captures in math-quiz_data/ (per its README/AGENTS) —
+# never commit them (real/test SQLite + JSON sessions live locally + in S3).
+**/math-quiz_data
+**/math-quiz_data/
+**/math-quiz_data/**
+
+# math-quiz: per-learner reward/completion animations (webp/gif) in _assets/.
+# The whole folder is local-only and mounted from _LOCAL_FILES.
+apps/math-quiz/_assets
+apps/math-quiz/_assets/
+apps/math-quiz/_assets/**
+apps/math-quiz/dragon/assets/
+
+# math-quiz: dragon local learner display-name map (and future local dragon data).
+# Symlink mount from _LOCAL_FILES — explicit rule because data/ does not match the symlink itself.
+apps/math-quiz/dragon/data
+apps/math-quiz/dragon/data/
+apps/math-quiz/dragon/data/**
+
+# math-quiz: dragon playthrough apparatus run artifacts (sqlite, events.jsonl,
+# screenshots) — the tracked reports live in dragon/playtests/*.md
+apps/math-quiz/dragon/playtests/runs/
+
+# Hermes config-sync freshness marker (local-only; drives sync_hermes_config.py --if-stale)
+agents/*/.hermes_sync_state.json
+
+
+# ============================================================
+# Secrets and credentials -- never commit
+# ============================================================
+# .env files outside the repo's standard ignores
+.env
+.env.*
+!.env.example
+# Hardcoded config & credentials files referenced from README_internal.md
+config.py
+**/config.py
+# content_studio's config module holds no secrets (model ids/thresholds only;
+# API keys come from env vars) — track it despite the credential-file rule above.
+!apps/content_studio/config.py
+!apps/content_studio/model3d/config.py
+!apps/minecraft/prism-sync/server/config.py
+!apps/deutsch/content-tools/ctools/config.py
+!apps/deutsch/content-forge/dforge/config.py
+!apps/deutsch/content-redo/dredo/config.py
+!apps/deutsch/deutsch-interject/dinterject/config.py
+!apps/deutsch/worldview-mirror/wvmirror/config.py
+credentials.json
+credentials_new.json
+gdrive_service_account.json
+gdrive_service_account_fofgeneral20_personal.json
+floodlamp-gdrive-jackie-cce56b4f953f.json
+client_secret_*.*
+client_secret_119941763167-c0oqkp63cv6elses4828p7fvthdqredv.apps.googleusercontent.com.json
+client_secret_119941763167-jmob7gtcjbpamdukm8in6ekfp72r154h.apps.googleusercontent.com.json
+# Local token / session caches
+token.pickle
+.sesskey
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+.aws/
+
+
+# ============================================================
+# PII safety net -- any file with PII in the name
+# ============================================================
+**/PII*
+**/pii*
+# public-snapshot tooling is code, not PII data — exempt from the pii* rule
+!skills/repo-public/public-snapshot/pii-allowlist.md
+!skills/repo-public/public-snapshot/scripts/pii_sweep.py
+!skills/repo-ops/public-snapshot/pii-allowlist.md
+!skills/repo-ops/public-snapshot/scripts/pii_sweep.py
+# hash-store user hash logs (contain user PII); keep local-only, never commit
+**/user_hash_log*
+# Exception: the S3 PII *manifests* are a safe index -- they record only repo paths,
+# sizes, sha256 checksums, and S3 keys/status, never any PII row content. Track them so
+# the [S3-BUCKET] bucket has a versioned catalog. (The PII data files themselves stay ignored.)
+!manifests/pii_*.manifest.jsonl
+
+
+# ============================================================
+# Python build / virtualenv / cache
+# ============================================================
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+.venv*
+venv/
+env/
+ms-graphrag/.env
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+# Python packaging build outputs
+dist/
+build/
+*.egg-info/
+
+
+# ============================================================
+# Node / JS
+# ============================================================
+node_modules/
+# Playwright local test artifacts
+test-results/
+playwright-report/
+
+
+# ============================================================
+# IDE / OS noise
+# ============================================================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.iml
+.idea/
+# .vscode is kept tracked because workspace cSpell.words lives there
+
+
+# ============================================================
+# Off-limits directories (see AGENTS.md "Directory guide")
+# ------------------------------------------------------------
+# These were tracked historically but should never have been --
+# experiments, model weights, ad hoc scratch, and old code.
+# Untracked on 2026-05-25 in the pare-down pass; files remain on
+# disk locally until uploaded to S3 / discarded.
+# ============================================================
+_misc_to_be_sorted/
+limbo/
+ms-graphrag/
+lancedb/
+pretrained_models/
+
+
+# ============================================================
+# AWS Chalice build artifacts
+# ------------------------------------------------------------
+# langchain-layer is a built Lambda layer (~141 MB, 4000 files);
+# rebuild from requirements, do not commit.
+# Rules are anchored at any depth so Chalice apps relocated under
+# apps/<owning-app>/api/<lambda>/ keep their build artifacts ignored.
+# ============================================================
+web-shared/aws_chalice/langchain-layer/
+**/langchain-layer/
+**/.chalice/deployed/
+**/.chalice/deployments/
+**/vendor/
+**/layer.zip
+
+
+# ============================================================
+# Local / generated / scratch directories (per file-types policy)
+# ============================================================
+data_local/
+.data/
+artifacts/
+outputs/
+generated/
+runs/
+tmp/
+temp/
+cache/
+# voice app: generated/captured artifacts kept local, not tracked
+# (mp3/wav are already covered globally below; these catch the frame PNGs
+# and any non-audio generated output under the kokoro audio dir)
+apps/voice/captured_frames/
+apps/voice/kokoro/kokoro_audio/
+# S3-backed asset directories from kid-games (uploaded to [S3-FILES-BUCKET], gitignored locally)
+apps/games/poly-files/
+apps/games/arnis-tile-cache/
+# Third-party Minecraft mod JARs (large, downloadable)
+apps/minecraft/skyblock/skyhanni/*.jar
+
+
+# ============================================================
+# Raw media -- store in S3, not git
+# ============================================================
+*.mp3
+# Exception: math-quiz UI sound effects (58KB total, needed at runtime)
+!apps/math-quiz/sounds/*.mp3
+# FoF applet TTS clips: S3-backed (manifests/focusonfoundations_applet-audio.manifest.jsonl)
+apps/focusonfoundations/web/public/audio/
+# math-quiz: session data under apps/math-quiz/_data/ (see **_data** rule above)
+*.wav
+# Exception: robopoli UI sound effects (184KB total, needed at runtime)
+!apps/games/robopoli/sounds/*.wav
+*.m4a
+*.flac
+*.aac
+*.ogg
+*.mp4
+*.mov
+*.avi
+*.mkv
+
+
+# ============================================================
+# Large binary document formats -- prefer S3
+# (allowed via explicit ! exception if a small canonical fixture)
+# ============================================================
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.rar
+*.doc
+*.docx
+*.ppt
+*.pptx
+*.xls
+*.xlsx
+*.pdf
+
+
+# ============================================================
+# Generated transcript pipeline outputs
+# ------------------------------------------------------------
+# Raw Deepgram responses + transcription dumps are large and
+# regenerable. Small samples allowed under data/samples/.
+# ============================================================
+*.deepgram.json
+*.transcription.raw.json
+**/_zip_*.zip
+
+
+# ============================================================
+# docs/ generated outputs (regenerable; keep generators tracked)
+# ------------------------------------------------------------
+# create_codeindex.py regenerates the code-index outputs from
+# core/. Sphinx regenerates docs/_build/html from docs/sphinx/.
+# ============================================================
+docs/codeindex/all_ast_trees_dev.md
+docs/codeindex/all_graph_dev.json
+docs/codeindex/all_source_code_dev.md
+docs/codeindex/all_source_defs_docstrings_dev.md
+docs/codeindex/all_user_defined_functions_dev.md
+docs/codeindex/column_layout_graph.html
+docs/codeindex/create_codeindex_log.txt
+docs/_build/
+
+
+# ============================================================
+# Catch-all: any folder named *gitignore* is local scratch
+# (legacy convention from before this policy)
+# ============================================================
+**/*gitignore*/
+**/*gitignore*/**
+
+
+# ============================================================
+# Root-level junk files removed on 2026-05-25 pare-down pass
+# (kept here so they don't reappear)
+# ============================================================
+/=
+/scratch.py
+/scratch.md
+/temp.json
+/test_audio_nova2gen.json
+/Default.code-profile
+/settings COPY TO USER SETTINGS.json
+
+# History-purged paths (2026-07-22 rewrite) — do not re-commit
+**/*.vscdb
+docs/ai-threads/
+**/deployed_dev_logs/
+**/deployed_prod_logs/
+docs/personal/
+security/
+apps/minecraft/prism-sync/computers.toml

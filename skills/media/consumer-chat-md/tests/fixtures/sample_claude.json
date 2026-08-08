@@ -1,0 +1,18 @@
+{
+  "source": "claude",
+  "exported_at": "2026-07-25T20:00:00+00:00",
+  "conversations": [
+    {
+      "id": "conv-asr-001",
+      "title": "Speech recognition services and code",
+      "source_url": "https://claude.ai/chat/conv-asr-001",
+      "date": "2026-07-20",
+      "messages": [
+        {"role": "user", "text": "Compare speech recognition APIs for batch transcription.", "ts": "2026-07-20T10:00:00Z"},
+        {"role": "assistant", "text": "Deepgram, AssemblyAI, and Whisper each trade off latency, diarization, and cost.", "ts": "2026-07-20T10:01:00Z"},
+        {"role": "user", "text": "What metrics matter for ASR benchmarks?", "ts": "2026-07-20T10:05:00Z"},
+        {"role": "assistant", "text": "WER, CER, RTF, and domain-specific keyword accuracy are the usual core metrics.", "ts": "2026-07-20T10:06:00Z"}
+      ]
+    }
+  ]
+}

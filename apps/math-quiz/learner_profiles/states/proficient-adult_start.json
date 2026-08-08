@@ -1,0 +1,3160 @@
+{
+  "version": "2.0",
+  "schema": "math-quiz/fluency-state",
+  "user": {
+    "name": "Sam (proficient adult)"
+  },
+  "profile_id": "proficient-adult",
+  "source": "baseline-snapshot",
+  "generated_at": "2026-06-14",
+  "seed": "proficient-adult-baseline",
+  "thresholds": {
+    "windowSize": 5,
+    "minAccuracy": 0.8,
+    "greenMs": 2000,
+    "redMs": 4000,
+    "retentionSessions": 3,
+    "permanentSessions": 5
+  },
+  "addition": {
+    "+|0|0": {
+      "key": "+|0|0",
+      "operation": "+",
+      "num1": 0,
+      "num2": 0,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1184,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|0|1": {
+      "key": "+|0|1",
+      "operation": "+",
+      "num1": 0,
+      "num2": 1,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 870,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|0|2": {
+      "key": "+|0|2",
+      "operation": "+",
+      "num1": 0,
+      "num2": 2,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1064,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|0|3": {
+      "key": "+|0|3",
+      "operation": "+",
+      "num1": 0,
+      "num2": 3,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 950,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|0|4": {
+      "key": "+|0|4",
+      "operation": "+",
+      "num1": 0,
+      "num2": 4,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1016,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|0|5": {
+      "key": "+|0|5",
+      "operation": "+",
+      "num1": 0,
+      "num2": 5,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1119,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|0|6": {
+      "key": "+|0|6",
+      "operation": "+",
+      "num1": 0,
+      "num2": 6,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 908,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|0|7": {
+      "key": "+|0|7",
+      "operation": "+",
+      "num1": 0,
+      "num2": 7,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 814,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|0|8": {
+      "key": "+|0|8",
+      "operation": "+",
+      "num1": 0,
+      "num2": 8,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 967,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|0|9": {
+      "key": "+|0|9",
+      "operation": "+",
+      "num1": 0,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1412,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|1|1": {
+      "key": "+|1|1",
+      "operation": "+",
+      "num1": 1,
+      "num2": 1,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1119,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|1|2": {
+      "key": "+|1|2",
+      "operation": "+",
+      "num1": 1,
+      "num2": 2,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1105,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|1|3": {
+      "key": "+|1|3",
+      "operation": "+",
+      "num1": 1,
+      "num2": 3,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1262,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|1|4": {
+      "key": "+|1|4",
+      "operation": "+",
+      "num1": 1,
+      "num2": 4,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1029,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|1|5": {
+      "key": "+|1|5",
+      "operation": "+",
+      "num1": 1,
+      "num2": 5,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1281,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|1|6": {
+      "key": "+|1|6",
+      "operation": "+",
+      "num1": 1,
+      "num2": 6,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1183,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|1|7": {
+      "key": "+|1|7",
+      "operation": "+",
+      "num1": 1,
+      "num2": 7,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1217,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|1|8": {
+      "key": "+|1|8",
+      "operation": "+",
+      "num1": 1,
+      "num2": 8,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1174,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|1|9": {
+      "key": "+|1|9",
+      "operation": "+",
+      "num1": 1,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1163,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|2|2": {
+      "key": "+|2|2",
+      "operation": "+",
+      "num1": 2,
+      "num2": 2,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1162,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|2|3": {
+      "key": "+|2|3",
+      "operation": "+",
+      "num1": 2,
+      "num2": 3,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1181,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|2|4": {
+      "key": "+|2|4",
+      "operation": "+",
+      "num1": 2,
+      "num2": 4,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 0.8,
+      "medianMs": 1334.5,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 4,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|2|5": {
+      "key": "+|2|5",
+      "operation": "+",
+      "num1": 2,
+      "num2": 5,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1178,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|2|6": {
+      "key": "+|2|6",
+      "operation": "+",
+      "num1": 2,
+      "num2": 6,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1238,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|2|7": {
+      "key": "+|2|7",
+      "operation": "+",
+      "num1": 2,
+      "num2": 7,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1241,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|2|8": {
+      "key": "+|2|8",
+      "operation": "+",
+      "num1": 2,
+      "num2": 8,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1194,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|2|9": {
+      "key": "+|2|9",
+      "operation": "+",
+      "num1": 2,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 975,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|3|3": {
+      "key": "+|3|3",
+      "operation": "+",
+      "num1": 3,
+      "num2": 3,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 921,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|3|4": {
+      "key": "+|3|4",
+      "operation": "+",
+      "num1": 3,
+      "num2": 4,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 979,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|3|5": {
+      "key": "+|3|5",
+      "operation": "+",
+      "num1": 3,
+      "num2": 5,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1060,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|3|6": {
+      "key": "+|3|6",
+      "operation": "+",
+      "num1": 3,
+      "num2": 6,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1197,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|3|7": {
+      "key": "+|3|7",
+      "operation": "+",
+      "num1": 3,
+      "num2": 7,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1123,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|3|8": {
+      "key": "+|3|8",
+      "operation": "+",
+      "num1": 3,
+      "num2": 8,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1100,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|3|9": {
+      "key": "+|3|9",
+      "operation": "+",
+      "num1": 3,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1121,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|4|4": {
+      "key": "+|4|4",
+      "operation": "+",
+      "num1": 4,
+      "num2": 4,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1139,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|4|5": {
+      "key": "+|4|5",
+      "operation": "+",
+      "num1": 4,
+      "num2": 5,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1175,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|4|6": {
+      "key": "+|4|6",
+      "operation": "+",
+      "num1": 4,
+      "num2": 6,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 966,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|4|7": {
+      "key": "+|4|7",
+      "operation": "+",
+      "num1": 4,
+      "num2": 7,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1031,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|4|8": {
+      "key": "+|4|8",
+      "operation": "+",
+      "num1": 4,
+      "num2": 8,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1026,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|4|9": {
+      "key": "+|4|9",
+      "operation": "+",
+      "num1": 4,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1050,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|5|5": {
+      "key": "+|5|5",
+      "operation": "+",
+      "num1": 5,
+      "num2": 5,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1310,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|5|6": {
+      "key": "+|5|6",
+      "operation": "+",
+      "num1": 5,
+      "num2": 6,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1204,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|5|7": {
+      "key": "+|5|7",
+      "operation": "+",
+      "num1": 5,
+      "num2": 7,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1029,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|5|8": {
+      "key": "+|5|8",
+      "operation": "+",
+      "num1": 5,
+      "num2": 8,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 908,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|5|9": {
+      "key": "+|5|9",
+      "operation": "+",
+      "num1": 5,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1177,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|6|6": {
+      "key": "+|6|6",
+      "operation": "+",
+      "num1": 6,
+      "num2": 6,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1048,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|6|7": {
+      "key": "+|6|7",
+      "operation": "+",
+      "num1": 6,
+      "num2": 7,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1226,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|6|8": {
+      "key": "+|6|8",
+      "operation": "+",
+      "num1": 6,
+      "num2": 8,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1314,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|6|9": {
+      "key": "+|6|9",
+      "operation": "+",
+      "num1": 6,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1068,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|7|7": {
+      "key": "+|7|7",
+      "operation": "+",
+      "num1": 7,
+      "num2": 7,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1103,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|7|8": {
+      "key": "+|7|8",
+      "operation": "+",
+      "num1": 7,
+      "num2": 8,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 949,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|7|9": {
+      "key": "+|7|9",
+      "operation": "+",
+      "num1": 7,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1033,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|8|8": {
+      "key": "+|8|8",
+      "operation": "+",
+      "num1": 8,
+      "num2": 8,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1052,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|8|9": {
+      "key": "+|8|9",
+      "operation": "+",
+      "num1": 8,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1129,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "+|9|9": {
+      "key": "+|9|9",
+      "operation": "+",
+      "num1": 9,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1193,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    }
+  },
+  "subtraction": {
+    "-|0|0": {
+      "key": "-|0|0",
+      "operation": "-",
+      "num1": 0,
+      "num2": 0,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1239,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|1|0": {
+      "key": "-|1|0",
+      "operation": "-",
+      "num1": 1,
+      "num2": 0,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 942,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|1|1": {
+      "key": "-|1|1",
+      "operation": "-",
+      "num1": 1,
+      "num2": 1,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1049,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|2|0": {
+      "key": "-|2|0",
+      "operation": "-",
+      "num1": 2,
+      "num2": 0,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1169,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|2|1": {
+      "key": "-|2|1",
+      "operation": "-",
+      "num1": 2,
+      "num2": 1,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1173,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|2|2": {
+      "key": "-|2|2",
+      "operation": "-",
+      "num1": 2,
+      "num2": 2,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1138,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|3|0": {
+      "key": "-|3|0",
+      "operation": "-",
+      "num1": 3,
+      "num2": 0,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1018,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|3|1": {
+      "key": "-|3|1",
+      "operation": "-",
+      "num1": 3,
+      "num2": 1,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 982,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|3|2": {
+      "key": "-|3|2",
+      "operation": "-",
+      "num1": 3,
+      "num2": 2,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 0.8,
+      "medianMs": 1154.5,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 4,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|3|3": {
+      "key": "-|3|3",
+      "operation": "-",
+      "num1": 3,
+      "num2": 3,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1453,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|4|0": {
+      "key": "-|4|0",
+      "operation": "-",
+      "num1": 4,
+      "num2": 0,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 862,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|4|1": {
+      "key": "-|4|1",
+      "operation": "-",
+      "num1": 4,
+      "num2": 1,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1074,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|4|2": {
+      "key": "-|4|2",
+      "operation": "-",
+      "num1": 4,
+      "num2": 2,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1014,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|4|3": {
+      "key": "-|4|3",
+      "operation": "-",
+      "num1": 4,
+      "num2": 3,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1066,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|4|4": {
+      "key": "-|4|4",
+      "operation": "-",
+      "num1": 4,
+      "num2": 4,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1123,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|5|0": {
+      "key": "-|5|0",
+      "operation": "-",
+      "num1": 5,
+      "num2": 0,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1176,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|5|1": {
+      "key": "-|5|1",
+      "operation": "-",
+      "num1": 5,
+      "num2": 1,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1144,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|5|2": {
+      "key": "-|5|2",
+      "operation": "-",
+      "num1": 5,
+      "num2": 2,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 946,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|5|3": {
+      "key": "-|5|3",
+      "operation": "-",
+      "num1": 5,
+      "num2": 3,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1032,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|5|4": {
+      "key": "-|5|4",
+      "operation": "-",
+      "num1": 5,
+      "num2": 4,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1054,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|5|5": {
+      "key": "-|5|5",
+      "operation": "-",
+      "num1": 5,
+      "num2": 5,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1313,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|6|0": {
+      "key": "-|6|0",
+      "operation": "-",
+      "num1": 6,
+      "num2": 0,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1017,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|6|1": {
+      "key": "-|6|1",
+      "operation": "-",
+      "num1": 6,
+      "num2": 1,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1208,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|6|2": {
+      "key": "-|6|2",
+      "operation": "-",
+      "num1": 6,
+      "num2": 2,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1035,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|6|3": {
+      "key": "-|6|3",
+      "operation": "-",
+      "num1": 6,
+      "num2": 3,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1080,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|6|4": {
+      "key": "-|6|4",
+      "operation": "-",
+      "num1": 6,
+      "num2": 4,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1226,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|6|5": {
+      "key": "-|6|5",
+      "operation": "-",
+      "num1": 6,
+      "num2": 5,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 937,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|6|6": {
+      "key": "-|6|6",
+      "operation": "-",
+      "num1": 6,
+      "num2": 6,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1157,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|7|0": {
+      "key": "-|7|0",
+      "operation": "-",
+      "num1": 7,
+      "num2": 0,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1036,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|7|1": {
+      "key": "-|7|1",
+      "operation": "-",
+      "num1": 7,
+      "num2": 1,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 952,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|7|2": {
+      "key": "-|7|2",
+      "operation": "-",
+      "num1": 7,
+      "num2": 2,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1229,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|7|3": {
+      "key": "-|7|3",
+      "operation": "-",
+      "num1": 7,
+      "num2": 3,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 999,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|7|4": {
+      "key": "-|7|4",
+      "operation": "-",
+      "num1": 7,
+      "num2": 4,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1084,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|7|5": {
+      "key": "-|7|5",
+      "operation": "-",
+      "num1": 7,
+      "num2": 5,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1233,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|7|6": {
+      "key": "-|7|6",
+      "operation": "-",
+      "num1": 7,
+      "num2": 6,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1192,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|7|7": {
+      "key": "-|7|7",
+      "operation": "-",
+      "num1": 7,
+      "num2": 7,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 0.8,
+      "medianMs": 943,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 4,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|8|0": {
+      "key": "-|8|0",
+      "operation": "-",
+      "num1": 8,
+      "num2": 0,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1181,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|8|1": {
+      "key": "-|8|1",
+      "operation": "-",
+      "num1": 8,
+      "num2": 1,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1072,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|8|2": {
+      "key": "-|8|2",
+      "operation": "-",
+      "num1": 8,
+      "num2": 2,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1266,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|8|3": {
+      "key": "-|8|3",
+      "operation": "-",
+      "num1": 8,
+      "num2": 3,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1119,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|8|4": {
+      "key": "-|8|4",
+      "operation": "-",
+      "num1": 8,
+      "num2": 4,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1341,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|8|5": {
+      "key": "-|8|5",
+      "operation": "-",
+      "num1": 8,
+      "num2": 5,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1002,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|8|6": {
+      "key": "-|8|6",
+      "operation": "-",
+      "num1": 8,
+      "num2": 6,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1282,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|8|7": {
+      "key": "-|8|7",
+      "operation": "-",
+      "num1": 8,
+      "num2": 7,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1302,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|8|8": {
+      "key": "-|8|8",
+      "operation": "-",
+      "num1": 8,
+      "num2": 8,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1074,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|9|0": {
+      "key": "-|9|0",
+      "operation": "-",
+      "num1": 9,
+      "num2": 0,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1123,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|9|1": {
+      "key": "-|9|1",
+      "operation": "-",
+      "num1": 9,
+      "num2": 1,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 937,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|9|2": {
+      "key": "-|9|2",
+      "operation": "-",
+      "num1": 9,
+      "num2": 2,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1321,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|9|3": {
+      "key": "-|9|3",
+      "operation": "-",
+      "num1": 9,
+      "num2": 3,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 992,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|9|4": {
+      "key": "-|9|4",
+      "operation": "-",
+      "num1": 9,
+      "num2": 4,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1105,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|9|5": {
+      "key": "-|9|5",
+      "operation": "-",
+      "num1": 9,
+      "num2": 5,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1116,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|9|6": {
+      "key": "-|9|6",
+      "operation": "-",
+      "num1": 9,
+      "num2": 6,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1246,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|9|7": {
+      "key": "-|9|7",
+      "operation": "-",
+      "num1": 9,
+      "num2": 7,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 929,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|9|8": {
+      "key": "-|9|8",
+      "operation": "-",
+      "num1": 9,
+      "num2": 8,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1136,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "-|9|9": {
+      "key": "-|9|9",
+      "operation": "-",
+      "num1": 9,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 996,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    }
+  },
+  "multiplication": {
+    "*|0|0": {
+      "key": "*|0|0",
+      "operation": "*",
+      "num1": 0,
+      "num2": 0,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1009,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|0|1": {
+      "key": "*|0|1",
+      "operation": "*",
+      "num1": 0,
+      "num2": 1,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1076,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|0|2": {
+      "key": "*|0|2",
+      "operation": "*",
+      "num1": 0,
+      "num2": 2,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1328,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|0|3": {
+      "key": "*|0|3",
+      "operation": "*",
+      "num1": 0,
+      "num2": 3,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1167,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|0|4": {
+      "key": "*|0|4",
+      "operation": "*",
+      "num1": 0,
+      "num2": 4,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1194,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|0|5": {
+      "key": "*|0|5",
+      "operation": "*",
+      "num1": 0,
+      "num2": 5,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 968,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|0|6": {
+      "key": "*|0|6",
+      "operation": "*",
+      "num1": 0,
+      "num2": 6,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 916,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|0|7": {
+      "key": "*|0|7",
+      "operation": "*",
+      "num1": 0,
+      "num2": 7,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 725,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|0|8": {
+      "key": "*|0|8",
+      "operation": "*",
+      "num1": 0,
+      "num2": 8,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1304,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|0|9": {
+      "key": "*|0|9",
+      "operation": "*",
+      "num1": 0,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1226,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|1|1": {
+      "key": "*|1|1",
+      "operation": "*",
+      "num1": 1,
+      "num2": 1,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1148,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|1|2": {
+      "key": "*|1|2",
+      "operation": "*",
+      "num1": 1,
+      "num2": 2,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1308,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|1|3": {
+      "key": "*|1|3",
+      "operation": "*",
+      "num1": 1,
+      "num2": 3,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1213,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|1|4": {
+      "key": "*|1|4",
+      "operation": "*",
+      "num1": 1,
+      "num2": 4,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1139,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|1|5": {
+      "key": "*|1|5",
+      "operation": "*",
+      "num1": 1,
+      "num2": 5,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1028,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|1|6": {
+      "key": "*|1|6",
+      "operation": "*",
+      "num1": 1,
+      "num2": 6,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1358,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|1|7": {
+      "key": "*|1|7",
+      "operation": "*",
+      "num1": 1,
+      "num2": 7,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1152,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|1|8": {
+      "key": "*|1|8",
+      "operation": "*",
+      "num1": 1,
+      "num2": 8,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1365,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|1|9": {
+      "key": "*|1|9",
+      "operation": "*",
+      "num1": 1,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1048,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|2|2": {
+      "key": "*|2|2",
+      "operation": "*",
+      "num1": 2,
+      "num2": 2,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1076,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|2|3": {
+      "key": "*|2|3",
+      "operation": "*",
+      "num1": 2,
+      "num2": 3,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 827,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|2|4": {
+      "key": "*|2|4",
+      "operation": "*",
+      "num1": 2,
+      "num2": 4,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1064,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|2|5": {
+      "key": "*|2|5",
+      "operation": "*",
+      "num1": 2,
+      "num2": 5,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1035,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|2|6": {
+      "key": "*|2|6",
+      "operation": "*",
+      "num1": 2,
+      "num2": 6,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1100,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|2|7": {
+      "key": "*|2|7",
+      "operation": "*",
+      "num1": 2,
+      "num2": 7,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1247,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|2|8": {
+      "key": "*|2|8",
+      "operation": "*",
+      "num1": 2,
+      "num2": 8,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1045,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|2|9": {
+      "key": "*|2|9",
+      "operation": "*",
+      "num1": 2,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1151,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|3|3": {
+      "key": "*|3|3",
+      "operation": "*",
+      "num1": 3,
+      "num2": 3,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 857,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|3|4": {
+      "key": "*|3|4",
+      "operation": "*",
+      "num1": 3,
+      "num2": 4,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1073,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|3|5": {
+      "key": "*|3|5",
+      "operation": "*",
+      "num1": 3,
+      "num2": 5,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1293,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|3|6": {
+      "key": "*|3|6",
+      "operation": "*",
+      "num1": 3,
+      "num2": 6,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1271,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|3|7": {
+      "key": "*|3|7",
+      "operation": "*",
+      "num1": 3,
+      "num2": 7,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 916,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|3|8": {
+      "key": "*|3|8",
+      "operation": "*",
+      "num1": 3,
+      "num2": 8,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1070,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|3|9": {
+      "key": "*|3|9",
+      "operation": "*",
+      "num1": 3,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 885,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|4|4": {
+      "key": "*|4|4",
+      "operation": "*",
+      "num1": 4,
+      "num2": 4,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1028,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|4|5": {
+      "key": "*|4|5",
+      "operation": "*",
+      "num1": 4,
+      "num2": 5,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1299,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|4|6": {
+      "key": "*|4|6",
+      "operation": "*",
+      "num1": 4,
+      "num2": 6,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1178,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|4|7": {
+      "key": "*|4|7",
+      "operation": "*",
+      "num1": 4,
+      "num2": 7,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1239,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|4|8": {
+      "key": "*|4|8",
+      "operation": "*",
+      "num1": 4,
+      "num2": 8,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1064,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|4|9": {
+      "key": "*|4|9",
+      "operation": "*",
+      "num1": 4,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1024,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|5|5": {
+      "key": "*|5|5",
+      "operation": "*",
+      "num1": 5,
+      "num2": 5,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 0.8,
+      "medianMs": 979.5,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 4,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|5|6": {
+      "key": "*|5|6",
+      "operation": "*",
+      "num1": 5,
+      "num2": 6,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1312,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|5|7": {
+      "key": "*|5|7",
+      "operation": "*",
+      "num1": 5,
+      "num2": 7,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1047,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|5|8": {
+      "key": "*|5|8",
+      "operation": "*",
+      "num1": 5,
+      "num2": 8,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1184,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|5|9": {
+      "key": "*|5|9",
+      "operation": "*",
+      "num1": 5,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1062,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|6|6": {
+      "key": "*|6|6",
+      "operation": "*",
+      "num1": 6,
+      "num2": 6,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 986,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|6|7": {
+      "key": "*|6|7",
+      "operation": "*",
+      "num1": 6,
+      "num2": 7,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1108,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|6|8": {
+      "key": "*|6|8",
+      "operation": "*",
+      "num1": 6,
+      "num2": 8,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1173,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|6|9": {
+      "key": "*|6|9",
+      "operation": "*",
+      "num1": 6,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1034,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|7|7": {
+      "key": "*|7|7",
+      "operation": "*",
+      "num1": 7,
+      "num2": 7,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1128,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|7|8": {
+      "key": "*|7|8",
+      "operation": "*",
+      "num1": 7,
+      "num2": 8,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1059,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|7|9": {
+      "key": "*|7|9",
+      "operation": "*",
+      "num1": 7,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1223,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|8|8": {
+      "key": "*|8|8",
+      "operation": "*",
+      "num1": 8,
+      "num2": 8,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1132,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|8|9": {
+      "key": "*|8|9",
+      "operation": "*",
+      "num1": 8,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 1,
+      "medianMs": 1039,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 5,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    },
+    "*|9|9": {
+      "key": "*|9|9",
+      "operation": "*",
+      "num1": 9,
+      "num2": 9,
+      "status": "green",
+      "calculatedStatus": "green",
+      "accuracy": 0.8,
+      "medianMs": 1017,
+      "attemptCount": 5,
+      "attemptsConsidered": 5,
+      "correctCount": 4,
+      "statusHistory": [
+        "green"
+      ],
+      "isPermanent": false,
+      "needsRecheck": false,
+      "manualOverride": false
+    }
+  }
+}

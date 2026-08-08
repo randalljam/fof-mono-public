@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AutoLearner — PreCalc Test 1 Practice</title>
+<script>
+  window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+  :root{
+    --bg:#0d1117; --bg2:#131a24; --panel:#161d29; --panel2:#1c2634;
+    --border:#243040; --border2:#2f3d50;
+    --ink:#e6edf3; --muted:#9aa7b6; --dim:#6d7b8c;
+    --accent:#58a6ff; --accent2:#7ee787; --gold:#f0c674; --pink:#ff7b9c;
+    --violet:#bc8cff; --teal:#39d3c3; --red:#ff6b6b;
+    --shadow:0 8px 30px rgba(0,0,0,.4);
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:linear-gradient(180deg,#0b0f16,#0d1117 400px);color:var(--ink);font-family:var(--sans);line-height:1.55;font-size:15px}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  code{font-family:var(--mono);background:#0b1220;border:1px solid var(--border);border-radius:5px;padding:1px 5px;font-size:.86em;color:#cde3ff}
+  h1,h2,h3,h4{line-height:1.25;margin:0}
+  .wrap{max-width:1000px;margin:0 auto;padding:30px 28px 120px}
+  header.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:26px}
+  .brand{font-weight:800;font-size:18px}
+  .brand span{color:var(--accent)}
+  .sub{color:var(--dim);font-size:11.5px;font-family:var(--mono)}
+  .spacer{flex:1}
+  .modebadge{font-family:var(--mono);font-size:10.5px;padding:3px 9px;border-radius:14px;border:1px solid var(--border2);color:var(--muted)}
+  .modebadge.live{color:var(--accent2);border-color:#2b5}
+  .modebadge.mock{color:var(--gold);border-color:#a83}
+  .eyebrow{font-family:var(--mono);color:var(--accent);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+  .kicker{color:var(--gold);font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+  .lede{color:var(--muted);font-size:16px;max-width:720px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px;position:relative;transition:.15s}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin:18px 0}
+  .card h4{font-size:15px}
+  .card .desc{color:var(--muted);font-size:13px;margin:6px 0 0}
+  .callout{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-left:4px solid var(--accent);border-radius:10px;padding:16px 20px;margin:16px 0}
+  .callout.gold{border-left-color:var(--gold)}
+  .callout.pink{border-left-color:var(--pink)}
+  .callout.red{border-left-color:var(--red)}
+  .callout.green{border-left-color:var(--accent2)}
+  .callout h4{font-size:15px;margin-bottom:6px}
+  .callout p{margin:6px 0;color:var(--muted);font-size:14px}
+  .callout ul{margin:6px 0;padding-left:20px;color:var(--muted);font-size:14px}
+  .callout li{margin:4px 0}
+  .callout b{color:var(--ink)}
+  .btn{font-family:var(--sans);font-weight:700;font-size:14.5px;padding:11px 22px;border-radius:10px;border:1px solid var(--border2);background:var(--panel2);color:var(--ink);cursor:pointer;transition:.12s}
+  .btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+  .btn.primary{background:var(--accent);color:#08111f;border-color:var(--accent)}
+  .btn.primary:hover{filter:brightness(1.1)}
+  .btn.danger{color:var(--red);border-color:#a33}
+  .btn.small{font-size:12.5px;padding:7px 14px;font-weight:600}
+  .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+  .btnrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:16px 0}
+  .pill{font-family:var(--mono);font-size:10.5px;padding:2px 8px;border-radius:20px;border:1px solid var(--border2);color:var(--muted);white-space:nowrap}
+  .pill.good{color:var(--accent2);border-color:#2b5}
+  .pill.warn{color:var(--gold);border-color:#a83}
+  .pill.bad{color:var(--red);border-color:#a33}
+  .pbar{height:9px;background:var(--panel);border:1px solid var(--border);border-radius:6px;overflow:hidden}
+  .pbar .fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .4s}
+  .view{display:none}
+  .view.active{display:block}
+  /* concept grid */
+  .ccard{cursor:default}
+  .ccard.clickable{cursor:pointer}
+  .ccard.clickable:hover{border-color:var(--accent);transform:translateY(-1px)}
+  .ccard .head{display:flex;align-items:baseline;gap:8px}
+  .ccard .sec{color:var(--dim);font-family:var(--mono);font-size:11px}
+  .ccard .score{font-family:var(--mono);font-size:22px;font-weight:800;margin-top:8px}
+  .ccard .score.na{color:var(--dim);font-size:14px;font-weight:600}
+  .ccard.mastered{border-color:#2b5;background:linear-gradient(180deg,rgba(46,160,67,.08),var(--panel))}
+  .ccard .meta{color:var(--dim);font-size:11.5px;font-family:var(--mono);margin-top:6px}
+  /* recorder */
+  .recorder{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:18px 20px;margin:16px 0}
+  .recbtn{width:64px;height:64px;border-radius:50%;border:3px solid var(--red);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;flex-shrink:0}
+  .recbtn .dot{width:26px;height:26px;border-radius:50%;background:var(--red);transition:.2s}
+  .recbtn.recording .dot{border-radius:6px;animation:pulse 1.4s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+  .rectime{font-family:var(--mono);font-size:26px;font-weight:700;min-width:90px}
+  .recstatus{color:var(--muted);font-size:13px}
+  .problem{background:#0b1220;border:1px solid var(--border2);border-radius:12px;padding:20px 24px;font-size:17px;margin:14px 0}
+  .fileinput{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--panel);border:1px dashed var(--border2);border-radius:12px;padding:14px 18px;margin:12px 0}
+  .fileinput input{color:var(--muted);font-size:13px}
+  .thumb{max-height:110px;border-radius:8px;border:1px solid var(--border2)}
+  /* assessment */
+  .scorebig{display:flex;align-items:center;gap:22px;flex-wrap:wrap;margin:14px 0}
+  .dial{width:110px;height:110px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:
+    radial-gradient(closest-side,var(--panel) 78%,transparent 79% 100%), conic-gradient(var(--accent2) calc(var(--p)*1%),#243040 0);flex-shrink:0}
+  .dial .num{font-family:var(--mono);font-size:30px;font-weight:800}
+  .dial .of{color:var(--dim);font-size:10.5px;font-family:var(--mono)}
+  .gap{border:1px solid var(--border);border-left:4px solid var(--gold);background:var(--panel);border-radius:8px;padding:10px 14px;margin:8px 0;font-size:13.5px;color:var(--muted)}
+  .gap.major{border-left-color:var(--red)}
+  .gap.minor{border-left-color:var(--teal)}
+  .gap b{color:var(--ink)}
+  .gap .ev{color:var(--dim);font-size:12px;margin-top:3px}
+  details{margin:12px 0;border:1px solid var(--border);border-radius:10px;background:var(--panel)}
+  details summary{cursor:pointer;padding:11px 16px;font-size:13.5px;color:var(--muted);font-weight:600}
+  details .inner{padding:4px 16px 14px;color:var(--muted);font-size:13.5px;white-space:pre-wrap;font-family:var(--mono);font-size:12px;max-height:340px;overflow-y:auto}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+  .chip{font-family:var(--mono);font-size:11px;padding:4px 10px;border-radius:8px;background:#0b1220;border:1px solid var(--border);color:var(--muted)}
+  /* lesson */
+  .lesson-body{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin:14px 0;font-size:15px}
+  .lesson-body h3{margin:14px 0 8px;color:#fff}
+  .lesson-body p{color:var(--muted)}
+  .lesson-body ul{color:var(--muted)}
+  audio{width:100%;margin:10px 0}
+  /* modal */
+  .overlay{position:fixed;inset:0;background:rgba(5,8,12,.72);display:none;align-items:center;justify-content:center;z-index:40;padding:20px}
+  .overlay.open{display:flex}
+  .modal{background:var(--panel2);border:1px solid var(--border2);border-radius:14px;box-shadow:var(--shadow);max-width:560px;width:100%;padding:24px}
+  .modal h3{margin-bottom:8px}
+  .modal textarea{width:100%;min-height:110px;background:#0b1220;border:1px solid var(--border2);border-radius:10px;color:var(--ink);font-family:var(--sans);font-size:14px;padding:12px;outline:none;resize:vertical}
+  .modal textarea:focus{border-color:var(--accent)}
+  .loading{display:flex;align-items:center;gap:14px;margin:22px 0;color:var(--muted)}
+  .spin{width:22px;height:22px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:rot .8s linear infinite;flex-shrink:0}
+  @keyframes rot{to{transform:rotate(360deg)}}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--red);color:var(--ink);border-radius:10px;padding:12px 20px;font-size:13.5px;display:none;z-index:60;box-shadow:var(--shadow)}
+  @media(max-width:700px){.wrap{padding:18px 14px 80px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="brand">auto<span>learner</span></div>
+      <div class="sub">precalc test 1 · mastery practice</div>
+    </div>
+    <div class="spacer"></div>
+    <span class="modebadge" id="badge-transcription">transcription: …</span>
+    <span class="modebadge" id="badge-assessment">assessment: …</span>
+    <a class="modebadge" href="/guide" style="color:var(--accent)">study guide →</a>
+  </header>
+
+  <!-- ============ DASHBOARD ============ -->
+  <div class="view active" id="view-dashboard">
+    <div class="eyebrow">Mastery dashboard</div>
+    <h1 style="font-size:30px;margin:8px 0 6px">Prove you've got it — out loud</h1>
+    <p class="lede">You'll work one problem at a time for each concept. <b style="color:var(--ink)">Talk through your thinking the whole time</b> while you write on paper, then snap a photo of your work. The AI listens to <em>how</em> you solve — pace, confidence, and reasoning — not just the final answer, and keeps giving you targeted problems until every concept is mastered.</p>
+    <div style="display:flex;align-items:center;gap:16px;margin:22px 0 6px;flex-wrap:wrap">
+      <span class="kicker" style="margin:0">Round <span id="dash-round">1</span></span>
+      <div class="pbar" style="flex:1;min-width:180px"><div class="fill" id="dash-fill" style="width:0%"></div></div>
+      <span class="sub" id="dash-count">0 / 12 mastered</span>
+    </div>
+    <div class="cards" id="concept-grid"></div>
+    <div class="callout green" id="all-done" style="display:none">
+      <h4>🎉 Every concept mastered</h4>
+      <p>You've hit the mastery bar on all concepts. Do one final review of the <a href="/guide">study guide summary</a> the night before the test — you're ready.</p>
+    </div>
+    <div class="btnrow">
+      <button class="btn primary" id="btn-start">Start next problem →</button>
+      <button class="btn danger small" id="btn-reset">Reset session</button>
+    </div>
+  </div>
+
+  <!-- ============ WORK ============ -->
+  <div class="view" id="view-work">
+    <div class="kicker">Round <span id="work-round"></span> · <span id="work-section"></span></div>
+    <h2 style="font-size:24px" id="work-title"></h2>
+    <div class="problem" id="work-prompt"></div>
+    <div class="callout gold" id="work-instructions">
+      <h4>How this works — read once, then it's muscle memory</h4>
+      <ul>
+        <li><b>1. Get paper and pencil ready.</b> You'll solve this by hand, showing all work.</li>
+        <li><b>2. Hit record, then think out loud the ENTIRE time.</b> This feels weird at first — do it anyway. Say every thought: what the problem is asking, what you're writing, why, and every doubt. If you go silent for a while, the AI sees that too.</li>
+        <li><b>3. Stuck or confused?</b> Say so out loud ("I don't remember how to find b") — naming the confusion is exactly what gets you a targeted lesson. You can also hit <b>“I'm stuck — teach me”</b> for an immediate mini-lesson.</li>
+        <li><b>4. When done, stop the recording and photograph your written work.</b> Then submit both.</li>
+      </ul>
+      <p><b>Example of thinking aloud:</b> <em>"Okay, it's asking for the equation of a line through two points. First I'll write the points down… slope is change in y over change in x, so sixteen minus seven over five minus two… that's nine over three, so three. Now I plug in the point two-seven to get b… seven equals six plus b, so b is one. Let me check with the other point: three times five plus one is sixteen — yes, that matches."</em></p>
+    </div>
+    <div class="recorder">
+      <button class="recbtn" id="btn-rec" title="Start / stop recording"><div class="dot"></div></button>
+      <div>
+        <div class="rectime" id="rec-time">0:00</div>
+        <div class="recstatus" id="rec-status">Hit record, then start working and talking.</div>
+      </div>
+      <div class="spacer"></div>
+      <audio id="rec-preview" controls style="display:none;max-width:320px"></audio>
+    </div>
+    <div class="fileinput">
+      <b style="font-size:13.5px">📷 Photo of your written work</b>
+      <input type="file" id="photo-input" accept="image/*" capture="environment" />
+      <img id="photo-thumb" class="thumb" style="display:none" alt="work preview" />
+    </div>
+    <div class="btnrow">
+      <button class="btn primary" id="btn-submit" disabled>Submit for assessment</button>
+      <button class="btn" id="btn-teach">🙋 I'm stuck — teach me</button>
+      <button class="btn small" id="btn-back-dash">← Dashboard</button>
+    </div>
+    <div class="loading" id="work-loading" style="display:none"><div class="spin"></div><span id="work-loading-msg">Transcribing your think-aloud and assessing your work…</span></div>
+  </div>
+
+  <!-- ============ ASSESSMENT ============ -->
+  <div class="view" id="view-assessment">
+    <div class="kicker">Assessment · <span id="as-concept"></span></div>
+    <h2 style="font-size:24px">Here's what the AI heard and saw</h2>
+    <div class="callout" id="as-problem-box" style="display:none"><h4>Problem</h4><p id="as-problem"></p></div>
+    <div class="callout" id="as-media-box" style="display:none">
+      <h4>Your recording &amp; written work</h4>
+      <audio id="as-audio" controls style="width:100%;margin:8px 0"></audio>
+      <img id="as-photo" class="thumb" style="display:none;max-height:220px;margin-top:8px" alt="your written work" />
+    </div>
+    <div class="scorebig">
+      <div class="dial" id="as-dial" style="--p:0"><div class="num" id="as-score">–</div><div class="of">mastery / 100</div></div>
+      <div style="flex:1;min-width:240px">
+        <div class="chips" id="as-chips"></div>
+        <p class="lede" id="as-overall" style="font-size:15px"></p>
+      </div>
+    </div>
+    <div class="callout"><h4>Reasoning</h4><p id="as-reasoning"></p></div>
+    <div class="callout"><h4>Pacing — what your timing says</h4><p id="as-pacing"></p><div class="chips" id="as-pace-chips"></div></div>
+    <div class="callout red" id="as-gaps-box"><h4>Gaps to close</h4><div id="as-gaps"></div></div>
+    <div class="callout green"><h4>Strengths</h4><ul id="as-strengths"></ul></div>
+    <div class="callout gold"><h4>Recommended next step</h4><p id="as-reco"></p></div>
+    <details><summary>Full transcript of your think-aloud</summary><div class="inner" id="as-transcript"></div></details>
+    <div class="btnrow">
+      <button class="btn primary" id="btn-next">Next problem →</button>
+      <button class="btn" id="btn-lesson-from-as">🎧 Teach me this concept</button>
+      <button class="btn small" id="btn-dash-from-as">Dashboard</button>
+    </div>
+  </div>
+
+  <!-- ============ LESSON ============ -->
+  <div class="view" id="view-lesson">
+    <div class="kicker">Mini-lesson · <span id="ls-concept"></span></div>
+    <h2 style="font-size:24px" id="ls-title"></h2>
+    <div id="ls-audio-wrap" style="display:none">
+      <p class="sub" style="margin:10px 0 2px">🎧 Listen (or read below):</p>
+      <audio id="ls-audio" controls></audio>
+    </div>
+    <div class="lesson-body" id="ls-body"></div>
+    <div class="callout green"><h4>Key takeaways</h4><ul id="ls-points"></ul></div>
+    <div class="btnrow">
+      <button class="btn primary" id="btn-back-work">Back to the problem →</button>
+      <button class="btn small" id="btn-dash-from-ls">Dashboard</button>
+    </div>
+  </div>
+</div>
+
+<!-- teach-me modal -->
+<div class="overlay" id="teach-overlay">
+  <div class="modal">
+    <h3>What's confusing you?</h3>
+    <p class="lede" style="font-size:13.5px;margin-bottom:10px">Explain it like you'd tell a tutor — the more specific, the better the lesson. ("I don't get why we divide by total time instead of averaging the speeds.")</p>
+    <textarea id="teach-text" placeholder="I don't understand…"></textarea>
+    <div class="btnrow" style="margin-bottom:0">
+      <button class="btn primary" id="btn-teach-go">Make me a lesson</button>
+      <button class="btn small" id="btn-teach-cancel">Cancel</button>
+    </div>
+    <div class="loading" id="teach-loading" style="display:none"><div class="spin"></div>Building your lesson (text + audio)…</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  var state = { next: null, summary: null, modes: {}, mediaRecorder: null, chunks: [], audioBlob: null, photoFile: null, timerId: null, recStart: 0, lastView: 'dashboard', reviewConceptId: null };
+
+  function $(id){ return document.getElementById(id); }
+  function show(view){
+    document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
+    $('view-' + view).classList.add('active');
+    state.lastView = view;
+    window.scrollTo(0, 0);
+    if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
+  }
+  function toast(msg){
+    var t = $('toast'); t.textContent = msg; t.style.display = 'block';
+    setTimeout(function(){ t.style.display = 'none'; }, 5000);
+  }
+  function esc(s){ var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+
+  // ---------- state loading ----------
+  function applyState(data){
+    state.summary = data.summary; state.next = data.next;
+    if (data.modes && data.modes.transcription) state.modes = data.modes;
+    renderModes(); renderDashboard();
+  }
+  function refresh(){
+    return fetch('/api/state').then(function(r){ return r.json(); }).then(applyState)
+      .catch(function(e){ toast('Cannot reach the dev server: ' + e.message); });
+  }
+  function renderModes(){
+    ['transcription', 'assessment'].forEach(function(svc){
+      var el = $('badge-' + svc);
+      var mode = state.modes[svc] || '…';
+      el.textContent = svc + ': ' + mode;
+      el.className = 'modebadge ' + (mode === 'mock' ? 'mock' : 'live');
+      el.title = mode === 'mock' ? 'Running without an API key — placeholder results. Set keys in .env for the real pipeline.' : '';
+    });
+  }
+
+  // ---------- dashboard ----------
+  function renderDashboard(){
+    var s = state.summary; if (!s) return;
+    $('dash-round').textContent = s.round;
+    $('dash-count').textContent = s.mastered_count + ' / ' + s.concept_count + ' mastered';
+    $('dash-fill').style.width = Math.round(100 * s.mastered_count / s.concept_count) + '%';
+    $('all-done').style.display = s.all_mastered ? 'block' : 'none';
+    $('btn-start').disabled = s.all_mastered;
+    var grid = $('concept-grid'); grid.innerHTML = '';
+    s.concepts.forEach(function(c){
+      var card = document.createElement('div');
+      var clickable = c.attempts > 0;
+      card.className = 'card ccard' + (c.mastered ? ' mastered' : '') + (clickable ? ' clickable' : '');
+      var scoreHtml = c.latest_score == null
+        ? '<div class="score na">not attempted</div>'
+        : '<div class="score" style="color:' + (c.mastered ? 'var(--accent2)' : (c.latest_score >= 70 ? 'var(--gold)' : 'var(--red)')) + '">' + c.latest_score + '</div>';
+      card.innerHTML = '<div class="head"><span class="sec">' + esc(c.section) + '</span><h4>' + esc(c.title) + '</h4></div>'
+        + scoreHtml
+        + '<div class="meta">' + c.attempts + ' attempt' + (c.attempts === 1 ? '' : 's')
+        + (c.open_gaps.length ? ' · ' + c.open_gaps.length + ' open gap' + (c.open_gaps.length === 1 ? '' : 's') : '')
+        + (c.mastered ? ' · ✓ mastered' : '')
+        + (clickable ? ' · click to review' : '') + '</div>';
+      if (clickable) {
+        card.addEventListener('click', function(){ openAttemptReview(c.concept_id); });
+      }
+      grid.appendChild(card);
+    });
+  }
+
+  // ---------- work view ----------
+  function startWork(){
+    var n = state.next;
+    if (!n || n.done) { show('dashboard'); return; }
+    $('work-round').textContent = n.round;
+    $('work-section').textContent = n.concept_title;
+    $('work-title').textContent = 'Work this problem';
+    $('work-prompt').textContent = n.exercise.prompt;
+    resetRecorder();
+    $('photo-input').value = ''; state.photoFile = null;
+    $('photo-thumb').style.display = 'none';
+    $('work-loading').style.display = 'none';
+    $('btn-submit').disabled = true;
+    show('work');
+  }
+
+  // ---------- recorder ----------
+  function fmtTime(s){ return Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0'); }
+  function resetRecorder(){
+    if (state.mediaRecorder && state.mediaRecorder.state !== 'inactive') state.mediaRecorder.stop();
+    if (state.timerId) clearInterval(state.timerId);
+    state.mediaRecorder = null; state.chunks = []; state.audioBlob = null;
+    $('rec-time').textContent = '0:00';
+    $('rec-status').textContent = 'Hit record, then start working and talking.';
+    $('btn-rec').classList.remove('recording');
+    $('rec-preview').style.display = 'none';
+  }
+  function toggleRecord(){
+    if (state.mediaRecorder && state.mediaRecorder.state === 'recording') { state.mediaRecorder.stop(); return; }
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream){
+      state.chunks = [];
+      var mr = new MediaRecorder(stream);
+      state.mediaRecorder = mr;
+      mr.ondataavailable = function(e){ if (e.data.size) state.chunks.push(e.data); };
+      mr.onstop = function(){
+        stream.getTracks().forEach(function(t){ t.stop(); });
+        clearInterval(state.timerId);
+        $('btn-rec').classList.remove('recording');
+        state.audioBlob = new Blob(state.chunks, { type: mr.mimeType || 'audio/webm' });
+        var url = URL.createObjectURL(state.audioBlob);
+        var prev = $('rec-preview'); prev.src = url; prev.style.display = 'block';
+        $('rec-status').textContent = 'Recording captured — review it, add your photo, and submit.';
+        $('btn-submit').disabled = false;
+      };
+      mr.start();
+      state.recStart = Date.now();
+      state.timerId = setInterval(function(){ $('rec-time').textContent = fmtTime((Date.now() - state.recStart) / 1000); }, 500);
+      $('btn-rec').classList.add('recording');
+      $('rec-status').textContent = 'Recording — think out loud the whole time. Hit the button again to stop.';
+      $('rec-preview').style.display = 'none';
+      $('btn-submit').disabled = true;
+    }).catch(function(e){ toast('Microphone unavailable: ' + e.message); });
+  }
+
+  // ---------- submit ----------
+  function submitAttempt(){
+    if (!state.audioBlob) { toast('Record your think-aloud first.'); return; }
+    var n = state.next;
+    var fd = new FormData();
+    fd.append('concept_id', n.concept_id);
+    fd.append('exercise_id', n.exercise.id);
+    fd.append('audio', state.audioBlob, 'recording.webm');
+    if (state.photoFile) fd.append('photo', state.photoFile, state.photoFile.name);
+    $('btn-submit').disabled = true;
+    $('work-loading').style.display = 'flex';
+    fetch('/api/submit', { method: 'POST', body: fd })
+      .then(function(r){ return r.json().then(function(d){ if (!r.ok) throw new Error(d.error || r.statusText); return d; }); })
+      .then(function(d){
+        var media = d.media || {};
+        var n = state.next;
+        applyState({ summary: d.summary, next: d.next, modes: state.modes });
+        if (d.modes) { state.modes.transcription = d.modes.transcription; state.modes.assessment = d.modes.assessment; renderModes(); }
+        renderAssessment(d.assessment, {
+          conceptTitle: media.concept_title || (n && n.concept_title),
+          exercisePrompt: media.exercise_prompt || (n && n.exercise && n.exercise.prompt),
+          audioUrl: media.audio_url,
+          imageUrl: media.image_url,
+        });
+      })
+      .catch(function(e){ toast('Submit failed: ' + e.message); $('btn-submit').disabled = false; })
+      .finally(function(){ $('work-loading').style.display = 'none'; });
+  }
+  $('photo-input').addEventListener('change', function(e){
+    var f = e.target.files[0]; state.photoFile = f || null;
+    var img = $('photo-thumb');
+    if (f) { img.src = URL.createObjectURL(f); img.style.display = 'block'; } else img.style.display = 'none';
+  });
+
+  // ---------- assessment view ----------
+  var CORRECTNESS_PILL = { correct: 'good', minor_errors: 'warn', major_errors: 'bad', incorrect: 'bad', incomplete: 'warn' };
+  function renderAssessment(a, opts){
+    opts = opts || {};
+    $('as-concept').textContent = opts.conceptTitle || (state.summary ? currentConceptTitle() : '');
+    var probBox = $('as-problem-box');
+    if (opts.exercisePrompt) {
+      $('as-problem').textContent = opts.exercisePrompt;
+      probBox.style.display = 'block';
+    } else {
+      probBox.style.display = 'none';
+    }
+    var mediaBox = $('as-media-box');
+    var audioEl = $('as-audio');
+    var photoEl = $('as-photo');
+    if (opts.audioUrl) {
+      audioEl.src = opts.audioUrl;
+      audioEl.style.display = 'block';
+      mediaBox.style.display = 'block';
+    } else {
+      audioEl.removeAttribute('src');
+      audioEl.style.display = 'none';
+    }
+    if (opts.imageUrl) {
+      photoEl.src = opts.imageUrl;
+      photoEl.style.display = 'block';
+      mediaBox.style.display = 'block';
+    } else {
+      photoEl.style.display = 'none';
+      if (!opts.audioUrl) mediaBox.style.display = 'none';
+    }
+    $('as-score').textContent = a.mastery_score;
+    $('as-dial').style.setProperty('--p', a.mastery_score);
+    var chips = $('as-chips'); chips.innerHTML = '';
+    var cp = document.createElement('span');
+    cp.className = 'pill ' + (CORRECTNESS_PILL[a.correctness] || '');
+    cp.textContent = (a.correctness || '').replace('_', ' ');
+    chips.appendChild(cp);
+    if (a.mode === 'mock') { var mp = document.createElement('span'); mp.className = 'pill warn'; mp.textContent = 'mock assessment'; chips.appendChild(mp); }
+    else if (a.mode === 'anthropic' || a.mode === 'openai') { var lp = document.createElement('span'); lp.className = 'pill good'; lp.textContent = 'live assessment'; chips.appendChild(lp); }
+    (a.confusion_flags || []).forEach(function(f){ var p = document.createElement('span'); p.className = 'pill warn'; p.textContent = '🙋 ' + f; chips.appendChild(p); });
+    $('as-overall').textContent = a.overall_assessment || '';
+    $('as-reasoning').textContent = (a.reasoning_quality || '') + (a.correctness_notes ? ' — ' + a.correctness_notes : '');
+    $('as-pacing').textContent = a.pacing_assessment || '';
+    var m = a.pacing_metrics || {};
+    $('as-pace-chips').innerHTML = '';
+    [['⏱ ' + (m.recording_duration_s || 0) + 's total'], [m.total_words + ' words'], [m.words_per_minute + ' wpm'],
+     [m.pause_count + ' pauses ≥3s'], ['longest ' + m.longest_pause_s + 's']].forEach(function(t){
+      var c = document.createElement('span'); c.className = 'chip'; c.textContent = t[0]; $('as-pace-chips').appendChild(c);
+    });
+    var gapsEl = $('as-gaps'); gapsEl.innerHTML = '';
+    var gaps = a.gaps || [];
+    $('as-gaps-box').style.display = gaps.length ? 'block' : 'none';
+    gaps.forEach(function(g){
+      var d = document.createElement('div');
+      d.className = 'gap ' + (g.severity || 'moderate');
+      d.innerHTML = '<b>' + esc(g.description) + '</b> <span class="pill">' + esc(g.severity || '') + '</span>'
+        + (g.evidence ? '<div class="ev">evidence: ' + esc(g.evidence) + '</div>' : '');
+      gapsEl.appendChild(d);
+    });
+    var st = $('as-strengths'); st.innerHTML = '';
+    (a.strengths || []).forEach(function(s){ var li = document.createElement('li'); li.textContent = s; st.appendChild(li); });
+    $('as-reco').textContent = a.recommendation || '';
+    $('as-transcript').textContent = a.transcript || '(empty)';
+    show('assessment');
+  }
+  function openAttemptReview(conceptId){
+    state.reviewConceptId = conceptId;
+    fetch('/api/attempt/' + encodeURIComponent(conceptId))
+      .then(function(r){ return r.json().then(function(d){ if (!r.ok) throw new Error(d.error || r.statusText); return d; }); })
+      .then(function(d){
+        renderAssessment(d.assessment, {
+          conceptTitle: d.concept_title,
+          exercisePrompt: d.exercise && d.exercise.prompt,
+          audioUrl: d.audio_url,
+          imageUrl: d.image_url,
+        });
+      })
+      .catch(function(e){ toast('Could not load attempt: ' + e.message); });
+  }
+  function currentConceptTitle(){
+    return (state.next && !state.next.done) ? state.next.concept_title : 'concept';
+  }
+
+  // ---------- teach me ----------
+  var teachContext = null;
+  function openTeach(){
+    teachContext = state.next && !state.next.done ? { concept_id: state.next.concept_id, exercise_id: state.next.exercise.id } : null;
+    if (!teachContext) { toast('Nothing to teach — all concepts mastered!'); return; }
+    $('teach-text').value = '';
+    $('teach-loading').style.display = 'none';
+    $('teach-overlay').classList.add('open');
+    $('teach-text').focus();
+  }
+  function requestLesson(){
+    $('teach-loading').style.display = 'flex';
+    $('btn-teach-go').disabled = true;
+    fetch('/api/teach-me', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ concept_id: teachContext.concept_id, exercise_id: teachContext.exercise_id, confusion_text: $('teach-text').value })
+    })
+      .then(function(r){ return r.json().then(function(d){ if (!r.ok) throw new Error(d.error || r.statusText); return d; }); })
+      .then(function(d){ $('teach-overlay').classList.remove('open'); renderLesson(d.lesson); })
+      .catch(function(e){ toast('Lesson failed: ' + e.message); })
+      .finally(function(){ $('teach-loading').style.display = 'none'; $('btn-teach-go').disabled = false; });
+  }
+  function renderLesson(lesson){
+    $('ls-concept').textContent = currentConceptTitle();
+    $('ls-title').textContent = lesson.title || 'Mini-lesson';
+    $('ls-body').innerHTML = lesson.lesson_html || '';
+    var pts = $('ls-points'); pts.innerHTML = '';
+    (lesson.key_points || []).forEach(function(p){ var li = document.createElement('li'); li.textContent = p; pts.appendChild(li); });
+    if (lesson.audio_url) { $('ls-audio').src = lesson.audio_url; $('ls-audio-wrap').style.display = 'block'; }
+    else $('ls-audio-wrap').style.display = 'none';
+    show('lesson');
+  }
+
+  // ---------- wiring ----------
+  $('btn-start').addEventListener('click', startWork);
+  $('btn-reset').addEventListener('click', function(){
+    if (!confirm('Reset the whole session? All scores and attempts are cleared.')) return;
+    fetch('/api/reset', { method: 'POST' }).then(function(r){ return r.json(); }).then(applyState);
+  });
+  $('btn-rec').addEventListener('click', toggleRecord);
+  $('btn-submit').addEventListener('click', submitAttempt);
+  $('btn-back-dash').addEventListener('click', function(){ resetRecorder(); show('dashboard'); });
+  $('btn-next').addEventListener('click', startWork);
+  $('btn-dash-from-as').addEventListener('click', function(){ show('dashboard'); });
+  $('btn-teach').addEventListener('click', openTeach);
+  $('btn-lesson-from-as').addEventListener('click', openTeach);
+  $('btn-teach-go').addEventListener('click', requestLesson);
+  $('btn-teach-cancel').addEventListener('click', function(){ $('teach-overlay').classList.remove('open'); });
+  $('btn-back-work').addEventListener('click', startWork);
+  $('btn-dash-from-ls').addEventListener('click', function(){ show('dashboard'); });
+
+  refresh();
+})();
+</script>
+</body>
+</html>

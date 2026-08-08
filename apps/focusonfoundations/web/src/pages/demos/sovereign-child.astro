@@ -1,0 +1,6 @@
+---
+import DemoPage from '../../layouts/DemoPage.astro';
+import { getDemoBySlug } from '../../lib/demo-config.js';
+const demo = getDemoBySlug('sovereign-child');
+---
+<DemoPage demo={demo} />

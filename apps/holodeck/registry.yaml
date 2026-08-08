@@ -1,0 +1,214 @@
+# file: apps/holodeck/registry.yaml
+# Curated per-app facts merged into the holodeck `apps` layer.
+# Auto-collection covers git/filesystem facts; this file covers human knowledge:
+# how to run the dev server, which port/URL, where it deploys.
+# Edit freely — collect.py re-reads it on every run. Slugs are apps/-relative paths.#
+# stage / spec_stage / tags (added 2026-07-10 — vocabulary is PROVISIONAL, iterate freely):
+#   stage:      app life stage — s0-experiment | s1-dev | s2-deployed (has dev+prod path) | s3-real (real users/stakes)
+#   spec_stage: spec machinery — readme-only | openspec-single-spec | openspec-core | openspec-strict
+#   tags:       free-form cross-cutting attributes (e.g. active-dev, dormant, done, real-users,
+#               revenue, minors, education, internal, public-facing). Renaming/splitting tags is a
+#               one-line edit here (values pass through via REGISTRY_FIELDS in collectors/apps.py).
+
+apps:
+  - slug: math-quiz
+    name: Math Quiz
+    purpose: Browser math quiz for kids with fluency tracking and heatmap analysis (sql.js, no build step)
+    kind: web
+    stage: s2-deployed
+    spec_stage: openspec-single-spec
+    dev_command: .venv/bin/python3 apps/math-quiz/tools/dev_server.py
+    port: 8907
+    local_url: http://127.0.0.1:8907/anchor.html
+    test_command: cd apps/math-quiz && npm run test:all
+    tags: [family, education]
+
+  - slug: minecraft/prism-sync
+    name: Prism Sync
+    purpose: Push Prism Launcher Minecraft instances to family Macs over SSH/rsync (web matrix UI + CLI)
+    kind: web
+    stage: s2-deployed
+    spec_stage: readme-only
+    dev_command: cd apps/minecraft/prism-sync && python -m server.main
+    port: 8770
+    local_url: http://127.0.0.1:8770
+    test_command: .venv/bin/python3 -m pytest apps/minecraft/prism-sync/tests -q
+    tags: [minecraft, family]
+
+  - slug: education/lesson-logger
+    name: Lesson Logger
+    purpose: Log homeschool lessons from natural-language voice/text (OpenAI structured output → JSON + SQLite)
+    kind: cli
+    stage: s2-deployed
+    spec_stage: readme-only
+    dev_command: '.venv/bin/python3 apps/education/lesson-logger/log_lesson.py --transcript "..." --sender TL'
+    test_command: .venv/bin/python3 -m pytest apps/education/lesson-logger -q
+    tags: [education, hermes]
+
+  - slug: education/lesson-logger/dashboard
+    name: Lesson Dashboard
+    purpose: FastAPI + DaisyUI dashboard over lessons.db synced from Hermes
+    kind: web
+    stage: s2-deployed
+    spec_stage: readme-only
+    dev_command: cd apps/education/lesson-logger/dashboard && .venv/bin/uvicorn app:app --reload --port 8000
+    port: 8000
+    local_url: http://localhost:8000
+    deploy:
+      - target: fly
+        name: fof-lesson-dash
+        command: cd apps/education/lesson-logger/dashboard && fly deploy -a fof-lesson-dash
+        url: https://fof-lesson-dash.fly.dev
+    tags: [education]
+
+  - slug: holodeck
+    name: Holodeck
+    purpose: This control center — aggregates worktrees, apps, specs, skills, sessions, deploys
+    kind: web
+    stage: s1-dev
+    spec_stage: openspec-single-spec
+    dev_command: .venv/bin/python3 apps/holodeck/collect.py && .venv/bin/python3 apps/holodeck/server.py
+    port: 8790
+    local_url: http://127.0.0.1:8790
+    test_command: .venv/bin/python3 -m pytest apps/holodeck/tests apps/mac/tests -q
+    tags: [meta, ai-coding]
+
+  - slug: qrag/api/qrag-llm
+    name: QRAG LLM Lambda
+    purpose: RAG answer generation Lambda (JWT verify, S3 large-context, CORS to focusonfoundations.org)
+    kind: chalice
+    stage: s2-deployed
+    spec_stage: readme-only
+    deploy:
+      - target: chalice
+        name: qrag-llm
+        command: cd apps/qrag/api/qrag-llm && chalice deploy --stage api
+    notes: Never edit chalicelib/ directly — edit core/ and run web-shared/aws_chalice/chalicelib_mirror_deploy.sh
+    tags: [qrag, aws]
+
+  - slug: qrag/api/qrag-routing
+    name: QRAG Routing Lambda
+    purpose: Embeds query (Pinecone) and routes to corpus
+    kind: chalice
+    stage: s2-deployed
+    spec_stage: readme-only
+    deploy:
+      - target: chalice
+        name: qrag-routing
+        command: cd apps/qrag/api/qrag-routing && chalice deploy --stage api
+    tags: [qrag, aws]
+
+  - slug: qrag/api/vrag-llm
+    name: VRAG LLM Lambda
+    purpose: Vision-RAG LLM answer Lambda
+    kind: chalice
+    stage: s2-deployed
+    spec_stage: readme-only
+    deploy:
+      - target: chalice
+        name: vrag-llm
+        command: cd apps/qrag/api/vrag-llm && chalice deploy --stage api
+    tags: [qrag, aws]
+
+  - slug: qrag/web
+    name: QRAG Web
+    purpose: Webflow-embedded RAG frontend + local Flask dev harnesses
+    kind: web
+    stage: s2-deployed
+    spec_stage: readme-only
+    dev_command: .venv/bin/python3 apps/qrag/web/local_dev/flask_test.py
+    deploy:
+      - target: webflow
+        name: focusonfoundations.org custom code
+        url: https://focusonfoundations.org
+    notes: Migrating off Webflow — see feature/web-site-transcript-pages (Astro + AWS CDK)
+    tags: [qrag, webflow]
+
+  - slug: transcription/api/deepgram-callback
+    name: Deepgram Callback Lambda
+    purpose: Receives Deepgram async transcription callbacks, writes results to S3
+    kind: chalice
+    stage: s2-deployed
+    spec_stage: readme-only
+    deploy:
+      - target: chalice
+        name: deepgram-callback
+        command: cd apps/transcription/api/deepgram-callback && chalice deploy
+    tags: [transcription, aws]
+
+  - slug: minecraft/mods/mathquest
+    name: MathQuest Mod
+    purpose: Flagship Fabric/Forge Minecraft mod (Wandering Nerd); multi-target Gradle builds
+    kind: mod
+    stage: s1-dev
+    spec_stage: readme-only
+    dev_command: .venv/bin/python3 apps/minecraft/mods/build-and-deploy.py
+    notes: Long-lived Codex worktree at ~/.codex/worktrees/0013/fof-mono (feature/minecraft-mod-build-local)
+    tags: [minecraft, family]
+
+  - slug: family/milestone-web
+    name: Milestone Map
+    purpose: Interactive milestone grid rendered from milestones.md (dependency-free)
+    kind: web
+    stage: s0-experiment
+    spec_stage: readme-only
+    dev_command: 'serve apps/family/milestone-web over HTTP (VS Code Live Server on index.html)'
+    tags: [family]
+
+  - slug: transcription/live-transcript
+    name: Live Transcript
+    purpose: Flask starter scaffold for live-transcription UI
+    kind: web
+    stage: s0-experiment
+    spec_stage: readme-only
+    dev_command: .venv/bin/python3 apps/transcription/live-transcript/flask_starter/app.py
+    port: 8000
+    local_url: http://127.0.0.1:8000
+    notes: Port collides with lesson-dashboard dev — don't run both
+    tags: [transcription]
+
+  - slug: voice
+    name: Voice / TTS
+    purpose: Multi-voice TTS (ElevenLabs/OpenAI/local Kokoro) + video-frame OCR-to-speech
+    kind: cli
+    stage: s1-dev
+    spec_stage: readme-only
+    dev_command: .venv/bin/python3 apps/voice/run_tts.py
+    notes: tts.py hardcodes a corpus-tools root path — fix before relying on it
+    tags: [voice]
+
+  - slug: transcription/smol-podcaster
+    name: Smol Podcaster
+    purpose: Podcast transcription/show-notes pipeline (Replicate + OpenAI + Anthropic)
+    kind: cli
+    stage: s0-experiment
+    spec_stage: readme-only
+    dev_command: .venv/bin/python3 apps/transcription/smol-podcaster/smol_podcaster.py --help
+    tags: [transcription]
+
+  - slug: repo-mirror
+    name: Repo Mirror
+    purpose: One-way mirror of changed files from private corpus-tools to public-corpus-tools
+    kind: cli
+    stage: s2-deployed
+    spec_stage: readme-only
+    dev_command: .venv/bin/python3 apps/repo-mirror/mirror_public_corpus_tools.py
+    tags: [repo-ops]
+
+  - slug: games/robopoli
+    name: Robopoli
+    purpose: TV Robopoli Adventure 3D (Three.js) + Python variants
+    kind: web
+    stage: s0-experiment
+    spec_stage: readme-only
+    dev_command: cd apps/games && npx live-server robopoli
+    tags: [family, games]
+
+  - slug: autolearner
+    name: Autolearner
+    purpose: OpenSpec trial app (spec store initialized on feature/openspec-skills branch)
+    kind: web
+    stage: s1-dev
+    spec_stage: openspec-single-spec
+    notes: Lives on feature/autolearner worktree; openspec store on feature/openspec-skills
+    tags: [education, openspec]

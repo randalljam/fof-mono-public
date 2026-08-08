@@ -1,0 +1,11 @@
+schema: spec-driven
+
+context: |
+  App: deutsch-interject
+  App stage: S1-dev
+  Spec stage: openspec-single-spec
+  Capability model: one living capability named "app" covers the whole app until future content-tools capabilities split.
+  Tech stack: Python engine package (dinterject/) with implicit typing; shared content-tools FastAPI + uvicorn local server bound to 127.0.0.1; hand-authored static HTML/JS UI served with a per-run session token; Deutsch graph services (dgraph.claims, dgraph.divergence, dgraph.grounding, dgraph.llm_util); pytest with stubbed LLM calls.
+  Data model: source turns, extracted claims, divergence verdicts, grounded citations, generated interjections, skipped/no-position honesty rows, markdown output, and JSON sidecar. Saved runs are local JSON files under apps/deutsch/deutsch-interject/data/runs/ via ctools.runs.
+  Key conventions: no product-specific logic belongs in ctools; dinterject.engine exposes run_from_request(payload, state); quote fidelity defaults to "quote"; no-position claims are never interjected; quote mode verifies long double-quoted spans against the claim's grounding text; web/deutsch-interject.html is hand-authored source; data/ is local output only.
+  Ethics baseline: all virtual turns are labeled "David Deutsch (virtual)" and every markdown output includes the synthetic-content disclosure that they are AI-generated, not spoken or endorsed by David Deutsch. Quote-mode verbatim verification and no-position honesty are requirements, not optional UI copy.

@@ -1,0 +1,485 @@
+/* START OF FILE projects/math_quiz/math_quiz.css */
+
+:root {
+  --file-info: 'math_quiz.css 1-30-2025 1032 renamed user-inputs to app-screens';
+  --main-font-size: 1.5em;
+  --problem-count-font-size: 1.5em;
+  --problem-answer-font-size: 4em;
+}
+/* To prevent Webflow scaling */
+* {
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+body {
+  /* Add these to prevent Webflow from scaling */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* General Styles */
+.main-text {
+  font-size: var(--main-font-size);
+}
+
+h2 {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+}
+
+.input-select,
+.input-text {
+  font-size: 1.2em;
+  padding: 2px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Add this new rule for buttons */
+.btn {
+  font-size: var(--main-font-size);
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  line-height: 1.5;
+  background-color: #f9f9f9;
+}
+
+.welcome {
+  font-size: 2em;
+  display: block;
+  margin-bottom: 20px;
+  line-height: 1.2; /* Add tighter line spacing */
+}
+
+/* Container Styles */
+#container.quiz-container {
+  max-width: 600px;
+  margin: 0 auto;  /* 2-3 changed to auto */
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+/* Messages Section */
+.messages {
+  margin-top: 20px;
+  font-size: 1em;
+  color: #333333;
+}
+
+/* User Inputs Section */
+.app-screens {
+  max-width: 400px;
+  margin: 0 auto;  /* 2-3 changed from 5px to auto
+  margin-top: 20px;
+}
+
+.input-select {
+  width: auto;
+  min-width: 200px; /* Adjust this value based on your text length */
+  max-width: 100%;
+  padding-right: 30px; /* Make room for the dropdown arrow */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+  background-repeat: no-repeat;
+  background-position-x: calc(100% - 5px);
+  background-position-y: 50%;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: var(--main-font-size);
+  margin-top: 10px;
+  margin-right: 10px; /* Add right margin for spacing between buttons */
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  width: auto;  /* 2-3 added */
+  align-self: flex-start;  /* 2-3 added */
+}
+
+.btn-primary {
+  background-color: #3898ec;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: #287ace;
+}
+
+/* Update the .btn-success class */
+.btn-success {
+  background-color: #4CAF50;
+  color: #ffffff;
+}
+
+.btn-success:hover {
+  background-color: #45a049;
+}
+
+/* Update the .btn-submit class to match .btn-success */
+.btn-submit {
+  background-color: #4CAF50;
+  color: #ffffff;
+}
+
+.btn-submit:hover {
+  background-color: #45a049;
+}
+
+.btn-download {
+  background-color: #ff9800;
+  color: #ffffff;
+}
+
+.btn-download:hover {
+  background-color: #e68900;
+}
+
+.btn-clear {
+  background-color: #f44336;
+  color: #ffffff;
+}
+
+.btn-clear:hover {
+  background-color: #d32f2f;
+}
+
+/* Hidden Elements */
+.hidden {
+  display: none;
+}
+
+/* Quiz Section */
+.quiz-section {
+  margin-top: 20px;
+}
+
+.problem {
+  text-align: center;
+  margin: 40px 0;
+}
+
+.problem-container {
+  padding-top: 16px;
+}
+
+.problem-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 40px 0;
+}
+
+/* Problem count text */
+.problem-count {
+  font-size: var(--problem-count-font-size);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Problem text */
+#problem-text {
+  font-size: var(--problem-answer-font-size);
+  margin-right: 10px;
+}
+
+/* Answer input */
+.input-answer {
+  font-size: var(--problem-answer-font-size);
+  text-align: center;
+  width: 3ch;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.flag-control {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  z-index: 1;
+}
+
+.flag-dropdown {
+  padding: 4px 10px;
+  font-size: 0.9em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  min-width: 120px;
+  max-width: min(200px, 30vw);
+}
+
+.flag-dropdown:focus {
+  outline: none;
+  border-color: #f39c12;
+  box-shadow: 0 0 0 2px rgba(243, 156, 18, 0.25);
+}
+
+.flag-dropdown:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.flag-comment {
+  padding: 4px 8px;
+  font-size: 0.85em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  width: 200px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.flag-comment:focus {
+  outline: none;
+  border-color: #f39c12;
+  box-shadow: 0 0 0 2px rgba(243, 156, 18, 0.25);
+}
+
+.flag-comment:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #f5f5f5;
+}
+
+.feedback-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.feedback-message {
+  font-size: var(--problem-count-font-size);
+  margin-bottom: 10px;
+}
+
+.feedback-message.correct {
+  color: #4CAF50;
+}
+
+.feedback-message.incorrect {
+  color: #f44336;
+}
+
+.btn-override {
+  font-size: var(--main-font-size);
+  padding: 10px 20px;
+  margin-top: 10px;
+}
+
+/* Summary Section */
+.summary {
+  margin-top: 20px;
+  font-size: 1.2em;
+}
+
+/* Additional Note Section */
+.additional-note-section {
+  margin-top: 20px;
+}
+
+.input-note {
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  margin-top: 5px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Download Section */
+.download-section {
+  margin-top: 20px;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 852px), 
+       screen and (max-device-width: 852px) {
+  :root {
+    /* Keep your existing values */
+    --main-font-size: 1.3em !important;
+    --problem-count-font-size: 2em !important;
+    --problem-answer-font-size: 3em !important;
+    --input-font-size: 1.2em !important;
+  }
+
+  body {
+    min-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+  }
+
+  #container.quiz-container {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 30px !important;
+    border: 2px solid red !important;
+    position: relative !important;
+    left: 0 !important;
+    top: 0 !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+  }
+
+  .welcome {
+    font-size: 1.7em;
+  }
+
+  .app-screens {
+    max-width: 100% !important;
+    margin: 10px auto !important;
+  }
+
+  .action-buttons {
+    gap: 5px !important;  /* Tighter spacing on mobile */
+  }
+
+  .problem-display {
+    margin: 50px 0 !important;
+  }
+
+  .flag-control {
+    top: 20px;
+    right: 20px;
+  }
+
+  .flag-comment {
+    width: 150px;
+    font-size: 0.8em;
+  }
+
+  .btn-end-quiz {
+    top: 15px;
+    right: 15px;
+    padding: 8px 16px;
+    font-size: 0.9em;
+  }
+}
+
+/* Add an additional query for high DPI devices */
+@media screen and (-webkit-min-device-pixel-ratio: 2), 
+       screen and (min-resolution: 192dpi) {
+  /* #container.quiz-container {
+    border: 5px solid purple !important;
+  } */
+}
+
+.listening-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.listening-buttons button {
+    margin: 0 5px;
+}
+
+/* New styles for listening buttons */
+.btn-listen {
+  background-color: #4CAF50;
+  color: #ffffff;
+}
+
+.btn-listen:hover {
+  background-color: #45a049;
+}
+
+.btn-stop-listen {
+  background-color: #f44336;
+  color: #ffffff;
+}
+
+.btn-stop-listen:hover {
+  background-color: #d32f2f;
+}
+
+.btn-dont-know {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-dont-know:hover {
+  background-color: #5a6268;
+}
+
+.btn-end-quiz {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background-color: #6c757d;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+}
+
+.btn-end-quiz:hover {
+  background-color: #5a6268;
+}
+
+/* Add specific styling for the welcome screen */
+.welcome-screen {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;  /* Consistent spacing between elements */
+}
+
+.name-selection {
+    margin-bottom: 15px;
+    width: 100%;
+    font-size: 1.2em;
+}
+
+/* Action buttons container */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 400px;
+    margin: 0;  /* Change from 'margin: 0 auto' to just 'margin: 0' */
+}
+
+/* END OF FILE projects/math_quiz/math_quiz.css */
+

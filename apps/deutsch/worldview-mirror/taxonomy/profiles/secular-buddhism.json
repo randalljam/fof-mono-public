@@ -1,0 +1,27 @@
+{
+  "id": "profile:secular-buddhism",
+  "label": "Buddhism (secular / modernist reading)",
+  "summary": "A Western-modernist reading (Batchelor; the mindfulness movement) of the Buddha's core diagnosis: suffering arises from craving and clinging and can be released through ethical living, meditation, and insight into impermanence and non-self — taken as a pragmatic, testable path for this life, while bracketing or naturalizing rebirth, cross-life karma, and cosmology.",
+  "thinkers": ["Stephen Batchelor", "David McMahan", "Jon Kabat-Zinn"],
+  "sources": [
+    {"title": "Secular Buddhism — Wikipedia", "url": "https://en.wikipedia.org/wiki/Secular_Buddhism"},
+    {"title": "Buddhist modernism — Wikipedia", "url": "https://en.wikipedia.org/wiki/Buddhist_modernism"},
+    {"title": "Batchelor on secular Buddhism", "url": "https://secularbuddhistnetwork.org/coming-out-as-a-secular-buddhist/"}
+  ],
+  "variants": "The secular/traditional split is the headline: traditional Theravada, Mahayana, and Vajrayana affirm literal rebirth, cross-life karmic causation, and liberation from the rebirth cycle (supernaturalist by Western categories, though non-theist), and traditionalists argue that removing rebirth guts Right View. The clinical mindfulness movement is a further de-ethicized extraction both camps criticize. Positions below follow the secular reading; progress is omitted as orthogonal (liberation is inner transformation, not material progress).",
+  "cited_from_graph": false,
+  "positions": [
+    {"axis": "axis:epistemology", "position": 0.5, "summary": "Experiential-pragmatic ('come and see'): first-person contemplative investigation, fallibilist in the secular version and in dialogue with psychology and neuroscience.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Secular_Buddhism", "title": "Secular Buddhism"}]},
+    {"axis": "axis:knowledge-reach", "position": -0.5, "summary": "Deep insight into mind and suffering is attainable, but conceptual knowledge is treated as limited — liberating knowledge is non-discursive.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Buddhist_modernism", "title": "Buddhist modernism"}]},
+    {"axis": "axis:authority-of-belief", "position": 0.5, "summary": "Experience and practice first; the Buddha as teacher-exemplar, not god. Traditional forms weigh canon and lineage heavily; the secular form explicitly demotes both.", "evidence": [{"url": "https://secularbuddhistnetwork.org/coming-out-as-a-secular-buddhist/", "title": "Batchelor"}]},
+    {"axis": "axis:realism", "position": -0.5, "summary": "Phenomenological and anti-essentialist: categories and the self are dependently originated constructions; the emphasis is on how experience arises rather than on a view-from-nowhere.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Buddhist_modernism", "title": "Buddhist modernism"}]},
+    {"axis": "axis:risk", "position": -0.5, "summary": "Restraint of craving and right livelihood cut against consumption- and acceleration-driven cultures, without an explicit technology doctrine.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Secular_Buddhism", "title": "Secular Buddhism"}]},
+    {"axis": "axis:agency", "position": 1.0, "summary": "High in the ethical-contemplative domain: intentions and training reshape experience (karma as intention); conditioned processes can be retrained — a middle path between determinism and randomness.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Buddhist_modernism", "title": "Buddhist modernism"}]},
+    {"axis": "axis:morality", "position": 0.5, "summary": "Objective-leaning but grounded in the structure of suffering rather than commands: non-harming and compassion; karma as moral causation (psychological in the secular reading).", "evidence": [{"url": "https://en.wikipedia.org/wiki/Secular_Buddhism", "title": "Secular Buddhism"}]},
+    {"axis": "axis:metaphysics", "position": 1.0, "summary": "Secular reading: naturalist or agnostic, non-theist, mind studied phenomenologically. (Traditional Buddhism affirms rebirth and multiple world-realms.)", "evidence": [{"url": "https://en.wikipedia.org/wiki/Secular_Buddhism", "title": "Secular Buddhism"}]},
+    {"axis": "axis:change", "position": 0.5, "summary": "Impermanence is fundamental and clinging to fixed forms is the root error — accepting of change, without a program of social dynamism.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Buddhist_modernism", "title": "Buddhist modernism"}]},
+    {"axis": "axis:nature", "position": -1.0, "summary": "Non-harming and interdependence: humans within the web of conditioned existence, not its masters.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Buddhist_modernism", "title": "Buddhist modernism"}]},
+    {"axis": "axis:meaning", "position": -0.5, "summary": "The path's telos — release from suffering, wisdom, compassion — is given by the structure of experience, realized through personal practice.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Secular_Buddhism", "title": "Secular Buddhism"}]},
+    {"axis": "axis:social", "position": -0.5, "summary": "Interdependence and sangha (practice community) balance the individual path.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Buddhist_modernism", "title": "Buddhist modernism"}]}
+  ]
+}

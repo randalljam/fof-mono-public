@@ -1,0 +1,83 @@
+{
+  "id": "profile:deep-optimism",
+  "label": "Deep Optimism (Deutschian critical rationalism)",
+  "summary": "David Deutsch's extension of Karl Popper's critical rationalism: knowledge grows without limit through conjecture and criticism; people are universal explainers capable in principle of understanding anything not forbidden by the laws of physics; all evils are caused by insufficient knowledge, so problems are inevitable but soluble. Anti-utopian and anti-prophetic: solutions create new problems, and the future depends on knowledge not yet created.",
+  "thinkers": ["David Deutsch", "Karl Popper", "Chiara Marletto"],
+  "sources": [
+    {"title": "The Beginning of Infinity (2011)", "url": "https://en.wikipedia.org/wiki/The_Beginning_of_Infinity"},
+    {"title": "The Fabric of Reality (1997)", "url": "https://en.wikipedia.org/wiki/The_Fabric_of_Reality"},
+    {"title": "SEP: Karl Popper", "url": "https://plato.stanford.edu/entries/popper/"}
+  ],
+  "variants": "Strict Popperians focus on falsification and open-society politics; Deutschians add the principle of optimism, universal explainers, and Taking Children Seriously. Adjacent techno-optimism (Andreessen) and techno-humanism (Crawford) share the progress stance but ground it in markets or technology rather than epistemology, and drift toward justificationist confidence. Deutsch also rejects Bayesian AI-doom arguments: AGIs would be people, to be educated rather than aligned.",
+  "cited_from_graph": true,
+  "positions": [
+    {"axis": "axis:epistemology", "position": 2.0, "summary": "Maximal fallibilism: knowledge is unjustified (and unjustifiable) conjecture error-corrected by criticism; explicitly anti-justificationist and anti-inductivist.", "evidence": [
+      {"node": "qa:2013-06-25_nautilus-why-its-good-to-be-wrong:000", "note": "What is fallibilism?"},
+      {"node": "concept:boi/fallibilism"},
+      {"node": "concept:boi/justificationism"},
+      {"node": "qa:2022-04-25_jolly-swagman-against-bayesianism:003", "note": "How Popper refuted induction and justificationism."}
+    ]},
+    {"axis": "axis:knowledge-reach", "position": 2.0, "summary": "Anything not forbidden by the laws of physics is achievable given the right knowledge; explanatory reach is unbounded.", "evidence": [
+      {"node": "concept:boi/reach"},
+      {"node": "concept:boi/the-beginning-of-infinity"},
+      {"node": "qa:2021-06-02_tyler-cowen-multiple-worlds-and-our-place-in-them:011", "note": "Godel's theorem and the possibility of understanding."}
+    ]},
+    {"axis": "axis:authority-of-belief", "position": 2.0, "summary": "There are no authoritative sources of knowledge; ideas stand or fall by criticism, and seeking progress beats seeking authority.", "evidence": [
+      {"node": "qa:2019-02-12_innovation-show-with-aidan-mccullen:009", "note": "Why it is better to seek progress rather than authority."},
+      {"node": "qa:2013-06-25_nautilus-why-its-good-to-be-wrong:005", "note": "On the rise of 'the expert'."}
+    ]},
+    {"axis": "axis:realism", "position": 2.0, "summary": "Hard explanatory realism: one objective reality, known through hard-to-vary explanations; emergent abstractions (numbers, knowledge, minds) are real too.", "evidence": [
+      {"node": "qa:2011-09-20_bloggingheads-tv-with-john-horgan:010", "note": "Good explanations and the reality of abstractions."},
+      {"node": "qa:2016-11-16_sam-harris-2-finding-our-way-in-the-cosmos:003", "note": "The two ways something can be objective."},
+      {"node": "concept:boi/good-explanation"}
+    ]},
+    {"axis": "axis:progress", "position": 2.0, "summary": "The principle of optimism: all evils are due to lack of knowledge; progress is unbounded but never guaranteed — distinct from blind optimism, since problems are inevitable.", "evidence": [
+      {"node": "qa:2015-10-19_rsa-debate-optimism-knowledge-and-the-future-of-enlightenment:000", "note": "The case for optimism."},
+      {"node": "concept:boi/the-principle-of-optimism"},
+      {"node": "concept:boi/blind-optimism", "note": "Deep optimism is explicitly not blind optimism."},
+      {"node": "qa:2011-03-10_oxford-transhumanists-how-to-think-about-the-future:002", "note": "The principle of optimism does not mean bad things won't happen."}
+    ]},
+    {"axis": "axis:risk", "position": 1.8, "summary": "Strongly proactionary: wealth and knowledge are the only protection against dangers including unknown ones; stagnation, not innovation, is the great risk; base-rate reasoning about existential risk is confused.", "evidence": [
+      {"node": "qa:2023-12-19_steven-pinker-1-on-joe-walker-on-agi-doom-and-enemies-of-civilization:003", "note": "Why AI-doom runaway fears are a mistake."},
+      {"node": "qa:2022-04-25_jolly-swagman-against-bayesianism:014", "note": "Against base rates for existential risk."},
+      {"node": "concept:boi/wealth"}
+    ]},
+    {"axis": "axis:agency", "position": 2.0, "summary": "People are creative agents; denials of self and free will are mistaken reductionism — choices and ideas are the decisive force in history.", "evidence": [
+      {"node": "qa:2024-01-01_arjun-khemani-free-will-tcs-and-anarcho-capitalism:002", "note": "What is wrong with claims that self and free will do not exist."},
+      {"node": "qa:2011-09-20_bloggingheads-tv-with-john-horgan:011", "note": "Why the reductionist argument against free will is a mistake."}
+    ]},
+    {"axis": "axis:human-significance", "position": 2.0, "summary": "People are of central cosmic significance as universal explainers; the principle of mediocrity and 'chemical scum' views are parochial errors.", "evidence": [
+      {"node": "qa:2011-08-01_on-point-with-tom-ashbrook:003", "note": "Why the view that humans are puny and unimportant is flawed."},
+      {"node": "concept:boi/principle-of-mediocrity"},
+      {"node": "concept:boi/universal-explainers"},
+      {"node": "qa:2015-12-15_sam-harris-1-surviving-the-cosmos:005", "note": "Response to Hawking's 'chemical scum' claim."}
+    ]},
+    {"axis": "axis:morality", "position": 1.8, "summary": "Moral realism via fallibilism: moral knowledge is objective and grows by conjecture and criticism, not by authority or proof.", "evidence": [
+      {"node": "qa:2013-06-25_nautilus-why-its-good-to-be-wrong:008", "note": "What is moral progress?"},
+      {"node": "qa:2020-02-26_dilemma-with-jay-shapiro-and-coleman-hughes:022", "note": "Morality, technological progress, and majority opinion."},
+      {"node": "concept:boi/morality"}
+    ]},
+    {"axis": "axis:metaphysics", "position": 1.8, "summary": "Naturalist and realist: reality is comprehensible via physics (Everettian multiverse, constructor theory), with real emergent levels; religion's picture of humans is rejected.", "evidence": [
+      {"node": "qa:2024-11-11_arjun-khemani-the-era-of-man-popper-and-western-civilization:007", "note": "How religions typically view the role of humans."},
+      {"node": "qa:2011-09-01_airtalk-with-david-lazarus:002", "note": "Criticizing wrong theories, and whether religion is needed for progress."}
+    ]},
+    {"axis": "axis:change", "position": 2.0, "summary": "Dynamic societies survive by error-correction; static societies die. Traditions of criticism — not traditions as such — are what preserve progress.", "evidence": [
+      {"node": "concept:boi/static-societies"},
+      {"node": "concept:boi/dynamic-societies"},
+      {"node": "qa:2018-10-23_the-ted-interview-with-chris-anderson-the-infinite-reach-of-knowledge:008", "note": "How error correction led to the Enlightenment."}
+    ]},
+    {"axis": "axis:nature", "position": 1.8, "summary": "The Earth is not a life-support system — people make it one with knowledge; 'sustainability' and Spaceship Earth misdescribe our relationship with the biosphere.", "evidence": [
+      {"node": "qa:2011-09-01_groks-science-show:008", "note": "Why 'sustainability' is misleading."},
+      {"node": "qa:2015-12-15_sam-harris-1-surviving-the-cosmos:009", "note": "Why Spaceship Earth misrepresents our relationship with the environment."},
+      {"node": "concept:boi/spaceship-earth"},
+      {"node": "concept:boi/sustain"}
+    ]},
+    {"axis": "axis:meaning", "position": 1.5, "summary": "Meaning is created through unbounded knowledge-creation and problem-solving — 'the beginning of infinity' is participation in that process, with beauty and fun as objective pursuits.", "evidence": [
+      {"node": "qa:2007-01-27_why-are-flowers-beautiful:004", "note": "Can art replace religion?"},
+      {"node": "qa:2023-04-26_foresight-institute-existential-hope-on-beauty-knowledge-and-progress:000", "note": "How Deutsch approaches research and life goals."}
+    ]},
+    {"axis": "axis:social", "position": 1.0, "summary": "Liberal-individualist lean: the person as universal explainer is the primary unit, with institutions valued for how they resolve disputes and correct errors — not collectivist, but not atomist either.", "evidence": [
+      {"node": "qa:2016-11-16_sam-harris-2-finding-our-way-in-the-cosmos:009", "note": "What properties institutions should have in resolving disputes."}
+    ]}
+  ]
+}

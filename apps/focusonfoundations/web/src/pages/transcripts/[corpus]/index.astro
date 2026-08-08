@@ -1,0 +1,35 @@
+---
+import TranscriptPage from '../../../layouts/TranscriptPage.astro';
+import { CORPORA, getCorpusItems, getItemLinks } from '../../../lib/corpus-config.js';
+
+export function getStaticPaths() {
+  return Object.keys(CORPORA).map((corpus) => ({ params: { corpus } }));
+}
+
+const { corpus } = Astro.params;
+const meta = CORPORA[corpus];
+if (!meta) throw new Error(`Unknown corpus: ${corpus}`);
+const items = getCorpusItems(corpus);
+
+---
+<TranscriptPage
+  title={`${meta.title} — Transcripts`}
+  backHref="/transcripts/"
+  backLabel="← All transcripts"
+>
+  <h1>{meta.title}</h1>
+  <div set:html={meta.introHtml} />
+  <p><a href={meta.demoPath}>Open QRAG demo for this corpus →</a></p>
+  <ul class="transcript-index-list">
+    {items.map((item) => (
+      <li class="transcript-index-item">
+        <strong>{item.name}</strong>
+        <div class="transcript-index-links">
+          {getItemLinks(meta, item).map((link) => (
+            <a href={link.href} target={link.external ? '_blank' : undefined} rel={link.external ? 'noopener' : undefined}>{link.label}</a>
+          ))}
+        </div>
+      </li>
+    ))}
+  </ul>
+</TranscriptPage>

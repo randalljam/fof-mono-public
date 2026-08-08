@@ -1,0 +1,434 @@
+/* 
+  Minecraft Museum-style UI styling (no external dependencies).
+  Styled to match Hypixel SkyBlock Museum Milestones.
+*/
+
+:root{
+  --bg: #0f1115;
+  --ui-border-dark: #272b33;
+  --ui-border-light: #f0f0f0;
+  --ui-surface: #c6c6c6;
+  --ui-surface-2: #b0b0b0;
+  --slot: #8b8b8b;
+  --slot-dark: #6f6f6f;
+  --text: #1a1a1a;
+
+  /* Locked/not done = red */
+  --locked: #b54747;
+  --locked-edge: #7a2f2f;
+  --locked-light: #d15a5a;
+
+  /* Done/completed = green */
+  --done: #47b547;
+  --done-edge: #2f7a2f;
+  --done-light: #5ad15a;
+
+  /* Next = red (same as locked) */
+  --next: #b54747;
+  --next-edge: #7a2f2f;
+  --next-light: #d15a5a;
+
+  /* Current/in progress = yellow */
+  --current: #c4a832;
+  --current-edge: #8a762a;
+  --current-light: #e0c44a;
+
+  --outline: #1b1d24;
+
+  /* Tooltip */
+  --tt-bg1: #2b0a3d;
+  --tt-bg2: #0b0012;
+  --tt-border: #3a145a;
+  --tt-title: #ff5555;
+  --tt-text: #e6e6e6;
+  --tt-muted: #b7b7b7;
+  --tt-xp: #ffff55;
+  --tt-red: #ff5555;
+  --tt-green: #55ff55;
+  --tt-gold: #ffaa00;
+  --tt-aqua: #55ffff;
+}
+
+/* Basic reset */
+*{ box-sizing:border-box; }
+html, body{ height:100%; }
+body{
+  margin:0;
+  background:
+    radial-gradient(1200px 700px at 20% 10%, rgba(127, 91, 199, 0.18), transparent 60%),
+    radial-gradient(1000px 700px at 80% 30%, rgba(255, 170, 0, 0.10), transparent 55%),
+    linear-gradient(180deg, #0d0f13, #0b0c10 60%, #090a0d);
+  color:var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+code{
+  background: rgba(0,0,0,0.08);
+  padding: 0 0.35em;
+  border-radius: 4px;
+}
+
+.app{
+  min-height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+
+.window{
+  width:min(1300px, 98vw);
+  border: 6px solid var(--ui-border-dark);
+  outline: 3px solid var(--ui-border-light);
+  background: var(--ui-surface);
+  box-shadow: 0 18px 60px rgba(0,0,0,0.55);
+}
+
+.window-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:16px 16px 10px 16px;
+}
+
+.title-wrap{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.window-title{
+  font-size: 40px;
+  letter-spacing: 0.5px;
+}
+
+.window-subtitle{
+  font-size: 13px;
+  color: rgba(0,0,0,0.65);
+}
+
+.header-actions{
+  display:flex;
+  gap:10px;
+}
+
+.btn{
+  appearance:none;
+  border: 3px solid var(--ui-border-dark);
+  outline: 2px solid rgba(255,255,255,0.6);
+  background: var(--ui-surface-2);
+  padding: 8px 12px;
+  cursor:pointer;
+  font-weight:700;
+}
+.btn:hover{ filter: brightness(1.04); }
+.btn:active{ transform: translateY(1px); }
+
+.window-body{
+  display:flex;
+  gap:18px;
+  padding: 0 16px 12px 16px;
+}
+
+.left{
+  flex: 0 0 auto;
+  min-width: auto;
+}
+
+.right{
+  width: 480px;
+  flex: 0 0 480px;
+}
+
+.grid-titlebar{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  padding: 4px 2px 10px 2px;
+}
+
+.grid-title{
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.grid-status{
+  font-size: 13px;
+  color: rgba(0,0,0,0.65);
+}
+
+.grid-frame{
+  background: #8b8b8b;
+  border: 4px solid var(--ui-border-dark);
+  outline: 2px solid rgba(255,255,255,0.55);
+  padding: 8px;
+}
+
+/* Path indicators between milestones */
+.slot.has-path-right::after{
+  content: '→';
+  position: absolute;
+  right: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: #555;
+  z-index: 1;
+}
+
+.slot.has-path-down::before{
+  content: '↓';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  color: #555;
+  z-index: 1;
+}
+
+.slot.has-path-up::before{
+  content: '↑';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  color: #555;
+  z-index: 1;
+}
+
+.grid{
+  display:grid;
+  gap: 4px;
+  /* columns/rows set dynamically by JS */
+}
+
+.slot{
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--slot), var(--slot-dark));
+  border: 2px solid rgba(0,0,0,0.55);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.18);
+  position:relative;
+}
+
+.block{
+  width:100%;
+  height:100%;
+  border: 2px solid var(--outline);
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,0.20),
+    inset 0 -2px 0 rgba(0,0,0,0.25);
+  display:flex;
+  align-items:flex-end;
+  justify-content:flex-end;
+  background: var(--locked);
+  cursor:pointer;
+  user-select:none;
+  padding: 2px 4px;
+  position: relative;
+}
+
+.block:focus{
+  outline: 3px solid #ffffff;
+  outline-offset: 1px;
+}
+
+.block .num{
+  font-weight:900;
+  font-size: 20px;
+  color:#f7f7f7;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.8);
+  line-height:1;
+}
+
+.status-locked{
+  background: linear-gradient(180deg, var(--locked-light) 0%, var(--locked) 50%, var(--locked-edge) 100%);
+  border-color: var(--locked-edge);
+  cursor: default;
+}
+
+.status-done{
+  background: linear-gradient(180deg, var(--done-light) 0%, var(--done) 50%, var(--done-edge) 100%);
+  border-color: var(--done-edge);
+}
+
+.status-next{
+  background: linear-gradient(180deg, var(--next-light) 0%, var(--next) 50%, var(--next-edge) 100%);
+  border-color: var(--next-edge);
+}
+
+.status-current{
+  background: linear-gradient(180deg, var(--current-light) 0%, var(--current) 50%, var(--current-edge) 100%);
+  border-color: var(--current-edge);
+}
+
+.block.selected{
+  outline: 3px solid #ffffff;
+  outline-offset: 1px;
+}
+
+.inventory-label{
+  font-size: 20px;
+  padding: 10px 2px 6px 2px;
+}
+
+.inventory-row{
+  display: flex;
+  gap: 4px;
+  padding: 0;
+}
+
+.inv-slot{
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, var(--slot), var(--slot-dark));
+  border: 2px solid rgba(0,0,0,0.55);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inv-slot.empty{
+  background: linear-gradient(135deg, #7a7a7a, #5a5a5a);
+}
+
+.inv-block{
+  width: 28px;
+  height: 28px;
+  border: 2px solid rgba(0,0,0,0.5);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.3);
+}
+
+.gold-block{
+  background: linear-gradient(180deg, #e8c84a 0%, #c4a832 50%, #8a762a 100%);
+}
+
+.green-pane{
+  background: linear-gradient(180deg, #5ad15a 0%, #47b547 50%, #2f7a2f 100%);
+}
+
+/* Tooltip panel */
+.tooltip{
+  width:100%;
+  background: linear-gradient(180deg, var(--tt-bg1), var(--tt-bg2));
+  border: 4px solid var(--tt-border);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.55);
+  padding: 18px 18px 16px 18px;
+  color: var(--tt-text);
+  /* Height is set dynamically by JS based on tallest milestone */
+  overflow: hidden;
+}
+
+.tt-title{
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--tt-title);
+  margin-bottom: 12px;
+}
+
+.tt-line{
+  margin: 6px 0 10px 0;
+  font-size: 16px;
+}
+
+.tt-label{
+  color: var(--tt-muted);
+  margin-right: 8px;
+}
+
+.tt-xp{ color: var(--tt-xp); font-weight: 900; }
+
+.tt-section{
+  margin-top: 14px;
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+.tt-section h3{
+  margin: 0 0 6px 0;
+  font-size: 15px;
+  color: var(--tt-muted);
+  text-transform: none;
+  letter-spacing: 0.3px;
+}
+
+.tt-section ul{
+  margin: 6px 0 0 18px;
+}
+
+.tt-footer{
+  margin-top: 14px;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.tt-hint{
+  margin-top: 10px;
+  font-size: 12px;
+  color: rgba(230,230,230,0.75);
+}
+
+/* Tooltip color helpers */
+.c-red{ color: var(--tt-red); }
+.c-green{ color: var(--tt-green); }
+.c-gold{ color: var(--tt-gold); }
+.c-aqua{ color: var(--tt-aqua); }
+
+.window-footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 10px 16px 16px 16px;
+  gap: 12px;
+}
+
+.legend{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  font-weight: 800;
+}
+
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.swatch{
+  width: 16px; height: 16px;
+  border: 2px solid var(--outline);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.25);
+}
+.swatch-current{ background: var(--current); }
+.swatch-next{ background: var(--next); }
+.swatch-done{ background: var(--done); }
+.swatch-locked{ background: var(--locked); }
+
+/* Red pane for inventory (keeping for backwards compatibility) */
+.red-pane{
+  background: linear-gradient(180deg, #d15a5a 0%, #b54747 50%, #7a2f2f 100%);
+}
+
+.footer-note{
+  font-size: 12px;
+  color: rgba(0,0,0,0.65);
+}
+
+/* Responsive: stack tooltip below grid */
+@media (max-width: 980px){
+  .window-body{
+    flex-direction:column;
+  }
+  .right{
+    width:100%;
+    flex: 1 1 auto;
+  }
+  .left{
+    min-width: unset;
+  }
+}

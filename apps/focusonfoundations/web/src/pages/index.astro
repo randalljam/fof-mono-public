@@ -1,0 +1,55 @@
+---
+import SiteLayout from '../components/SiteLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getDemoList } from '../lib/demo-config.js';
+const demos = getDemoList();
+---
+<SiteLayout title="Focus on Foundations — Deep Optimism">
+  <Header />
+  <main>
+    <section class="hero">
+      <div class="container">
+        <p class="tagline">Deep Optimism</p>
+        <h1>Focus on Foundations</h1>
+        <p class="lead">
+          We build AI Q&amp;A demo tools that help people explore serious topics — from education and
+          public safety to government transparency and pandemic response — using vetted source material
+          and transparent, quoted answers.
+        </p>
+        <p style="margin-top: 1.5rem;">
+          <a class="primary-button" href="/demos/" style="text-decoration:none;display:inline-flex;">Explore AI Q&amp;A demos</a>
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2>Interactive demos</h2>
+        <p class="lead">Try question-and-answer tools built over real corpora — interviews, town halls, meetings, and books.</p>
+        <div class="card-grid" style="margin-top: 1.25rem;">
+          {demos.map((demo) => (
+            <a class="card" href={`/demos/${demo.slug}/`}>
+              <h3>{demo.title}</h3>
+              <p>{demo.description}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2>Contexts we care about</h2>
+        <ul class="context-list">
+          <li><strong>Education</strong> — helping learners and educators explore ideas with source-backed AI tools.</li>
+          <li><strong>Public safety</strong> — making preparedness discussions and meeting records easier to query.</li>
+          <li><strong>Government &amp; policy</strong> — surfacing relevant excerpts from long public records.</li>
+          <li><strong>Pandemic response</strong> — navigating dense technical town-hall archives with quoted context.</li>
+          <li><strong>Future serious use</strong> — prototypes for any domain where trustworthy Q&amp;A over vetted material matters.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</SiteLayout>

@@ -1,0 +1,22 @@
+// Loader-agnostic shared code (placeholder). Disabled until something actually lives
+// here; targets pull in this tree via srcDirs and tolerate it being empty.
+
+apply plugin: 'java-library'
+
+sourceSets {
+    main {
+        java { srcDirs = [] }
+        resources { srcDirs = [] }
+    }
+    test {
+        java { srcDirs = [] }
+        resources { srcDirs = [] }
+    }
+}
+
+tasks.named('jar').configure { enabled = false }
+tasks.named('compileJava').configure { enabled = false }
+tasks.named('compileTestJava').configure { enabled = false }
+tasks.named('processResources').configure { enabled = false }
+tasks.named('processTestResources').configure { enabled = false }
+tasks.named('test').configure { enabled = false }

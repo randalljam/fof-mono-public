@@ -1,0 +1,8 @@
+schema: spec-driven
+context: |
+  Tech stack: Astro 5 static site with vanilla JavaScript modules, Node.js test runner, marked for Markdown rendering, validator for input validation, and AWS CDK v2 infrastructure in TypeScript.
+  Hosting: staging and production are S3 private buckets behind CloudFront in us-east-1, with ACM certificates, URL rewrite function for extensionless Astro routes, and content deploys through web/scripts/deploy.js.
+  App stage: S2-deployed. Production serves https://focusonfoundations.org and https://www.focusonfoundations.org; staging serves https://staging.focusonfoundations.org.
+  Spec stage: openspec-single-spec. Use one living capability named "app" until the app grows enough to require independent change control.
+  Current behavior wins over stale milestone plans. Keep baseline requirements limited to observed behavior in the app code, README, tests, and deployed runbook notes.
+  QRAG demos call existing API Gateway/Lambda backends; this Astro app owns the static UI, configuration, transcript pages, redirects, and deploy infrastructure, not the backend QRAG algorithms.

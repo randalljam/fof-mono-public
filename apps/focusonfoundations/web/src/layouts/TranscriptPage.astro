@@ -1,0 +1,21 @@
+---
+import SiteLayout from '../components/SiteLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/transcripts.css';
+
+const {
+  title,
+  description = 'Transcript and Q&A source pages — Focus on Foundations',
+  backHref = '/transcripts/',
+  backLabel = '← All transcripts',
+} = Astro.props;
+---
+<SiteLayout title={title} description={description}>
+  <Header />
+  <main class="container transcript-page">
+    <p class="transcript-page-nav"><a href={backHref}>{backLabel}</a></p>
+    <slot />
+  </main>
+  <Footer />
+</SiteLayout>

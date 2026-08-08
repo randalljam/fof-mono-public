@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.kidgames.mathquest.forge.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "mathquest.refmap.json",
+  "mixins": [],
+  "client": [
+    "ProjectileUtilMultipartMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

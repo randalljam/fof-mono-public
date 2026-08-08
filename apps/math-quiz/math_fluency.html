@@ -1,0 +1,920 @@
+<!-- START OF FILE math_fluency.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fluency Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f5f5f5;
+    }
+    
+    .navigation {
+      margin-bottom: 20px;
+    }
+    
+    .navigation button {
+      margin-right: 10px;
+      padding: 8px 16px;
+      background-color: #2196f3;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .navigation button:hover {
+      background-color: #1976d2;
+    }
+    
+    /* Foldable File management (same pattern as the analysis page) */
+    #file-upload-section {
+      margin: 6px 0 18px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #fafafa;
+    }
+    .file-upload-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .file-upload-header h3 { margin: 0; font-size: 16px; font-weight: 600; }
+    .file-upload-header .toggle-icon {
+      font-size: 14px;
+      color: #666;
+      display: inline-block;
+      transition: transform 0.2s ease;
+      flex-shrink: 0;
+    }
+    #file-upload-section.expanded .file-upload-header .toggle-icon { transform: rotate(90deg); }
+    #file-upload-section .file-upload-body {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      padding: 0 10px;
+      transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+    }
+    #file-upload-section.expanded .file-upload-body {
+      max-height: 600px;
+      opacity: 1;
+      padding: 4px 10px 10px;
+    }
+    /* Foldable Settings box */
+    details.settings-box { margin-bottom: 24px; }
+    details.settings-box > summary {
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 700;
+      padding: 6px 0;
+      list-style: revert;
+    }
+    details.settings-box .settings-note { font-size: 12px; color: #888; font-weight: 400; }
+
+    .global-controls {
+      background: white;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
+
+    .global-controls h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      align-items: end;
+    }
+
+    .controls-grid label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    .controls-grid input,
+    .controls-grid select {
+      width: 100%;
+      padding: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    /* Operation Section Styles */
+    .operation-section {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 32px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .operation-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .operation-title {
+      margin: 0;
+      font-size: 24px;
+      color: #333;
+    }
+
+    .operation-title.addition { color: #2e7d32; }
+    .operation-title.subtraction { color: #c62828; }
+    .operation-title.multiplication { color: #1565c0; }
+
+    /* Fluency Percentage */
+    .fluency-percentage {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .fluency-percentage-value {
+      font-size: 36px;
+      font-weight: 700;
+    }
+
+    .fluency-percentage-value.high { color: #2e7d32; }
+    .fluency-percentage-value.medium { color: #f9a825; }
+    .fluency-percentage-value.low { color: #c62828; }
+
+    .fluency-progress-bar {
+      width: 200px;
+      height: 12px;
+      background: #e0e0e0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .fluency-progress-fill {
+      height: 100%;
+      border-radius: 6px;
+      transition: width 0.3s ease;
+    }
+
+    .fluency-progress-fill.high { background: #4caf50; }
+    .fluency-progress-fill.medium { background: #ffc107; }
+    .fluency-progress-fill.low { background: #f44336; }
+
+    /* Charts Container */
+    .charts-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .chart-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 16px;
+      background: #fafafa;
+    }
+
+    .chart-card h4 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 16px;
+      color: #555;
+    }
+
+    .fluency-plot {
+      width: 100%;
+      min-height: 300px;
+    }
+
+    /* Problem List */
+    .problem-list-section {
+      margin-top: 20px;
+      border: 2px solid #1565c0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .problem-list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: #e3f2fd;
+      cursor: pointer;
+    }
+
+    .problem-list-header h4 {
+      margin: 0;
+      color: #1565c0;
+    }
+
+    .problem-list-toggle {
+      background: #1565c0;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .problem-list-toggle:hover {
+      background: #0d47a1;
+    }
+
+    .problem-list-content {
+      padding: 16px;
+      background: white;
+    }
+
+    .problem-list-content.hidden {
+      display: none;
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 8px;
+    }
+
+    .problem-item {
+      padding: 8px 12px;
+      border-radius: 4px;
+      text-align: center;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .problem-item.red {
+      background: #ffebee;
+      border: 1px solid #ef5350;
+      color: #c62828;
+    }
+
+    .problem-item.yellow {
+      background: #fff8e1;
+      border: 1px solid #ffc107;
+      color: #f57f17;
+    }
+
+    .problem-item.gray {
+      background: #f5f5f5;
+      border: 1px solid #9e9e9e;
+      color: #616161;
+    }
+
+    .problem-item.blue {
+      background: #e3f2fd;
+      border: 1px solid #2196f3;
+      color: #1565c0;
+    }
+
+    .problem-item.recheck {
+      background: #e3f2fd;
+      border: 1px solid #2196f3;
+      color: #1565c0;
+    }
+
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      border: 1px solid #ccc;
+    }
+
+    /* Status legend colors */
+    .legend-color.blue { background: #1565c0; }
+    .legend-color.green { background: #2e7d32; }
+    .legend-color.yellow { background: #f9a825; }
+    .legend-color.status-red { background: #c62828; }
+    .legend-color.status-gray { background: #616161; }
+
+    /* Problem List Generator Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal.hidden {
+      display: none;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 24px;
+      border-radius: 8px;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .percentage-inputs label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      gap: 12px;
+    }
+
+    .percentage-inputs input {
+      width: 80px;
+      padding: 4px 8px;
+    }
+
+    .percentage-total {
+      margin-top: 12px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .status-label {
+      min-width: 150px;
+      font-weight: 500;
+    }
+
+    .status-label.blue { color: #1565c0; }
+    .status-label.green { color: #2e7d32; }
+    .status-label.yellow { color: #f9a825; }
+    .status-label.red { color: #c62828; }
+    .status-label.gray { color: #616161; }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 24px;
+    }
+
+    .btn-cancel {
+      padding: 8px 16px;
+      background: #ccc;
+      color: #333;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      padding: 8px 16px;
+      background: #2196f3;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background: #1976d2;
+    }
+
+    #gen-preview {
+      padding: 12px;
+      background: #f5f5f5;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    #gen-preview ul {
+      margin: 8px 0 0 0;
+      padding-left: 20px;
+    }
+
+    /* Status Edit Dialog Styles */
+    .status-edit-dialog {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1000;
+    }
+
+    .dialog-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .dialog-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 24px;
+      border-radius: 8px;
+      min-width: 400px;
+      max-width: 90vw;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .problem-display {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      margin: 16px 0;
+      padding: 12px;
+      background: #f5f5f5;
+      border-radius: 4px;
+    }
+
+    .recommendation-section {
+      background: #e3f2fd;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-weight: 500;
+      margin: 8px 0;
+    }
+
+    .status-badge.blue { background: #1565c0; color: white; }
+    .status-badge.green { background: #2e7d32; color: white; }
+    .status-badge.yellow { background: #f9a825; color: #333; }
+    .status-badge.red { background: #c62828; color: white; }
+    .status-badge.gray { background: #616161; color: white; }
+
+    .info-banner.manual-override {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      padding: 8px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      color: #856404;
+    }
+
+    .problem-item.manual-override {
+      border-left: 3px solid #ff9800;
+      position: relative;
+    }
+
+    .override-indicator {
+      margin-left: 8px;
+      color: #ff9800;
+      font-size: 16px;
+    }
+
+    .status-select {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+
+    textarea#edit-reason {
+      width: 100%;
+      min-height: 60px;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-family: inherit;
+      resize: vertical;
+      margin-bottom: 12px;
+    }
+
+    /* Summary Stats */
+    .summary-stats {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .no-data-message {
+      text-align: center;
+      padding: 40px;
+      color: #777;
+      font-style: italic;
+    }
+
+    /* Fluency overview (high-level roll-up dashboard) */
+    .fluency-overview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .fo-card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 16px 18px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+    .fo-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .fo-title { font-size: 17px; font-weight: 700; margin: 0; }
+    .fo-op-status { display: flex; align-items: center; gap: 8px; }
+    .fo-pct { font-size: 22px; font-weight: 700; }
+    .fo-row { margin: 8px 0; }
+    .fo-row-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #888;
+      margin-bottom: 4px;
+    }
+    .fo-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .fo-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 8px;
+      border: 1px solid #e0e0e0;
+      border-radius: 999px;
+      font-size: 12px;
+      background: #fafafa;
+    }
+    .fo-dot { width: 11px; height: 11px; border-radius: 50%; border: 1px solid rgba(0, 0, 0, 0.15); }
+    .fo-note { font-size: 12px; color: #999; font-style: italic; }
+  </style>
+</head>
+<body>
+  <div class="navigation">
+    <button id="go-back-to-quiz">Go Back to Quiz</button>
+    <button id="go-to-analysis">Go to Analysis</button>
+  </div>
+  
+  <div id="file-upload-section" class="collapsed">
+    <div class="file-upload-header" id="file-upload-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="file-upload-body" aria-label="Toggle file management">
+      <span class="toggle-icon">▶</span>
+      <h3>File management</h3>
+    </div>
+    <div id="file-upload-body" class="file-upload-body">
+      <!-- Per-person .sqlite: choose-and-load (auto-loads on selection), shared with the analysis page -->
+      <div style="margin-bottom: 12px;">
+        <strong>Choose and load file</strong> (per-person <code>.sqlite</code>):
+        <button id="choose-load-file" style="margin: 5px; padding: 5px 10px;">Choose and load file</button>
+        <input type="file" id="sqlite-file-input" accept=".sqlite,.db,.sqlite3" style="display: none;">
+        <div id="sqlite-status" style="margin: 5px 0; font-size: 12px; color: #666;"></div>
+        <div style="font-size: 11px; color: #999;">
+          Loads a per-person <code>.sqlite</code> into the tracker. This page and the analysis page share the loaded
+          file: whatever you load here (or there) shows on both, and is retained across reloads.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h1>Fluency Tracker</h1>
+
+  <!-- Global Controls (foldable; open by default so the Generate Problem List
+       action stays visible — click the header to collapse) -->
+  <details class="settings-box" open>
+    <summary>Settings <span class="settings-note">— advanced thresholds (feed the fluency evaluation)</span></summary>
+   <div class="global-controls" style="margin-top: 10px;">
+    <div class="controls-grid">
+      <div>
+        <label for="fluency-number-range">Number Range</label>
+        <select id="fluency-number-range">
+          <option value="0-9" selected>0-9 (Single Digit)</option>
+          <option value="0-5">0-5</option>
+          <option value="0-12">0-12</option>
+          <option value="all">All Observed</option>
+        </select>
+      </div>
+      <div>
+        <label for="fluency-window-size">Rolling Window</label>
+        <input type="number" id="fluency-window-size" min="1" value="5">
+      </div>
+      <div>
+        <label for="fluency-min-accuracy">Min Accuracy (%)</label>
+        <input type="number" id="fluency-min-accuracy" min="0" max="100" value="80">
+      </div>
+      <div>
+        <label for="fluency-green-ms">Fluent (ms)</label>
+        <input type="number" id="fluency-green-ms" min="0" value="2000">
+      </div>
+      <div>
+        <label for="fluency-red-ms">Slow (ms)</label>
+        <input type="number" id="fluency-red-ms" min="0" value="4000">
+      </div>
+      <div>
+        <label for="fluency-retention-sessions">Re-check After</label>
+        <input type="number" id="fluency-retention-sessions" min="1" value="3">
+      </div>
+      <div>
+        <label for="fluency-permanent-sessions">Sessions for Permanent</label>
+        <input type="number" id="fluency-permanent-sessions" min="3" value="5">
+      </div>
+      <div>
+        <button id="fluency-apply" style="margin-top: 20px; padding: 8px 16px; background: #2196f3; color: white; border: none; border-radius: 4px; cursor: pointer;">Apply</button>
+      </div>
+      <div>
+        <button id="generate-problem-list-btn" style="margin-top: 10px; padding: 8px 16px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">Generate Problem List</button>
+      </div>
+      <div>
+        <button id="clear-overrides" style="margin-top: 10px; padding: 6px 12px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">Clear All Overrides</button>
+      </div>
+    </div>
+  </div>
+  </details>
+
+  <!-- Status Legend -->
+  <div class="status-legend" style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; padding: 12px; background: #fafafa; border-radius: 6px; border: 1px solid #eee;">
+    <div class="legend-item"><div class="legend-color blue" style="display: inline-block; width: 16px; height: 16px; border-radius: 3px; margin-right: 6px; vertical-align: middle;"></div> Permanent</div>
+    <div class="legend-item"><div class="legend-color green" style="display: inline-block; width: 16px; height: 16px; border-radius: 3px; margin-right: 6px; vertical-align: middle;"></div> Fluent</div>
+    <div class="legend-item"><div class="legend-color yellow" style="display: inline-block; width: 16px; height: 16px; border-radius: 3px; margin-right: 6px; vertical-align: middle;"></div> Almost Fluent</div>
+    <div class="legend-item"><div class="legend-color status-red" style="display: inline-block; width: 16px; height: 16px; border-radius: 3px; margin-right: 6px; vertical-align: middle;"></div> Needs Practice</div>
+    <div class="legend-item"><div class="legend-color status-gray" style="display: inline-block; width: 16px; height: 16px; border-radius: 3px; margin-right: 6px; vertical-align: middle;"></div> Incorrect</div>
+  </div>
+
+  <!-- Fluency overview: the high-level roll-up dashboard the page lands on.
+       Operation level, the broad 0-5 vs 6-9 split, then the categories. -->
+  <h2 style="margin: 8px 0 12px;">Where the learner is — single-digit arithmetic</h2>
+  <div id="fluency-overview" class="fluency-overview"></div>
+
+  <!-- Addition Section -->
+  <div id="addition-section" class="operation-section">
+    <div class="operation-header">
+      <h2 class="operation-title addition">➕ Single-Digit Addition</h2>
+      <div class="fluency-percentage">
+        <span id="addition-percentage" class="fluency-percentage-value">--%</span>
+        <div class="fluency-progress-bar">
+          <div id="addition-progress" class="fluency-progress-fill" style="width: 0%;"></div>
+        </div>
+        <span style="font-size: 13px; color: #666;">fluent</span>
+      </div>
+    </div>
+
+
+    <div class="charts-container">
+      <div class="chart-card">
+        <h4>📊 Current Fluency (Latest Session)</h4>
+        <div id="addition-current" class="fluency-plot"></div>
+      </div>
+      <div class="chart-card">
+        <h4>📈 Previous Fluency (Historical)</h4>
+        <div id="addition-previous" class="fluency-plot"></div>
+      </div>
+    </div>
+
+    <div class="summary-stats" id="addition-stats">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="problem-list-section">
+      <div class="problem-list-header" onclick="toggleProblemList('addition')">
+        <h4>📝 Problems Needing Work</h4>
+        <button class="problem-list-toggle" id="addition-toggle-btn">Hide</button>
+      </div>
+      <div class="problem-list-content" id="addition-problems">
+        <div class="problem-grid" id="addition-problem-grid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subtraction Section -->
+  <div id="subtraction-section" class="operation-section">
+    <div class="operation-header">
+      <h2 class="operation-title subtraction">➖ Single-Digit Subtraction</h2>
+      <div class="fluency-percentage">
+        <span id="subtraction-percentage" class="fluency-percentage-value">--%</span>
+        <div class="fluency-progress-bar">
+          <div id="subtraction-progress" class="fluency-progress-fill" style="width: 0%;"></div>
+        </div>
+        <span style="font-size: 13px; color: #666;">fluent</span>
+      </div>
+    </div>
+
+    <div class="charts-container">
+      <div class="chart-card">
+        <h4>📊 Current Fluency (Latest Session)</h4>
+        <div id="subtraction-current" class="fluency-plot"></div>
+      </div>
+      <div class="chart-card">
+        <h4>📈 Previous Fluency (Historical)</h4>
+        <div id="subtraction-previous" class="fluency-plot"></div>
+      </div>
+    </div>
+
+    <div class="summary-stats" id="subtraction-stats">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="problem-list-section">
+      <div class="problem-list-header" onclick="toggleProblemList('subtraction')">
+        <h4>📝 Problems Needing Work</h4>
+        <button class="problem-list-toggle" id="subtraction-toggle-btn">Hide</button>
+      </div>
+      <div class="problem-list-content" id="subtraction-problems">
+        <div class="problem-grid" id="subtraction-problem-grid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Multiplication Section -->
+  <div id="multiplication-section" class="operation-section">
+    <div class="operation-header">
+      <h2 class="operation-title multiplication">✖️ Single-Digit Multiplication</h2>
+      <div class="fluency-percentage">
+        <span id="multiplication-percentage" class="fluency-percentage-value">--%</span>
+        <div class="fluency-progress-bar">
+          <div id="multiplication-progress" class="fluency-progress-fill" style="width: 0%;"></div>
+        </div>
+        <span style="font-size: 13px; color: #666;">fluent</span>
+      </div>
+    </div>
+
+    <div class="charts-container">
+      <div class="chart-card">
+        <h4>📊 Current Fluency (Latest Session)</h4>
+        <div id="multiplication-current" class="fluency-plot"></div>
+      </div>
+      <div class="chart-card">
+        <h4>📈 Previous Fluency (Historical)</h4>
+        <div id="multiplication-previous" class="fluency-plot"></div>
+      </div>
+    </div>
+
+    <div class="summary-stats" id="multiplication-stats">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="problem-list-section">
+      <div class="problem-list-header" onclick="toggleProblemList('multiplication')">
+        <h4>📝 Problems Needing Work</h4>
+        <button class="problem-list-toggle" id="multiplication-toggle-btn">Hide</button>
+      </div>
+      <div class="problem-list-content" id="multiplication-problems">
+        <div class="problem-grid" id="multiplication-problem-grid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Problem List Generator Modal -->
+  <div id="problem-list-generator-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Generate Problem List from Fluency Tracker</h3>
+      
+      <!-- Operation Selection -->
+      <div class="form-group">
+        <label>Operation:</label>
+        <select id="gen-operation">
+          <option value="addition">Addition</option>
+          <option value="subtraction">Subtraction</option>
+          <option value="multiplication">Multiplication</option>
+        </select>
+      </div>
+      
+      <!-- Number Range -->
+      <div class="form-group">
+        <label>Number Range:</label>
+        <select id="gen-number-range">
+          <option value="0-9" selected>0-9</option>
+          <option value="0-5">0-5</option>
+          <option value="0-12">0-12</option>
+          <option value="all">All Observed</option>
+        </select>
+      </div>
+      
+      <!-- Total Problems -->
+      <div class="form-group">
+        <label>Total Problems:</label>
+        <input type="number" id="gen-total-problems" min="1" value="20">
+      </div>
+      
+      <!-- Percentage Sliders/Inputs -->
+      <div class="form-group">
+        <h4>Distribution by Fluency Status:</h4>
+        <div class="percentage-inputs">
+          <label>
+            <span class="status-label blue">Blue (Permanent)</span>
+            <input type="number" id="gen-pct-blue" min="0" max="100" value="0" step="1">
+            <span>%</span>
+          </label>
+          <label>
+            <span class="status-label green">Green (Fluent)</span>
+            <input type="number" id="gen-pct-green" min="0" max="100" value="50" step="1">
+            <span>%</span>
+          </label>
+          <label>
+            <span class="status-label yellow">Yellow (Almost)</span>
+            <input type="number" id="gen-pct-yellow" min="0" max="100" value="25" step="1">
+            <span>%</span>
+          </label>
+          <label>
+            <span class="status-label red">Red (Needs Practice)</span>
+            <input type="number" id="gen-pct-red" min="0" max="100" value="25" step="1">
+            <span>%</span>
+          </label>
+          <label>
+            <span class="status-label gray">Gray (Incorrect)</span>
+            <input type="number" id="gen-pct-gray" min="0" max="100" value="0" step="1">
+            <span>%</span>
+          </label>
+        </div>
+        <div class="percentage-total">
+          Total: <span id="gen-percentage-total">100</span>%
+        </div>
+      </div>
+      
+      <!-- Preview -->
+      <div class="form-group">
+        <div id="gen-preview">
+          <p>Preview: Will generate X problems based on available data</p>
+        </div>
+      </div>
+      
+      <!-- Actions -->
+      <div class="modal-actions">
+        <button id="gen-cancel" class="btn-cancel">Cancel</button>
+        <button id="gen-download" class="btn-primary">Download JSON</button>
+        <button id="gen-use-in-quiz" class="btn-primary">Use in Quiz</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Include shared utilities -->
+  <script src="math_utils.js"></script>
+  <!-- Shared fluency rubric + roll-ups (must load before math_fluency.js) -->
+  <script src="fluency_core.js?v=20260628"></script>
+  <!-- Shared SQLite working-DB helpers (load the same per-person file as analysis) -->
+  <script src="sqlite_browser_io.js?v=20260620"></script>
+  <!-- Include math_quiz.js to access shared functions -->
+  <script src="math_quiz.js"></script>
+  <!-- Include fluency-specific JavaScript -->
+  <script src="math_fluency.js?v=20260620"></script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+---
+import SiteLayout from '../../components/SiteLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+<SiteLayout title="Sign in — Focus on Foundations">
+  <Header />
+  <main class="auth-page">
+    <div class="container">
+      <div class="auth-card">
+        <h1>Sign in</h1>
+        <p class="auth-unavailable" id="auth-unavailable" hidden>
+          Accounts aren’t live yet — this page will activate when the account system is deployed.
+        </p>
+        <div id="auth-active" hidden>
+          <div class="auth-tabs" role="tablist" aria-label="Sign-in method">
+            <button class="tab-button is-active" id="tab-password" type="button" role="tab" aria-selected="true">Password</button>
+            <button class="tab-button" id="tab-code" type="button" role="tab" aria-selected="false">Email code</button>
+          </div>
+
+          <form class="auth-form" id="password-form" novalidate>
+            <div class="form-field">
+              <label for="signin-email">Email</label>
+              <input id="signin-email" type="email" autocomplete="email" required />
+            </div>
+            <div class="form-field">
+              <label for="signin-password">Password</label>
+              <input id="signin-password" type="password" autocomplete="current-password" required />
+            </div>
+            <div class="form-field" id="signin-confirm-entry" hidden>
+              <label for="signin-confirm-code">Verification code from your email</label>
+              <input id="signin-confirm-code" type="text" inputmode="numeric" autocomplete="one-time-code" />
+              <small>Your email hasn’t been confirmed yet — we just sent you a code.</small>
+            </div>
+            <button class="primary-button" type="submit" id="password-submit">Sign in</button>
+          </form>
+
+          <form class="auth-form" id="code-form" hidden novalidate>
+            <div class="form-field">
+              <label for="code-email">Email</label>
+              <input id="code-email" type="email" autocomplete="email" required />
+            </div>
+            <div class="form-field" id="code-entry" hidden>
+              <label for="code-value">Code from your email</label>
+              <input id="code-value" type="text" inputmode="numeric" autocomplete="one-time-code" />
+            </div>
+            <button class="primary-button" type="submit" id="code-submit">Email me a code</button>
+          </form>
+
+          <div class="social-buttons" id="social-buttons" hidden>
+            <div class="auth-divider">or continue with</div>
+          </div>
+
+          <p class="auth-status" id="auth-status" role="status"></p>
+          <p class="auth-links">
+            <a href="/account/create/">New here? Create an account</a>
+            <a href="/account/forgot/">Forgot your password?</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</SiteLayout>
+
+<script>
+  import { isAuthConfigured } from '../../lib/auth-config.js';
+  import {
+    availableSocialProviders,
+    confirmAccount,
+    requestEmailCode,
+    resendAccountCode,
+    signInWithPassword,
+    signInWithProvider,
+    submitEmailCode,
+  } from '../../lib/auth.js';
+
+  const statusEl = document.getElementById('auth-status');
+  function showStatus(message, isError = false) {
+    statusEl.textContent = message;
+    statusEl.classList.toggle('is-error', isError);
+  }
+  function init() {
+    if (!isAuthConfigured()) {
+      document.getElementById('auth-unavailable').hidden = false;
+      return;
+    }
+    document.getElementById('auth-active').hidden = false;
+
+    const passwordTab = document.getElementById('tab-password');
+    const codeTab = document.getElementById('tab-code');
+    const passwordForm = document.getElementById('password-form');
+    const codeForm = document.getElementById('code-form');
+    function selectTab(active, inactive, showForm, hideForm) {
+      active.classList.add('is-active');
+      active.setAttribute('aria-selected', 'true');
+      inactive.classList.remove('is-active');
+      inactive.setAttribute('aria-selected', 'false');
+      showForm.hidden = false;
+      hideForm.hidden = true;
+      showStatus('');
+    }
+    passwordTab.addEventListener('click', () => selectTab(passwordTab, codeTab, passwordForm, codeForm));
+    codeTab.addEventListener('click', () => selectTab(codeTab, passwordTab, codeForm, passwordForm));
+
+    // Unconfirmed accounts confirm inline: reveal a code field, then confirm
+    // and sign in with the credentials already in the form — the user should
+    // never have to sign in twice.
+    let awaitingSignupConfirm = false;
+    passwordForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const email = document.getElementById('signin-email').value.trim();
+      const password = document.getElementById('signin-password').value;
+      if (!email || !password) return;
+      try {
+        if (awaitingSignupConfirm) {
+          const code = document.getElementById('signin-confirm-code').value.trim();
+          if (!code) return;
+          showStatus('Confirming your email…');
+          await confirmAccount(email, code);
+          showStatus('Signing you in…');
+          const { isSignedIn } = await signInWithPassword(email, password);
+          if (isSignedIn) window.location.href = '/account/';
+          else showStatus('Email confirmed — please sign in again.', true);
+          return;
+        }
+        showStatus('Signing in…');
+        const { isSignedIn, nextStep } = await signInWithPassword(email, password);
+        if (isSignedIn) {
+          window.location.href = '/account/';
+        } else if (nextStep?.signInStep === 'CONFIRM_SIGN_UP') {
+          awaitingSignupConfirm = true;
+          await resendAccountCode(email);
+          document.getElementById('signin-confirm-entry').hidden = false;
+          document.getElementById('password-submit').textContent = 'Confirm and sign in';
+          showStatus('Check your email for a verification code.');
+        } else {
+          showStatus(`Additional step required: ${nextStep?.signInStep || 'unknown'}`, true);
+        }
+      } catch (error) {
+        showStatus(error.message || 'Sign-in failed.', true);
+      }
+    });
+
+    let awaitingCode = false;
+    codeForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const email = document.getElementById('code-email').value.trim();
+      try {
+        if (!awaitingCode) {
+          if (!email) return;
+          showStatus('Sending code…');
+          const nextStep = await requestEmailCode(email);
+          if (nextStep?.signInStep === 'CONFIRM_SIGN_IN_WITH_EMAIL_CODE') {
+            awaitingCode = true;
+            document.getElementById('code-entry').hidden = false;
+            document.getElementById('code-submit').textContent = 'Sign in with code';
+            document.getElementById('code-email').readOnly = true;
+            showStatus('Code sent — check your email.');
+          } else {
+            showStatus(`Unexpected step: ${nextStep?.signInStep || 'unknown'}`, true);
+          }
+        } else {
+          const code = document.getElementById('code-value').value.trim();
+          if (!code) return;
+          showStatus('Checking code…');
+          const isSignedIn = await submitEmailCode(code);
+          if (isSignedIn) {
+            window.location.href = '/account/';
+          } else {
+            showStatus('That code didn’t work — try again.', true);
+          }
+        }
+      } catch (error) {
+        showStatus(error.message || 'Could not sign in with a code.', true);
+      }
+    });
+
+    const providers = availableSocialProviders();
+    if (providers.length) {
+      const socialBox = document.getElementById('social-buttons');
+      socialBox.hidden = false;
+      providers.forEach((provider) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'social-button';
+        button.textContent = `Continue with ${provider}`;
+        button.addEventListener('click', () => signInWithProvider(provider));
+        socialBox.appendChild(button);
+      });
+    }
+  }
+  init();
+</script>

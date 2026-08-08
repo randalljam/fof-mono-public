@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Stripe "Minions" — deep dive for fof-mono</title>
+<style>
+  :root{--bg:#0d1117;--panel:#161d29;--panel2:#1c2634;--border:#243040;--border2:#2f3d50;--ink:#e6edf3;--muted:#9aa7b6;--dim:#6d7b8c;--accent:#58a6ff;--accent2:#7ee787;--gold:#f0c674;--red:#ff6b6b;--acc:#818cf8;--shadow:0 8px 30px rgba(0,0,0,.4);--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  *{box-sizing:border-box}html{scroll-behavior:smooth}
+  body{margin:0;background:linear-gradient(180deg,#0b0f16,#0d1117 400px);color:var(--ink);font-family:var(--sans);line-height:1.55;font-size:15px}
+  a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+  code{font-family:var(--mono);background:#0b1220;border:1px solid var(--border);border-radius:5px;padding:1px 5px;font-size:.86em;color:#cde3ff}
+  h1,h2,h3,h4{line-height:1.25;margin:0}
+  .layout{display:grid;grid-template-columns:250px 1fr;max-width:1440px;margin:0 auto}
+  nav.side{position:sticky;top:0;height:100vh;overflow-y:auto;padding:26px 16px 40px;border-right:1px solid var(--border);background:rgba(10,14,20,.6);backdrop-filter:blur(6px)}
+  nav.side .brand{font-weight:800;font-size:16px}.brand span{color:var(--acc)}
+  nav.side .sub{color:var(--dim);font-size:11.5px;margin:4px 0 22px;font-family:var(--mono)}
+  nav.side a.navlink{display:block;color:var(--muted);padding:7px 11px;border-radius:8px;font-size:13.5px;margin:2px 0;border:1px solid transparent}
+  nav.side a.navlink:hover{background:var(--panel);color:var(--ink);text-decoration:none}
+  nav.side a.navlink.active{background:var(--panel2);color:#fff;border-color:var(--border2)}
+  nav.side a.navlink .n{color:var(--dim);font-family:var(--mono);font-size:11px;margin-right:8px}
+  nav.side .foot{margin-top:22px;color:var(--dim);font-size:11px;border-top:1px solid var(--border);padding-top:14px}
+  main{padding:34px 44px 120px;min-width:0}
+  section{margin-bottom:52px;scroll-margin-top:20px}
+  .eyebrow{font-family:var(--mono);color:var(--acc);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+  .hero h1{font-size:33px;margin:10px 0 6px;letter-spacing:-.5px}
+  .hero .lede{color:var(--muted);font-size:17px;max-width:820px}
+  .kicker{color:var(--acc);font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+  h2.sec{font-size:23px;margin-bottom:6px}h3.sub{font-size:16px;margin:24px 0 10px;color:#fff;border-left:3px solid var(--acc);padding-left:10px}
+  .sec-lede{color:var(--muted);max-width:840px;margin-bottom:16px}
+  .callout{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-left:4px solid var(--acc);border-radius:10px;padding:16px 20px;margin:16px 0}
+  .callout.gold{border-left-color:var(--gold)}.callout.pink{border-left-color:#ff7b9c}
+  .callout h4{font-size:15px;margin-bottom:6px}.callout p{margin:6px 0;color:var(--muted);font-size:14px}.callout b{color:var(--ink)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px}.card:hover{border-color:var(--border2)}
+  .card h4{font-size:15px}.card .desc{color:var(--muted);font-size:13.5px;margin:8px 0}.card b{color:var(--ink)}
+  .card ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:13px}.card li{margin:4px 0}
+  ul.tidy{margin:8px 0;padding-left:20px;color:var(--muted);font-size:14px}ul.tidy li{margin:6px 0}ul.tidy b{color:var(--ink)}
+  table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{color:var(--dim);font-family:var(--mono);font-size:10.5px;text-transform:uppercase}tr:hover td{background:var(--panel)}
+  td .s{font-family:var(--mono);font-size:12px;color:#cde3ff}.scroll{overflow-x:auto;border:1px solid var(--border);border-radius:10px}
+  .tag{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:6px;background:#0b1220;border:1px solid var(--border);color:var(--dim)}
+  .uv{font-family:var(--mono);font-size:9.5px;padding:1px 6px;border-radius:5px;border:1px solid #a83;color:var(--gold);text-transform:uppercase;white-space:nowrap}
+  .verdict{font-family:var(--mono);font-size:10.5px;padding:2px 9px;border-radius:20px;white-space:nowrap}.v-yes{color:var(--accent2);border:1px solid #2b5}.v-partial{color:var(--gold);border:1px solid #a83}.v-no{color:var(--red);border:1px solid #a33}
+  .step{display:flex;gap:12px;margin:11px 0;align-items:flex-start}.step .n{font-family:var(--mono);color:#0d1117;background:var(--acc);border-radius:7px;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex:none}
+  .step .b b{color:#fff}.step .b p{margin:3px 0 0;color:var(--muted);font-size:13.5px}
+  .backlink{display:inline-block;margin-bottom:16px;font-family:var(--mono);font-size:12px;color:var(--dim)}
+  .flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0}.flow .chip{font-family:var(--mono);font-size:11.5px;background:#0b1220;border:1px solid var(--border2);border-radius:7px;padding:4px 9px;color:#cde3ff}.flow .arr{color:var(--dim)}
+  @media(max-width:820px){.layout{grid-template-columns:1fr}nav.side{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border)}main{padding:24px}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="side">
+    <div class="brand">Stripe <span>Minions</span></div>
+    <div class="sub">reference pattern · for fof-mono</div>
+    <a class="navlink active" href="#tldr"><span class="n">00</span>The practical read</a>
+    <a class="navlink" href="#how"><span class="n">01</span>How it works</a>
+    <a class="navlink" href="#fit"><span class="n">02</span>What to steal</a>
+    <a class="navlink" href="#friction"><span class="n">03</span>Caveats</a>
+    <a class="navlink" href="#try"><span class="n">04</span>Adopt this</a>
+    <div class="foot"><a href="index.html">← system snapshot</a> · <a href="index.html#discovery">OSS discovery</a><br><br>Sources: stripe.dev/blog Minions parts 1–2, InfoQ, ByteByteGo. Numbers secondary-sourced <span class="uv">verify</span>.</div>
+  </nav>
+  <main>
+    <a class="backlink" href="index.html#discovery">← OSS discovery</a>
+    <section id="tldr" class="hero">
+      <div class="eyebrow">Deep dive · a reference to steal from, not install</div>
+      <h1>Stripe "Minions"</h1>
+      <p class="lede">Stripe's internal <b style="color:var(--ink)">one-shot, end-to-end coding agents</b>: an engineer messages in Slack, walks away, and comes back to a finished, test-passing PR ready for human review. At scale, <b style="color:var(--ink)">1,300+ PRs merged per week with zero human-written code</b> against a ~30-million-line codebase. It's <b style="color:var(--ink)">not a product you can install</b> — it's a public writeup of an internal system built on a fork of Block's open-source Goose, and the value is the handful of <em>transferable patterns</em> it documents.</p>
+      <div class="callout">
+        <h4>The one-paragraph fit for you</h4>
+        <p>Minions is a <b>north-star reference for your human-out-of-the-loop vision</b>, and it maps unusually well onto pieces you already have: you run agents on <b>Slack/Telegram via Hermes</b>, you have a <b>cloud lane (Cataclysm)</b> for autonomous runs, and you're about to build a <b>CI floor</b>. Its three big ideas — <b>Blueprints</b> (deterministic + agentic nodes in one workflow), <b>isolation-as-permissions</b> (disposable, credential-less sandbox → run unattended, no prompts), and <b>Slack-triggered one-shots → PR</b> — are exactly the scaffolding your Fable 5 mission 5 (HOTL blueprint) is trying to design. You can't buy Minions; you can rebuild its shape at solo scale.</p>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="kicker">01 · Technical</div>
+      <h2 class="sec">How it works</h2>
+      <div class="flow"><span class="chip">Slack trigger</span><span class="arr">→</span><span class="chip">plan</span><span class="arr">→</span><span class="chip">implement</span><span class="arr">→</span><span class="chip">auto test + review</span><span class="arr">→</span><span class="chip" style="border-color:var(--acc);color:var(--acc)">human review at PR only</span><span class="arr">→</span><span class="chip">merge</span></div>
+      <p class="desc" style="color:var(--muted)">Stripe's Part 2 writeup discloses four components:</p>
+      <div class="cards">
+        <div class="card"><h4>Blueprints <span class="tag">the headline idea</span></h4><p class="desc">A workflow expressed as a <b>sequence of nodes</b> where some nodes run <b>deterministic code</b> (git ops, linters, tests) and others run an <b>agentic loop</b>. Rigid, reliable steps alternate with creative steps in one pipeline — the LLM only does the middle.</p></div>
+        <div class="card"><h4>Devboxes <span class="tag">isolation = permission</span></h4><p class="desc">AWS EC2-based sandboxes (the same env human engineers use), in a QA environment already isolated from production data and arbitrary network. Because the box is disposable and can't reach anything dangerous, agents run with <b>full permissions and no confirmation prompts</b> — "the blast radius is one disposable machine." Warm pool spins up in ~10s.</p></div>
+        <div class="card"><h4>Toolshed <span class="tag">MCP hub</span></h4><p class="desc">A central internal <b>MCP server hosting 400+ tools</b> across internal systems and SaaS. MCP enforces permissions <b>at the protocol level</b> — agents can be cryptographically restricted from actions regardless of the prompt.</p></div>
+        <div class="card"><h4>goose fork <span class="tag">the engine</span></h4><p class="desc">Minions runs on a <b>heavily modified fork of Block's open-source Goose</b>, on a track aimed at full autonomy — interleaving agent loops with deterministic code for git, linting, and testing.</p></div>
+      </div>
+      <p class="desc" style="color:var(--muted);margin-top:12px"><b style="color:var(--ink)">Open source?</b> Internal-only, with a public writeup. Goose underneath is open (Block/MIT); Stripe's fork, Blueprints, Toolshed, and Devbox provisioning are not released.</p>
+    </section>
+
+    <section id="fit">
+      <div class="kicker">02 · Application</div>
+      <h2 class="sec">What to steal — mapped to your stack</h2>
+      <div class="scroll">
+      <table>
+        <thead><tr><th>Minions pattern</th><th>Your adoption at solo scale</th><th>Feeds</th></tr></thead>
+        <tbody>
+          <tr><td class="s">Blueprints (deterministic + agentic nodes)</td><td>Wrap agent steps between deterministic nodes — git/lint/<b>your CI floor</b>/format — so the reliable parts stay reliable and the LLM only does the creative middle</td><td>Fable mission 2 + 5</td></tr>
+          <tr><td class="s">Isolation-as-permissions (Devbox)</td><td>Run unattended agents in a <b>throwaway container with no prod credentials and no arbitrary network</b> — then let them run with no confirmation prompts</td><td>qrag safety; HOTL</td></tr>
+          <tr><td class="s">Slack-triggered one-shot → PR</td><td>Extend <b>Hermes</b> to trigger a cloud Claude Code run from a Slack/Telegram message that returns a review-ready PR</td><td>voice-router; Hermes</td></tr>
+          <tr><td class="s">MCP as the single permissioned gateway</td><td>Route your agents' access to S3/Pinecone/Webflow through MCP so permissions live at the protocol, not the prompt</td><td>meta-system</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="callout">
+        <h4>The single most portable idea</h4>
+        <p><b>Isolation as the permission system.</b> For an operator who won't read code, the safest way to run agents unattended isn't cleverer prompts or approval dialogs — it's a <b>disposable sandbox with no production credentials and no network to anything dangerous</b>, so a mistake's blast radius is one throwaway machine. That single principle is what lets Stripe run 1,300 unreviewed-code PRs/week safely, and it's the thing that makes "Randy doesn't review the code" tractable for you too. Pair it with Blueprints (deterministic scaffolding around agentic middles) and you have the backbone of your HOTL pipeline.</p>
+      </div>
+    </section>
+
+    <section id="friction">
+      <div class="kicker">03 · Caveats</div>
+      <h2 class="sec">What to keep in mind</h2>
+      <div class="cards">
+        <div class="card"><h4>Not a tool — a pattern</h4><p class="desc">You adopt the <em>approach</em>, not code. The engine (goose fork), Toolshed, and Devbox infra are internal. <b>Handle:</b> rebuild the shape with your stack — Claude Code + a container + Hermes + MCP.</p></div>
+        <div class="card"><h4>Enterprise scale</h4><p class="desc">EC2 warm pools and a 400-tool MCP hub are Stripe-scale. <b>Handle:</b> take the ideas at solo scale — one throwaway container, a handful of MCP tools, one Slack trigger.</p></div>
+        <div class="card"><h4>Numbers are secondary-sourced</h4><p class="desc">"1,300 PRs/week," "30M lines," "EC2/QA Devbox" come from the writeup and summaries, not something you can re-derive. <b>Handle:</b> treat as directionally true reference, not spec.</p></div>
+      </div>
+    </section>
+
+    <section id="try">
+      <div class="kicker">04 · Do this</div>
+      <h2 class="sec">Adopt this (feeds Fable mission 5)</h2>
+      <div class="step"><span class="n">1</span><div class="b"><b>Build a "blueprint-lite" around one agent task.</b><p>Deterministic nodes for git branch → lint → test (your CI floor) with an agentic node in the middle for the actual change. Start with one non-prod app.</p></div></div>
+      <div class="step"><span class="n">2</span><div class="b"><b>Stand up one disposable, credential-less sandbox.</b><p>A container with no production S3/Pinecone/Webflow keys and restricted network, where an unattended agent can run with no prompts. This is the safety primitive for everything else.</p></div></div>
+      <div class="step"><span class="n">3</span><div class="b"><b>Wire a Hermes → cloud-agent → PR trigger.</b><p>A Slack/Telegram message kicks a Claude Code cloud run that returns a review-ready PR — the Minions loop at your scale, and the concrete first slice of your voice-router.</p></div></div>
+      <div class="callout pink" style="margin-top:18px"><p style="margin:0"><b>Bottom line:</b> Minions is the clearest existing proof that "trigger from chat → unattended agent → review-ready PR" works at scale, and its three ideas — deterministic+agentic Blueprints, isolation-as-permissions, and Slack-triggered one-shots — are directly buildable on your Hermes + cloud + CI stack. Study it as the blueprint for Fable mission 5; you rebuild the shape, not the code.</p></div>
+    </section>
+  </main>
+</div>
+<script>
+const links=[...document.querySelectorAll('nav.side a.navlink')];const secs=links.map(l=>document.querySelector(l.getAttribute('href'))).filter(Boolean);
+const obs=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){const id='#'+e.target.id;links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')===id));}})},{rootMargin:'-20% 0px -70% 0px'});secs.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

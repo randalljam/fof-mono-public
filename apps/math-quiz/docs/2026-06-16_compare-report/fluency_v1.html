@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Math Quiz — Fluency: current state &amp; proposals</title>
+<style>
+  :root{
+    --old:#b26a00; --old-bg:#fff8ec; --old-bd:#f0d9af;
+    --new:#1565c0; --new-bg:#eef5fd; --new-bd:#bcd9f7;
+    --ink:#1f2733; --muted:#5b6675; --line:#e2e6ec; --bg:#f4f6f9; --card:#fff;
+    --ok:#2e7d32; --warn:#c77700; --stop:#c62828; --gray:#616161; --accent:#5b35c0;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+       color:var(--ink);background:var(--bg);line-height:1.55;font-size:15.5px}
+  a{color:var(--new);text-decoration:none}
+  a:hover{text-decoration:underline}
+  code{background:#eef1f5;border:1px solid #e1e6ec;border-radius:4px;padding:1px 5px;
+       font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86em}
+  .layout{display:flex;max-width:1240px;margin:0 auto;gap:28px;padding:0 22px}
+  nav{position:sticky;top:0;align-self:flex-start;height:100vh;overflow:auto;
+      width:228px;flex:0 0 228px;padding:26px 0 40px;font-size:13.5px}
+  nav h4{margin:18px 0 6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  nav a{display:block;color:var(--muted);padding:4px 10px;border-radius:6px;border-left:2px solid transparent}
+  nav a:hover{background:#fff;color:var(--ink);text-decoration:none}
+  main{flex:1 1 auto;min-width:0;padding:26px 0 120px}
+  header.hero{background:linear-gradient(135deg,#10243e,#1565c0);color:#fff;border-radius:16px;
+       padding:30px 34px;margin-bottom:26px;box-shadow:0 8px 30px rgba(16,36,62,.18)}
+  header.hero h1{margin:0 0 8px;font-size:27px;line-height:1.2}
+  header.hero p{margin:6px 0 0;opacity:.93;max-width:74ch}
+  header.hero code{background:none;border:none;padding:0;font-size:inherit}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .pill{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);
+        border-radius:999px;padding:3px 12px;font-size:12.5px}
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;
+          padding:24px 28px;margin:0 0 22px;box-shadow:0 1px 2px rgba(20,40,70,.04)}
+  section>h2{margin:0 0 4px;font-size:21px;display:flex;align-items:center;gap:10px}
+  section>h2 .n{font-size:13px;color:#fff;background:var(--accent);border-radius:8px;
+       width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 26px}
+  .lead{color:var(--muted);margin:2px 0 18px;max-width:84ch}
+  h3{margin:22px 0 8px;font-size:16.5px}
+  h4{margin:16px 0 6px;font-size:14.5px}
+  ul,ol{margin:8px 0 8px;padding-left:22px}
+  li{margin:4px 0}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:860px){.grid2{grid-template-columns:1fr}nav{display:none}}
+  .col{border-radius:12px;padding:16px 18px;border:1px solid}
+  .col.old{background:var(--old-bg);border-color:var(--old-bd)}
+  .col.new{background:var(--new-bg);border-color:var(--new-bd)}
+  .col h3{margin-top:0;display:flex;align-items:center;gap:8px}
+  .tag{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+       padding:2px 8px;border-radius:6px;color:#fff}
+  .tag.old{background:var(--old)} .tag.new{background:var(--new)}
+  figure{margin:0}
+  .shots{display:grid;grid-template-columns:1fr;gap:18px}
+  .shot{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fbfcfe}
+  .shot img{width:100%;display:block}
+  .shot figcaption{padding:8px 12px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);background:#fff}
+  .shot figcaption b{color:var(--ink)}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}
+  th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#f7f9fc;font-size:12.5px;letter-spacing:.02em;color:var(--muted)}
+  td.dim{color:var(--muted)}
+  tr td:first-child{font-weight:600;width:23%}
+  .b{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;border:1px solid}
+  .b.ok{color:var(--ok);border-color:#bfe0c0;background:#eef8ef}
+  .b.warn{color:var(--warn);border-color:#f0dcb0;background:#fdf6e7}
+  .b.stop{color:var(--stop);border-color:#f0c2c2;background:#fdeeee}
+  .b.new{color:var(--new);border-color:var(--new-bd);background:var(--new-bg)}
+  .b.gray{color:var(--gray);border-color:#d6d6d6;background:#f1f1f1}
+  .dot{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:5px;border:1px solid rgba(0,0,0,.15)}
+  .dot.blue{background:#1565c0}.dot.green{background:#2e7d32}.dot.yellow{background:#f9a825}
+  .dot.red{background:#c62828}.dot.gray{background:#616161}
+  .callout{border-left:4px solid var(--accent);background:#f7f4fe;border-radius:0 10px 10px 0;
+           padding:12px 16px;margin:14px 0}
+  .callout.warn{border-color:var(--warn);background:#fdf7ea}
+  .callout.q{border-color:var(--new);background:var(--new-bg)}
+  .callout.ok{border-color:var(--ok);background:#eef8ef}
+  .callout b{display:block;margin-bottom:2px}
+  .phase{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:10px 0;background:#fcfdff}
+  .phase h4{margin:0 0 4px;display:flex;align-items:center;gap:8px;font-size:15.5px}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;font-size:12.5px;color:var(--muted)}
+  pre{background:#0f1722;color:#d7e2f0;border-radius:10px;padding:14px 16px;overflow:auto;font-size:12.5px;
+      line-height:1.5;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  pre .c{color:#7d8aa0}
+  footer{color:var(--muted);font-size:13px;text-align:center;padding:10px 0 60px}
+  .small{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav>
+  <h4>Fluency report</h4>
+  <a href="#summary">Overview</a>
+  <a href="#model">1 · The fluency model</a>
+  <a href="#current">2 · Current tracker</a>
+  <a href="#datamodel">3 · Data-model status</a>
+  <h4>Proposals</h4>
+  <a href="#analysis-view">4 · Analysis fluency view</a>
+  <a href="#new-tracker">5 · New fluency tracker</a>
+  <a href="#coding">6 · Coding changes</a>
+  <h4>Meta</h4>
+  <a href="#log">Change log</a>
+  <a href="index.html">↩ Back to compare report</a>
+</nav>
+
+<main>
+<header class="hero">
+  <h1>Math Quiz — Fluency: current state &amp; proposals</h1>
+  <p>A fluency-only companion to the <a href="index.html" style="color:#cfe4ff"><code>compare report</code></a>: it lifts the
+     <b>fluency model</b> out of that report, documents <b>what the fluency tracker actually does today</b> (with fresh
+     screenshots), answers <b>“is fluency in the SQLite data model yet?”</b>, and proposes two changes — an
+     <b>integrated fluency view on the analysis page</b> and an <b>overhauled fluency tracker</b> — with the coding work each needs.</p>
+  <div class="meta">
+    <span class="pill">Branch: <b>feature/math-quiz-further-dev</b></span>
+    <span class="pill">Created 2026-06-20</span>
+    <span class="pill">Canonical defs: <code>docs/SPEC.md</code></span>
+  </div>
+</header>
+
+<div class="callout" style="margin:0 0 22px">
+  <b>How this fits the canon</b>
+  Durable definitions live in <a href="../SPEC.md"><code>docs/SPEC.md</code></a> and the sequenced roadmap in
+  <a href="../PLAN.md"><code>docs/PLAN.md</code></a>. This page is the <b>fluency-focused</b> snapshot + design proposal; the
+  rubric below is reproduced from the compare report’s §5 / SPEC §3 so fluency can be read end-to-end in one place.
+</div>
+
+<!-- ===================== OVERVIEW ===================== -->
+<section id="summary">
+  <h2><span class="n">★</span> Overview &amp; TL;DR</h2>
+  <p class="lead">Three legacy surfaces (quiz / fluency tracker / analysis) plus the newer anchor + SQLite engine are
+     converging into one product. Fluency is the through-line — and it’s the least integrated piece.</p>
+  <ul>
+    <li><b>The model is settled</b> — a red → yellow → green → blue rubric, applied at <b>three levels</b>
+        (operation / category / problem). See <a href="#model">§1</a>.</li>
+    <li><b>The tracker works but is on the old foundation</b> — it rebuilds an in-memory DB from <b>session JSON in
+        <code>localStorage</code></b> (the store SPEC §8 retires), evaluates <b>per problem only</b> (no category rollup),
+        and <b>never shows blue on the grid</b> (only as a count). See <a href="#current">§2</a>.</li>
+    <li><b>Fluency is NOT in the SQLite schema</b> — only raw attempts are stored; status is recomputed every load. A
+        <code>FluencySnapshots</code> table is stubbed but unbuilt. See <a href="#datamodel">§3</a>.</li>
+    <li><b>Proposal A</b> — add a <b>metric toggle</b> to the analysis grid (avg response time ⇄ fluency rating) and a
+        <b>category-rollup strip</b> using a <b>minimum (worst-of) rule</b>. See <a href="#analysis-view">§4</a>.</li>
+    <li><b>Proposal B</b> — rebuild the tracker on the <b>per-user SQLite store</b> with a <b>shared DOM-free fluency
+        engine</b>, true category rollups, and blue rendered on the grid. A and B converge on one engine + one grid.
+        See <a href="#new-tracker">§5</a> · coding work in <a href="#coding">§6</a>.</li>
+  </ul>
+</section>
+
+<!-- ===================== MODEL ===================== -->
+<section id="model">
+  <h2><span class="n">1</span> The fluency model</h2>
+  <p class="lead">The conceptual machinery, reproduced from the compare report’s §5. Canonical version:
+     <a href="../SPEC.md"><code>SPEC.md</code></a> §2–§5.</p>
+
+  <div class="callout">
+    <b>Fluency ≠ accuracy (core principle).</b>
+    <b>Accuracy</b> = is it correct? <b>Fluency</b> = correct <em>and</em> immediate <em>and</em> effortless — known
+    cold, no cognitive load, no intermediate strategy (a fluent solver doesn’t do <code>8×6</code> as <code>8×5+8</code>).
+    <b>Accuracy is table stakes, not the headline metric</b> — the product optimizes <b>automaticity (speed)</b> with
+    accuracy as the rubric’s floor.
+  </div>
+
+  <h3>The rubric: red → yellow → green → blue</h3>
+  <p class="small">One stoplight-plus scale, applied at <b>three levels</b> — whole <b>operation</b>, <b>category</b>
+     within an operation, and <b>individual problem</b> (with full cross-session history). Thresholds are
+     <b>adjustable &amp; level-appropriate</b> (not a fixed 2&nbsp;s).</p>
+  <table>
+    <thead><tr><th>Status</th><th>Meaning</th><th>Signature</th></tr></thead>
+    <tbody>
+      <tr><td><span class="dot red"></span><span class="b stop">red</span></td><td class="dim">Really doesn’t know it.</td>
+        <td class="dim">Makes errors, or so effortful it’s effectively unknown. <b>Accuracy floor</b> — below the accuracy bar ⇒ red.</td></tr>
+      <tr><td><span class="dot yellow"></span><span class="b warn">yellow</span></td><td class="dim">Kind of knows it — <b>not fluent</b>.</td>
+        <td class="dim">Accurate on nearly all (odd slip aside) but slow/effortful; may use strategies. Needs practice.</td></tr>
+      <tr><td><span class="dot green"></span><span class="b ok">green</span></td><td class="dim">Fluent / near-fluent.</td>
+        <td class="dim">Fast + correct recently; not yet enough data for permanent — keep collecting/practicing.</td></tr>
+      <tr><td><span class="dot blue"></span><span class="b new">blue</span></td><td class="dim">Permanent — “in ice.”</td>
+        <td class="dim">Green sustained across sessions; known cold, unlikely to be lost.</td></tr>
+    </tbody>
+  </table>
+  <p class="small"><b>red↔yellow boundary = accuracy</b>; <b>yellow→green→blue = automaticity</b> (speed + durability).</p>
+
+  <h3>Three levels of evaluation (SPEC §4)</h3>
+  <p class="small">The same rubric rolls <b>up</b> and drills <b>down</b> the same path, per operation:</p>
+  <ol class="small">
+    <li><b>Operation</b> — e.g. all single-digit addition.</li>
+    <li><b>Category</b> — the segmentation buckets: Add&nbsp;Zero, Add&nbsp;One, Add&nbsp;Two, Doubles, Tough&nbsp;21,
+        Hardest&nbsp;Six (and eventual ×/− equivalents).</li>
+    <li><b>Individual problem</b> — a single fact (e.g. <code>8&nbsp;+&nbsp;9</code>) with its full longitudinal history.</li>
+  </ol>
+
+  <h3>Single-digit addition categorization</h3>
+  <p class="small">55 canonical facts (each commutative pair once) partition into five non-overlapping categories by the
+     smaller addend, plus a named hard subset. A fact is <b>hard</b> iff <code>max(a,b) ≥ 6</code>; the selector weights
+     hard facts <code>3×</code>. Source: <code>single_digit_addition_categorization.md</code> →
+     <code>engine/addition_segmentation.mjs</code>.</p>
+  <table>
+    <thead><tr><th>Category</th><th>Canonical</th><th>Pattern / note</th></tr></thead>
+    <tbody>
+      <tr><td>Add Zero</td><td>10</td><td class="dim"><code>0 + n</code> — easiest</td></tr>
+      <tr><td>Add One</td><td>9</td><td class="dim"><code>1 + n</code>, from <code>1+1</code></td></tr>
+      <tr><td>Add Two</td><td>8</td><td class="dim"><code>2 + n</code>, from <code>2+2</code></td></tr>
+      <tr><td>Doubles</td><td>7</td><td class="dim"><code>n + n</code>, <code>3+3</code>…<code>9+9</code></td></tr>
+      <tr><td>Tough 21</td><td>21</td><td class="dim">remaining non-double facts, addends 3–9 — the deliberate-practice set</td></tr>
+      <tr><td><b>Hardest Six</b></td><td>6</td><td class="dim">subset of Tough 21, both addends ≥ 6, not doubles — overlearn last</td></tr>
+      <tr><td><b>Total</b></td><td>55</td><td class="dim">Hardest Six counted inside Tough 21, not extra</td></tr>
+    </tbody>
+  </table>
+  <p class="small"><b>Modes &amp; mastery (context):</b> <b>assess</b> (form the estimate fast) vs <b>practice</b> (batched,
+     mixed known:unknown); <b>predictive</b> (partial sample) vs <b>thorough</b> (every in-scope fact correct + fast)
+     mastery verdicts. Detail in SPEC §6–§7.</p>
+</section>
+
+<!-- ===================== CURRENT ===================== -->
+<section id="current">
+  <h2><span class="n">2</span> What’s implemented in the fluency tracker today</h2>
+  <p class="lead">The page is <code>math_fluency.html</code> + <code>math_fluency.js</code> (CT/CT’s work, with Randy’s
+     cleanup). It is functional and tested, but built on the <b>old JSON store</b> and evaluates <b>per problem only</b>.
+     Screenshots below are captured live from a seeded multi-session history (see
+     <a href="#regen">regenerate</a>).</p>
+
+  <div class="shots">
+    <figure class="shot"><img src="screenshots/fluency_01_controls_legend.png" alt="Fluency tracker controls and rubric legend">
+      <figcaption><b>1 · Controls + legend.</b> “Session Data Management” still loads/clears <b>session JSON</b> (the
+        retired store). <b>Settings</b> expose the live thresholds — Rolling Window, Min&nbsp;Accuracy&nbsp;%,
+        <code>Fluent&nbsp;(ms)</code> = 2000, <code>Slow&nbsp;(ms)</code> = 4000, Re-check After, Sessions for Permanent =
+        5. The legend is the canonical five-status rubric.</figcaption></figure>
+    <figure class="shot"><img src="screenshots/fluency_02_addition_section.png" alt="Addition fluency section: two grids, summary stats, problems needing work">
+      <figcaption><b>2 · Addition section.</b> Two Plotly scatter “maps” — <b>Current (latest session)</b> and
+        <b>Previous (historical)</b> — with markers colored green/yellow/red/gray and a <b>blue ring</b> on
+        needs-re-check facts (<code>1+9</code>, lower-right). The <b>summary counts</b> show all five statuses
+        (<b>Permanent 4</b>, Fluent 3, Almost 2, Slow 2, Missing 2) and a 54% fluent bar. <b>Problems Needing Work</b>
+        lists the gray/red/yellow facts. <b>Note:</b> blue appears <em>only</em> as a count — never as a marker on either
+        grid.</figcaption></figure>
+    <figure class="shot"><img src="screenshots/fluency_03_edit_dialog.png" alt="Per-fact manual status override dialog">
+      <figcaption><b>3 · Manual override.</b> Clicking any fact opens this dialog: it shows the <b>system
+        recommendation</b> (here <code>7+9</code> → Missing, 0% accuracy) and lets an operator <b>override</b> the status
+        with a reason. Overrides are stored per-user in <code>localStorage</code> and win over the computed status.</figcaption></figure>
+  </div>
+
+  <h3>How it computes status (the rubric in code)</h3>
+  <p class="small">The evaluator is <code>evaluateFluencyStatus(attempts, thresholds)</code> in
+     <code>math_fluency.js</code>. Per canonical fact (commutative pairs merged), over the last
+     <code>windowSize</code> (default 5) attempts:</p>
+  <table>
+    <thead><tr><th>Output</th><th>Rule (defaults)</th></tr></thead>
+    <tbody>
+      <tr><td><span class="b gray">gray</span> Missing</td><td class="dim">accuracy &lt; <code>minAccuracy</code> (0.8) <b>or</b> zero correct in window.</td></tr>
+      <tr><td><span class="b stop">red</span> Needs practice</td><td class="dim">accurate, but median correct time ≥ <code>redMs</code> (4000).</td></tr>
+      <tr><td><span class="b warn">yellow</span> Almost</td><td class="dim">accurate, median in [<code>greenMs</code>, <code>redMs</code>) = [2000, 4000).</td></tr>
+      <tr><td><span class="b ok">green</span> Fluent</td><td class="dim">accurate, median &lt; <code>greenMs</code> (2000).</td></tr>
+      <tr><td><span class="b new">blue</span> Permanent</td><td class="dim">green in the last <code>permanentSessions</code> (5) <b>consecutive</b> sessions (length-guarded). Applied only to the <em>combined</em> dataset.</td></tr>
+      <tr><td><span class="b gray">nodata</span></td><td class="dim">no attempts in scope (distinct from gray).</td></tr>
+    </tbody>
+  </table>
+
+  <h3>What it does well — and the seams</h3>
+  <div class="grid2">
+    <div class="col new">
+      <h3>Working today</h3>
+      <ul class="small">
+        <li>Per-fact status across <b>+ / − / ×</b>, commutative-merged, with cross-session history.</li>
+        <li><b>Blue (permanent)</b> and <b>needs-re-check</b> are derived from session recency/durability.</li>
+        <li><b>Manual overrides</b> with reasons (operator judgment over the algorithm).</li>
+        <li><b>Adjustable thresholds</b> in the UI (window, accuracy, fast/slow ms, retention, permanent).</li>
+        <li><b>Problem-list generator</b> by status mix → feeds the quiz. Well covered by E2E tests.</li>
+      </ul>
+    </div>
+    <div class="col old">
+      <h3>Seams (motivate the overhaul)</h3>
+      <ul class="small">
+        <li><b>Old store.</b> Rebuilds an in-memory sql.js DB from <code>math_session_*.json</code> in
+          <code>localStorage</code> on every load — the JSON path SPEC §8 retires; it does <b>not</b> read the canonical
+          per-user <code>.sqlite</code>.</li>
+        <li><b>No category level.</b> Evaluates per problem + an operation-wide % only. SPEC §4’s <b>category</b> rollup
+          (Add Zero … Hardest Six) is absent.</li>
+        <li><b>Blue is invisible on the grid.</b> The two maps render the <code>current</code> / <code>previous</code>
+          datasets, where the green→blue upgrade is never applied — blue shows only as a summary count.</li>
+        <li><b>Status names drift from canon.</b> Code keeps <code>gray</code> as a separate low-accuracy state; SPEC §3
+          folds low-accuracy into <b>red</b>. Reconciliation is a known Phase-A task.</li>
+        <li><b>Logic is page-bound.</b> <code>evaluateFluencyStatus</code> lives in a DOM file; the DOM-free
+          <code>engine/reevaluate.mjs</code> has to <b>inject</b> it (<code>fluencyFns</code>) rather than import it.</li>
+        <li><b>Two scatter maps, fixed thresholds for all learners</b> — not the level-appropriate presets G1/G2 call for.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== DATA MODEL ===================== -->
+<section id="datamodel">
+  <h2><span class="n">3</span> Is fluency in the SQLite schema &amp; data model?</h2>
+  <p class="lead"><b>Reported back as asked:</b> short answer — <b>no, not yet.</b> Fluency is computed, never stored.</p>
+
+  <div class="callout warn">
+    <b>Fluency is NOT persisted anywhere in the schema.</b>
+    The store holds <b>only raw data</b>. <code>engine/db_io.mjs</code> states it outright and even names the future table:
+    <code>RAW_TABLES = ['Users','Sessions','ProblemAttempts','ModeEvents']</code> and
+    <code>EVALUATION_TABLES = ['FluencySnapshots']</code> with the comment <i>“not created yet.”</i> There is <b>no</b>
+    status / rating / color column at the problem, category, or operation level.
+  </div>
+
+  <h3>What the schema does hold</h3>
+  <table>
+    <thead><tr><th>Table</th><th>Holds</th><th>Fluency?</th></tr></thead>
+    <tbody>
+      <tr><td><code>Users</code></td><td class="dim">name (PK).</td><td class="dim">—</td></tr>
+      <tr><td><code>Sessions</code></td><td class="dim">session id/filename, user, start/end, settings, totals, avg RT.</td>
+        <td class="dim">No durability columns (no <code>green_since</code>, <code>permanent_at</code>, …).</td></tr>
+      <tr><td><code>ProblemAttempts</code></td><td class="dim"><code>num1, num2, operation, correct_answer, user_answer,
+        is_correct, response_time_ms, flags_json, presented_at</code>, session FK — <b>every raw trial</b>.</td>
+        <td class="dim"><b>No</b> status column; <b>no</b> category column (category is derived at runtime via
+          <code>addition_segmentation.mjs</code>).</td></tr>
+      <tr><td><code>WarmupAttempts</code>, <code>ModeEvents</code></td><td class="dim">keypad warm-up trials; mode
+        transitions.</td><td class="dim">—</td></tr>
+    </tbody>
+  </table>
+
+  <h3>How status is produced instead</h3>
+  <p class="small">Two recomputation paths, both <b>ephemeral</b> (discarded after render):</p>
+  <ul class="small">
+    <li><b>Tracker page:</b> <code>prepareFluencyDatasets()</code> queries <code>ProblemAttempts</code> and runs
+      <code>evaluateFluencyStatus()</code> on every load.</li>
+    <li><b>Engine:</b> <code>engine/reevaluate.mjs → reevaluateState()</code> recomputes <code>perFactStatus</code> +
+      mastery from raw attempts (used for re-scoring old captures after an algorithm change). It even
+      <code>stripEvaluation()</code>s any <code>FluencySnapshots</code> table before re-deriving — by design, raw is the
+      source of truth.</li>
+  </ul>
+
+  <div class="callout ok">
+    <b>This is a deliberate good default — keep it.</b>
+    Not storing status means the rubric/thresholds can change and <b>old captures re-score</b> for free (SPEC §8). The
+    only thing missing for the rubric’s <b>durability</b> levels (green vs blue) to be robust across cloud/local is an
+    <b>optional</b> snapshot table — see <a href="#coding">§6</a>. Recomputation stays canonical; snapshots are a cache.
+  </div>
+</section>
+
+<!-- ===================== PROPOSAL A ===================== -->
+<section id="analysis-view">
+  <h2><span class="n">4</span> Proposal A — integrated fluency view on the analysis page</h2>
+  <p class="lead">The analysis page already renders a per-fact grid (rows = first number, cols = second number) colored by
+     <b>average response time</b>, and it already knows the addition categories (its “Difficulty” stepper uses
+     <code>problemCategory()</code>). Two additions turn it into a fluency view.</p>
+
+  <div class="phase">
+    <h4><span class="b new">A1</span> A metric toggle: response time ⇄ fluency rating</h4>
+    <p class="small">Add one control next to the existing color-scale / aggregation selects (same wiring pattern: a
+      <code>&lt;select&gt;</code> whose <code>change</code> calls <code>generateHeatmap(db)</code>):
+      <b>Metric: ⟨Avg response time | Fluency rating⟩</b>.</p>
+    <ul class="small">
+      <li><b>Avg response time</b> (today’s default) — the continuous heatmap, unchanged.</li>
+      <li><b>Fluency rating</b> — each cell colored by its <b>canonical rubric status</b> (the full grid, the user’s ask):
+        per fact, run the shared evaluator over that fact’s attempts and paint
+        <span class="dot blue"></span>/<span class="dot green"></span>/<span class="dot yellow"></span>/<span class="dot red"></span>/<span class="dot gray"></span>.
+        Swap the Plotly <code>colorscale</code> for the discrete status palette and the colorbar for a status legend.</li>
+    </ul>
+    <p class="small">Mechanics: in <code>processData()</code> add a <code>fluencyStatus</code> per cell; in
+      <code>plotHeatmap()</code> branch <code>zData</code> + colorscale on the toggle. The grid, click-to-focus, problem
+      list, and category stepper all keep working. This finally renders <b>blue on the grid</b> (the tracker never does).</p>
+  </div>
+
+  <div class="phase">
+    <h4><span class="b new">A2</span> A category-rollup strip at the top (minimum / worst-of rule)</h4>
+    <p class="small">Above the grid, one chip per in-scope category (Add&nbsp;Zero … Hardest&nbsp;Six) plus an
+      operation-level chip — delivering SPEC §4’s three levels in one view. The rollup uses the user’s
+      <b>minimum rule</b>: a category takes the <b>worst</b> status among its facts.</p>
+    <table>
+      <thead><tr><th>Category facts</th><th>Rollup</th></tr></thead>
+      <tbody>
+        <tr><td class="dim">all <span class="dot blue"></span> blue</td><td><span class="b new">blue</span></td></tr>
+        <tr><td class="dim">some blue, some <span class="dot green"></span> green</td><td><span class="b ok">green</span> <span class="small">(min of blue, green)</span></td></tr>
+        <tr><td class="dim">any <span class="dot yellow"></span> yellow present</td><td><span class="b warn">yellow</span></td></tr>
+        <tr><td class="dim">any <span class="dot red"></span> red present</td><td><span class="b stop">red</span></td></tr>
+        <tr><td class="dim">any <span class="dot gray"></span> gray / unattempted-in-scope</td><td><span class="b gray">gray</span></td></tr>
+      </tbody>
+    </table>
+    <p class="small">Severity order (best→worst): <code>blue &gt; green &gt; yellow &gt; red &gt; gray</code>; the chip shows the
+      worst present. (Hover/secondary line can show the count breakdown, e.g. “4 blue · 3 green · 2 red”, so the min isn’t
+      the <em>only</em> signal.) <code>nodata</code> facts are excluded from the min unless the operator opts to count
+      coverage gaps as gray.</p>
+    <pre><span class="c">// min/worst-of rollup — the rule the user described</span>
+const SEVERITY = ['blue','green','yellow','red','gray']; <span class="c">// best → worst</span>
+function rollupStatus(statuses) {
+  const present = statuses.filter(s =&gt; s &amp;&amp; s !== 'nodata');
+  if (!present.length) return 'nodata';
+  return SEVERITY[Math.max(...present.map(s =&gt; SEVERITY.indexOf(s)))];
+}</pre>
+  </div>
+
+  <div class="callout q">
+    <b>Why the analysis page is the right home</b>
+    It already has the grid, the operand axes, the category function, the SQLite load path, and the toggle pattern — so A
+    is mostly <b>wiring + a shared evaluator</b>, not new infrastructure. The category strip + fluency grid is exactly the
+    operator’s “where are they, by category, at a glance” view.
+  </div>
+</section>
+
+<!-- ===================== PROPOSAL B ===================== -->
+<section id="new-tracker">
+  <h2><span class="n">5</span> Proposal B — overhaul the fluency tracker</h2>
+  <p class="lead">An update that replaces today’s <code>math_fluency.html</code>. The thrust: move it onto the canonical
+     store and the shared engine, add the category level, and render the whole rubric (including blue) on one clear grid.
+     <b>A and B converge</b> — the analysis fluency view (§4) and the new tracker should share <b>one evaluator and one
+     grid component</b>; the tracker becomes the learner-facing framing of the same machinery.</p>
+
+  <div class="grid2">
+    <div class="col old">
+      <h3>Replace</h3>
+      <ul class="small">
+        <li>JSON-from-<code>localStorage</code> rebuild → <b>read the per-user <code>.sqlite</code></b> via
+          <code>engine/sqlite_io.mjs</code> (same load path the analysis page uses).</li>
+        <li>Per-problem-only evaluation → <b>operation / category / problem</b> rollups (SPEC §4), category chips up top.</li>
+        <li>Two scatter maps where blue never shows → <b>one per-fact grid</b> colored by the full rubric, blue included,
+          with the needs-re-check ring kept.</li>
+        <li>Global fixed thresholds → <b>level-appropriate presets</b> (e.g. “developing” ~3.5–4&nbsp;s) per the G1/G2
+          finding, still operator-adjustable.</li>
+        <li>“Session Data Management” JSON load/clear → <b>per-user file</b> framing (<code>math-flu_&lt;name&gt;…</code>)
+          consistent with anchor + analysis.</li>
+      </ul>
+    </div>
+    <div class="col new">
+      <h3>Keep / carry forward</h3>
+      <ul class="small">
+        <li><b>Manual overrides with reasons</b> — operator judgment stays first-class.</li>
+        <li><b>Problem-list generator</b> by status mix → quiz (a proven, valued loop).</li>
+        <li><b>Drill-down + filters</b> by flag and recency/session range (SPEC §4 requires the same up/down path).</li>
+        <li><b>Recompute-from-raw</b> as canonical (don’t bake status into the store) — see §6 for the optional snapshot.</li>
+        <li>The <b>E2E coverage</b> (dataset shape, override, permanent, list→quiz) — port the specs to the new data path.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout">
+    <b>Convergence, concretely</b>
+    Build the shared pieces once (§6): a DOM-free <code>engine/fluency.mjs</code> evaluator, a <code>rollupByCategory()</code>,
+    and a reusable grid renderer. The <b>analysis page</b> mounts them behind the §4 toggle (operator view); the
+    <b>tracker</b> mounts the same engine with the learner/parent framing (percentages, “needs work”, problem-list export).
+    Same numbers everywhere — no second rubric to drift.
+  </div>
+</section>
+
+<!-- ===================== CODING ===================== -->
+<section id="coding">
+  <h2><span class="n">6</span> Coding changes (the work behind A &amp; B)</h2>
+  <p class="lead">Sequenced so each step lands independently with tests green
+     (<code>cd apps/math-quiz/tests &amp;&amp; npm run test:all</code>).</p>
+
+  <div class="phase">
+    <h4><span class="b new">1</span> Extract a DOM-free fluency engine</h4>
+    <p class="small">Move <code>evaluateFluencyStatus</code>, <code>checkPermanentStatus</code>, the thresholds, status
+      labels, and colors out of <code>math_fluency.js</code> into <b><code>engine/fluency.mjs</code></b> (single source of
+      truth). The tracker, the analysis view, and <code>engine/reevaluate.mjs</code> all <b>import</b> it — replacing the
+      current <code>fluencyFns</code> injection. Pure functions, unit-tested without a DOM. No behavior change in this step.</p>
+  </div>
+  <div class="phase">
+    <h4><span class="b new">2</span> Add category rollups</h4>
+    <p class="small">Add <code>rollupByCategory(statuses, op, range)</code> to the engine using
+      <code>addition_segmentation.mjs</code> + the <b>min/worst-of rule</b> (§4). Returns per-category and per-operation
+      status (+ count breakdown). Unit-test the rule (all-blue→blue; blue+green→green; any-red→red; gray dominates).</p>
+  </div>
+  <div class="phase">
+    <h4><span class="b new">3</span> Analysis: metric toggle + category strip (Proposal A)</h4>
+    <p class="small">Wire the <code>Metric</code> select; compute <code>fluencyStatus</code> per cell in
+      <code>processData()</code>; branch <code>plotHeatmap()</code> colorscale; render the rollup strip from
+      <code>rollupByCategory()</code>. Reuse the existing color-scale/aggregation control + persistence pattern. E2E:
+      toggle paints status colors; strip reflects the min rule.</p>
+  </div>
+  <div class="phase">
+    <h4><span class="b new">4</span> Reconcile status names with canon (SPEC §3)</h4>
+    <p class="small">Decide gray’s fate: SPEC folds low-accuracy into <b>red</b>. Either rename <code>gray</code>→red in
+      the engine, or keep gray as an explicit “missing/insufficient-data” sub-state and document it. Make
+      <code>greenMs</code>/<code>redMs</code>/<code>minAccuracy</code> <b>level presets</b>. Update the legend + tests
+      together.</p>
+  </div>
+  <div class="phase">
+    <h4><span class="b new">5</span> Rebuild the tracker on the shared engine (Proposal B)</h4>
+    <p class="small">Repoint the tracker’s data load to <code>engine/sqlite_io.mjs</code> (per-user <code>.sqlite</code>),
+      render one rubric-colored grid (blue included) + category chips from the shared engine, keep overrides + the
+      problem-list generator, and port the E2E specs to the SQLite path.</p>
+  </div>
+  <div class="phase">
+    <h4><span class="b new">6</span> (Optional) <code>FluencySnapshots</code> for durability</h4>
+    <p class="small">Build the stubbed table as a <b>cache, not a source of truth</b>: persist per-session per-fact status
+      (+ accuracy, median ms, window counts) so green→blue durability survives cloud/local handoffs without replaying all
+      history. Recompute-from-raw stays canonical; <code>reevaluate</code> can rebuild snapshots. Add the
+      <code>green_since</code>/<code>permanent_at</code> bookkeeping the rubric’s blue level wants.</p>
+  </div>
+
+  <h3 id="regen">Regenerate the screenshots</h3>
+  <p class="small">The shots above are captured hermetically (local server + pinned-CDN libs + bundled chromium) from a
+     <b>seeded</b> multi-session history. From <code>apps/math-quiz/</code>:</p>
+  <pre>cd tests &amp;&amp; npm install            <span class="c"># one time</span>
+node docs/2026-06-16_compare-report/capture_fluency_screenshots.mjs</pre>
+  <p class="small">The seed (engineered to surface every status + a needs-re-check fact) lives in that script, alongside
+     the original <code>capture_screenshots.mjs</code>.</p>
+</section>
+
+<!-- ===================== LOG ===================== -->
+<section id="log">
+  <h2><span class="n">★</span> Change log</h2>
+  <table>
+    <thead><tr><th>Date</th><th>Who</th><th>Change</th></tr></thead>
+    <tbody>
+      <tr><td>2026-06-20</td><td class="dim">cloud agent</td>
+        <td class="dim">Created <code>fluency.html</code> on <code>feature/math-quiz-further-dev</code>: lifted the
+          fluency model from <code>index.html</code> §5; documented the current tracker with three live seeded
+          screenshots (<code>capture_fluency_screenshots.mjs</code>); confirmed fluency is <b>not</b> in the SQLite
+          schema (raw-only; <code>FluencySnapshots</code> stubbed); proposed the analysis fluency view (metric toggle +
+          min-rule category rollup) and the tracker overhaul, with sequenced coding work.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>
+  Math Quiz fluency report · <code>apps/math-quiz/docs/2026-06-16_compare-report/fluency.html</code> · living document, for internal use.
+</footer>
+</main>
+</div>
+</body>
+</html>

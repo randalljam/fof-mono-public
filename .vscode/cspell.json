@@ -1,0 +1,42 @@
+// run with the following command line:
+// cspell "data/deutsch/f6_needs_qafixed/**/*"
+{
+  "version": "0.2",
+  "language": "en",
+  "dictionaryDefinitions": [
+    {
+      "name": "commonDictionary",
+      "path": "../data/cspell_dictionary_common.txt"
+    },
+    {
+      "name": "deutschDictionary",
+      "path": "../data/deutsch/cspell_dictionary_deutsch.txt"
+    },
+    {
+      "name": "pvDictionary",
+      "path": "../data/pv/cspell_dictionary_pv2.txt"
+    },
+    {
+      "name": "regDictionary",
+      "path": "../data/floodlamp/cspell_dictionary_reg.txt"
+    },
+    {
+      "name": "floodlampDictionary",
+      "path": "../data/floodlamp/cspell_dictionary_floodlamp.txt"
+    }
+  ],
+  "dictionaries": [
+    "commonDictionary",
+    "deutschDictionary",
+    "pvDictionary",
+    "regDictionary",
+    "floodlampDictionary"
+  ],
+  "ignorePaths": [
+    "**/codeindex_*.md"
+  ],
+  "enableFiletypes": [
+    "!python"
+  ],
+  "enabled": true
+}

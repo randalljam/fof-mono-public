@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+# Block commits that stage local-only / S3-backed binaries or new large blobs.
+# Policy: root .gitignore + scripts/git/README.md
+set -euo pipefail
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
+# New files larger than this need an explicit human override (git commit --no-verify).
+MAX_NEW_FILE_BYTES=$((512 * 1024))
+BLOCKED_EXTS=(
+  sqlite sqlite3 db vscdb
+  webp jpg jpeg gif png bmp tiff tif ico heic heif
+  mp3 wav m4a flac aac ogg wma
+  mp4 mov avi mkv webm
+  zip tar gz tgz bz2 xz 7z rar
+  doc docx ppt pptx xls xlsx pdf
+  dylib so dll exe bin jar war wasm
+  pkl pickle onnx pt pth npy npz parquet
+)
+ALLOWLIST_PATHS=(
+  "apps/math-quiz/sounds/*.mp3"
+  "apps/games/robopoli/sounds/*.wav"
+  "apps/math-quiz/sql-wasm.wasm"
+)
+BLOCKED_SUFFIXES=(
+  ".deepgram.json"
+  ".transcription.raw.json"
+)
+_is_allowlisted() {
+  local path="$1"
+  local pattern
+  for pattern in "${ALLOWLIST_PATHS[@]}"; do
+    case "$path" in
+      $pattern) return 0 ;;
+    esac
+  done
+  return 1
+}
+_has_blocked_suffix() {
+  local path="$1"
+  local suffix
+  for suffix in "${BLOCKED_SUFFIXES[@]}"; do
+    [[ "$path" == *"$suffix" ]] && return 0
+  done
+  return 1
+}
+_ext_blocked() {
+  local ext
+  ext="$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')"
+  local e
+  for e in "${BLOCKED_EXTS[@]}"; do
+    [[ "$ext" == "$e" ]] && return 0
+  done
+  return 1
+}
+_path_in_head() {
+  git cat-file -e "HEAD:$1" 2>/dev/null
+}
+_path_in_merge_head() {
+  # During an in-progress merge, MERGE_HEAD is the commit being merged in
+  # (merge second parent). Paths already on that side are not new blobs from
+  # this branch — common after renames/moves that landed on main first.
+  git rev-parse -q --verify MERGE_HEAD >/dev/null || return 1
+  git cat-file -e "MERGE_HEAD:$1" 2>/dev/null
+}
+_file_size_bytes() {
+  local path="$1"
+  if git cat-file -e ":$path" 2>/dev/null; then
+    git cat-file -s ":$path"
+    return 0
+  fi
+  if [[ -f "$path" ]]; then
+    stat -f '%z' "$path" 2>/dev/null || stat -c '%s' "$path"
+    return 0
+  fi
+  printf '0'
+}
+_fmt_size() {
+  local bytes="$1"
+  if (( bytes >= 1048576 )); then
+    awk -v b="$bytes" 'BEGIN { printf "%.1f MB", b/1048576 }'
+  elif (( bytes >= 1024 )); then
+    awk -v b="$bytes" 'BEGIN { printf "%.1f KB", b/1024 }'
+  else
+    printf '%s B' "$bytes"
+  fi
+}
+type_violations=()
+size_violations=()
+while IFS= read -r -d '' path; do
+  [[ -z "$path" ]] && continue
+  if _is_allowlisted "$path"; then
+    continue
+  fi
+  if _path_in_head "$path" || _path_in_merge_head "$path"; then
+    continue
+  fi
+  ext="${path##*.}"
+  blocked_type=false
+  if [[ "$path" != "$ext" ]] && _ext_blocked "$ext"; then
+    blocked_type=true
+  elif _has_blocked_suffix "$path"; then
+    blocked_type=true
+  fi
+  if [[ "$blocked_type" == true ]]; then
+    type_violations+=("$path")
+    continue
+  fi
+  size="$(_file_size_bytes "$path")"
+  if (( size > MAX_NEW_FILE_BYTES )); then
+    size_violations+=("$path|$size")
+  fi
+done < <(git diff --cached --name-only -z --diff-filter=ACM)
+if ((${#type_violations[@]} == 0 && ${#size_violations[@]} == 0)); then
+  exit 0
+fi
+if ((${#type_violations[@]} > 0)); then
+  echo "pre-commit: blocked — disallowed file type(s) staged for commit:" >&2
+  for path in "${type_violations[@]}"; do
+    echo "  $path" >&2
+  done
+  echo >&2
+fi
+if ((${#size_violations[@]} > 0)); then
+  echo "pre-commit: blocked — new staged file(s) exceed $(_fmt_size "$MAX_NEW_FILE_BYTES"):" >&2
+  for entry in "${size_violations[@]}"; do
+    path="${entry%%|*}"
+    size="${entry##*|}"
+    echo "  $path ($(_fmt_size "$size"))" >&2
+  done
+  echo >&2
+fi
+cat >&2 <<'EOF'
+These paths are local-only, S3-backed, or unexpectedly large per repo policy (.gitignore).
+Unstage with: git restore --staged <path>
+Already-tracked large files can be modified without hitting the size rule.
+To bypass (explicit human override for a small intentional add): git commit --no-verify
+See scripts/git/README.md
+EOF
+exit 1

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Family Schedule</title>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.23/dist/full.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="bg-base-200 min-h-screen">
+
+  <!-- Header -->
+  <div class="navbar bg-base-100 shadow-sm px-4 sticky top-0 z-40">
+    <div class="flex-1 items-center gap-2">
+      <a href="/" class="btn btn-ghost btn-sm">‹ Lesson Logger</a>
+      <span class="text-lg font-semibold tracking-tight">Family Schedule</span>
+    </div>
+    <div class="flex-none gap-2">
+      <span class="text-sm text-base-content/60">{{ username }}</span>
+    </div>
+  </div>
+
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+      {% for section in sections %}
+      <div class="card schedule-card bg-base-100 shadow-sm h-full">
+        <div class="card-body p-5">
+          <h2 class="card-title schedule-card-title">
+            <span>{{ section.label }}</span>
+          </h2>
+          {% if section.exists %}
+          <article class="prose prose-sm max-w-none schedule-md">{{ section.html | safe }}</article>
+          {% else %}
+          <p class="text-sm text-base-content/60 italic">
+            No {{ section.label | lower }} file yet — it will appear here once Hermes creates it.
+          </p>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,2 @@
+- [x] 1.1 Add `## Workflows` section to `openspec/specs/app/spec.md` covering all 11 requirements
+- [x] 1.2 Re-run `openspec validate --all --strict` (must pass)

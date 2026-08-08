@@ -1,0 +1,43 @@
+{
+  "statuses": [
+    {
+      "worktree": "/Users/randytrue/Documents/Code/feature-holodeck-start",
+      "worktree_path": "/Users/randytrue/Documents/Code/feature-holodeck-start",
+      "worktree_name": "feature-holodeck-start",
+      "branch": "feature/holodeck-commits",
+      "state": "waiting-on-ai",
+      "since": "2026-07-17T04:12:00-07:00",
+      "exchange_id": "claude-code:cc-holo-plan-001#1",
+      "session_id": "claude-code:cc-holo-plan-001",
+      "session_label": "Claude CLI - Fable 5",
+      "turn_title": "Operator turns frontend",
+      "recap": "The operator turn asked for the frontend half of the operator/delegated split: status rows, turn titles, machinery filtering, and colored session branch pills."
+    },
+    {
+      "worktree": "/Users/randytrue/Documents/Code/feature-web-site-transcript-pages",
+      "worktree_path": "/Users/randytrue/Documents/Code/feature-web-site-transcript-pages",
+      "worktree_name": "feature-web-site-transcript-pages",
+      "branch": "feature/web-site-transcript-pages",
+      "state": "your-turn",
+      "since": "2026-07-16T22:04:00-07:00",
+      "exchange_id": "cursor-webflow-882#7",
+      "session_id": "cursor-webflow-882",
+      "session_label": "Cursor IDE - Composer 2.5 Fast",
+      "turn_title": "Transcript page QA",
+      "recap": "The assistant finished the Astro page migration pass and is waiting for Randy to review the fixture comparison."
+    },
+    {
+      "worktree": "/Users/randytrue/Documents/Code/fof-mono",
+      "worktree_path": "/Users/randytrue/Documents/Code/fof-mono",
+      "worktree_name": "fof-mono",
+      "branch": "main",
+      "state": "your-turn",
+      "since": "2026-07-16T18:20:00-07:00",
+      "exchange_id": "cc-qrag-006#2",
+      "session_id": "claude-code:cc-qrag-006",
+      "session_label": "Claude CLI - Opus 4.8",
+      "turn_title": "QRAG deploy reminders",
+      "recap": "The assistant refreshed the deployment notes and left the next decision with Randy."
+    }
+  ]
+}

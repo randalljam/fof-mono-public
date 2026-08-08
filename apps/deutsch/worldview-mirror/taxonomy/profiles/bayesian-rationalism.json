@@ -1,0 +1,29 @@
+{
+  "id": "profile:bayesian-rationalism",
+  "label": "Bayesian Rationalism (LessWrong tradition)",
+  "summary": "The rationalist movement seeded by Eliezer Yudkowsky's Sequences on LessWrong: human reason is systematically biased firmware to be debugged with probability theory, decision theory, and cognitive-bias research; ideal epistemology is Bayesian updating toward accurate world-models. Entangled with effective altruism and AI-alignment research.",
+  "thinkers": ["Eliezer Yudkowsky", "Nick Bostrom", "Julia Galef", "Scott Alexander"],
+  "sources": [
+    {"title": "Rationality: From AI to Zombies (The Sequences)", "url": "https://www.lesswrong.com/rationality"},
+    {"title": "LessWrong — Wikipedia", "url": "https://en.wikipedia.org/wiki/LessWrong"},
+    {"title": "Rationalist community — Wikipedia", "url": "https://en.wikipedia.org/wiki/Rationalist_community"}
+  ],
+  "variants": "Doomers (Yudkowsky/MIRI, high p(doom)) vs accelerationist-adjacent optimists vs mainstream effective-altruist 'worried but working on it'; post-rationalists split off rejecting the movement's legibility bias. Sharpest documented contrast with deep optimism: probabilistic justification of beliefs vs conjecture-and-criticism, and AI-risk pessimism vs education-not-alignment.",
+  "cited_from_graph": false,
+  "positions": [
+    {"axis": "axis:epistemology", "position": -1.0, "summary": "Quantified justification-in-degrees: beliefs are probabilities updated by evidence via Bayes' theorem, with priors and calibration — the justificationist pole as Deutsch defines it, though fallibilist in mood.", "evidence": [{"url": "https://www.lesswrong.com/rationality", "title": "The Sequences"}]},
+    {"axis": "axis:knowledge-reach", "position": 1.0, "summary": "Transhumanist confidence in what technology and intelligence could achieve, tempered by bias-driven human epistemic limits.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Rationalist_community", "title": "Rationalist community"}]},
+    {"axis": "axis:authority-of-belief", "position": 1.5, "summary": "Reason and evidence only; hostile to tradition and faith, wary even of scientific authority when it conflicts with Bayesian reasoning.", "evidence": [{"url": "https://www.lesswrong.com/rationality", "title": "The Sequences"}]},
+    {"axis": "axis:realism", "position": 1.0, "summary": "The map is not the territory: an objective territory exists and accurate maps of it are the goal, though truth-talk is filtered through probability.", "evidence": [{"url": "https://www.lesswrong.com/rationality", "title": "The Sequences"}]},
+    {"axis": "axis:progress", "position": -0.5, "summary": "Bifurcated: radical optimism about technological possibility combined with acute pessimism about unaligned superintelligence — 'AGI Ruin' and calls to halt frontier AI.", "evidence": [{"url": "https://en.wikipedia.org/wiki/LessWrong", "title": "LessWrong — AI risk history"}]},
+    {"axis": "axis:risk", "position": -1.0, "summary": "Selectively precautionary: proactionary about most technology, sharply precautionary about existential risks via expected-value reasoning over catastrophic tails.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Superintelligence:_Paths,_Dangers,_Strategies", "title": "Bostrom, Superintelligence"}]},
+    {"axis": "axis:agency", "position": 1.0, "summary": "High individual epistemic agency ('heroic responsibility') within a deterministic physical universe; compatibilism is standard.", "evidence": [{"url": "https://www.lesswrong.com/rationality", "title": "The Sequences"}]},
+    {"axis": "axis:human-significance", "position": 1.0, "summary": "Humanity's 'cosmic endowment' matters enormously — safeguarding the long-term future is the central project.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Rationalist_community", "title": "Rationalist community"}]},
+    {"axis": "axis:morality", "position": -1.0, "summary": "Mostly anti-realist meta-ethics with strongly held quasi-utilitarian first-order ethics; value is complex, fragile, and human-originated.", "evidence": [{"url": "https://www.lesswrong.com/rationality", "title": "The Sequences (value is fragile)"}]},
+    {"axis": "axis:metaphysics", "position": 2.0, "summary": "Strict naturalism and physicalism; reductionism; many-worlds quantum mechanics favored; minds are computation.", "evidence": [{"url": "https://en.wikipedia.org/wiki/LessWrong", "title": "LessWrong"}]},
+    {"axis": "axis:change", "position": 1.0, "summary": "Anti-traditional and reform-minded about institutions and epistemics, though wary of changes that touch existential risk.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Rationalist_community", "title": "Rationalist community"}]},
+    {"axis": "axis:nature", "position": 1.0, "summary": "Nature is material to be understood and optimized; no intrinsic normative authority in the wild.", "evidence": [{"url": "https://www.lesswrong.com/rationality", "title": "The Sequences"}]},
+    {"axis": "axis:meaning", "position": 1.5, "summary": "Self-authored meaning: fun theory, human flourishing, and protecting humanity's long-term potential.", "evidence": [{"url": "https://www.lesswrong.com/rationality", "title": "The Sequences (fun theory)"}]},
+    {"axis": "axis:social", "position": 0.5, "summary": "Individualist-leaning epistemics with strong community coordination norms around shared projects.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Rationalist_community", "title": "Rationalist community"}]}
+  ]
+}

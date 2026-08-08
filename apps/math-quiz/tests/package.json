@@ -1,0 +1,22 @@
+{
+  "name": "math-quiz-tests",
+  "private": true,
+  "description": "Unit + E2E tests for apps/math-quiz. Unit tests (node --test) run without npm install; the sql.js-backed unit tests and Playwright E2E tests require `npm install` here first.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "test:e2e": "playwright test",
+    "test:all": "node --test && playwright test",
+    "test:playthrough": "playwright test --config playwright.playthrough.config.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "@sparticuz/chromium": "^138.0.0",
+    "blueimp-md5": "2.19.0",
+    "canvas-confetti": "1.5.1",
+    "jszip": "3.10.1",
+    "plotly.js-dist": "1.58.5",
+    "sql.js": "1.6.2",
+    "three": "0.175.0"
+  }
+}

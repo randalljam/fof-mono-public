@@ -1,0 +1,17 @@
+---
+import SiteLayout from '../../components/SiteLayout.astro';
+import LogicGates from '../../components/applets/LogicGates.jsx';
+---
+<SiteLayout
+  title="Logic Gates — Focus on Foundations"
+  description="An interactive lesson on logic gates: switches, NOT, OR, AND, XOR, and NAND, building up to a full adder that adds binary numbers."
+  favicon="/favicon-logic-gates.svg"
+  noindex
+>
+  <noscript>
+    <p style="padding: 2rem; text-align: center; font-family: system-ui, sans-serif;">
+      Logic Gates needs JavaScript. Please enable it and reload.
+    </p>
+  </noscript>
+  <LogicGates client:load />
+</SiteLayout>

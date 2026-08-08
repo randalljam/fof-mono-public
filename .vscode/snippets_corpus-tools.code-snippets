@@ -1,0 +1,60 @@
+{
+	"inline": {
+		//"scope": "javascript,python",
+		"prefix": "inl",
+		"body": [
+				" *IN-LINE: "
+		],
+		"description": "Inserts the template for inline text"
+		},
+		"original question": {
+				"prefix": "ori",
+				"body": [
+								"ORIGINAL QUESTION: "
+				],
+				"description": "creates the text"
+		},
+		"alternate question": {
+				"prefix": "alt",
+				"body": [
+								"ALTERNATE QUESTION: "
+				],
+				"description": "creates the text"
+		},
+		"regarding": {
+				"prefix": "re",
+				"body": [
+								"_Regarding ,_ "
+				],
+				"description": "creates the text"
+		},
+		"doc string - full": {
+				"prefix": "ds",
+				"body": ["Add a docstring right under the function definition line with a brief description of what this function does that will be useful to determine whether functions should call this. update all arguments to match this function and include descriptions. Use the phrase ‘string of …’ instead of ‘string representing …’. Also update the return value to match this function. DO NOT fill in the 'category' or 'heading' fields. Do fill in the ‘usage’ field."],
+				"description": "creates the text"
+		},
+		"dashes 42": {
+				"prefix": "dd",
+				"body": [
+								"------------------------------------------"
+				],
+				"description": "creates the text"
+		}
+	// .vscode/snippets_corpus-tools.code-snippets
+	// Place your corpus-tools workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+	// Placeholders with the same ids are connected.
+	// Example:
+	// "Print to console": {
+	// 	"scope": "javascript,typescript",
+	// 	"prefix": "log",
+	// 	"body": [
+	// 		"console.log('$1');",
+	// 		"$2"
+	// 	],
+	// 	"description": "Log output to console"
+	// }
+}

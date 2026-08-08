@@ -1,0 +1,59 @@
+{
+  "registry_version": "0.1.0",
+  "external_clones_dir": "/Users/randytrue/Documents/Code/_EXTERNAL-CLONES/_TRANSCRIPTION",
+  "build_root": "data/diarbench/datasets",
+  "runs_root": "data/diarbench/runs",
+  "notes": "Internal corpora score transcripts (cpWER family; RTTM is boundary-approximate because references carry segment-start timestamps only). External benchmarks have true fine-grained RTTM ground truth plus audio, so backends run end-to-end there. session_id = sanitized episode stem (internal) or corpus uri (external).",
+  "datasets": {
+    "deutsch": {
+      "kind": "internal",
+      "catalog_csv": "apps/transcription/stellar-transcriber/references/corpus-inventory-catalog.csv",
+      "ref_suffix_priority": ["_vrb", "_cemanual"],
+      "ref_note": "_qafixed is QA-format (not speaker turns) so diarization eval prefers _vrb; _cemanual is the fallback for episodes that only have CE-manual refs",
+      "hyp_suffixes": ["_nova2gen", "_dgwhspm"],
+      "audio_dir": "data/deutsch/f0_source_audio",
+      "audio_note": "mp3 per stem, fetched from transcript-metadata YouTube links and duration-verified against Deepgram JSON (fetch_corpus_audio.py); S3 archival via s3_archive after user confirmation",
+      "boundary_precision": "segment"
+    },
+    "pv": {
+      "kind": "internal",
+      "catalog_csv": "apps/transcription/stellar-transcriber/references/corpus-inventory-catalog.csv",
+      "ref_suffix_priority": ["_cemanual"],
+      "hyp_suffixes": ["_nova2gen", "_dgwhspm", "_enhmeet"],
+      "audio_dir": "data/pv/meetings_epc/f0_source_audio",
+      "boundary_precision": "segment"
+    },
+    "sovereign-child": {
+      "kind": "internal",
+      "catalog_csv": "apps/transcription/stellar-transcriber/references/corpus-inventory-catalog.csv",
+      "ref_suffix_priority": ["_vrb", "_cemanual"],
+      "hyp_suffixes": ["_nova2gen", "_dgwhspm"],
+      "audio_dir": "data/sovereign-child/f0_source_audio",
+      "boundary_precision": "segment"
+    },
+    "fda": {
+      "kind": "internal",
+      "status": "planned",
+      "note": "FDA C19 townhall transcripts live only under exchanges/qrag_fda-c19-townhalls (S3-manifested); promote into data/ and vet references before eval use"
+    },
+    "ami-mini": {
+      "kind": "external",
+      "clone_subdir": "AMI-diarization-setup",
+      "rttm_dirs": ["only_words/rttms/test", "only_words/rttms/dev"],
+      "uem_dirs": ["uems/test", "uems/dev"],
+      "lists": {"test": "lists/test.mini.txt", "dev": "lists/dev.mini.txt"},
+      "audio_root": "data/benchmarks/ami/amicorpus",
+      "audio_pattern": "{uri}/audio/{uri}.Mix-Headset.wav",
+      "audio_mirror": "http://groups.inf.ed.ac.uk/ami/AMICorpusMirror/amicorpus/{uri}/audio/{uri}.Mix-Headset.wav",
+      "num_speakers": 4,
+      "license": "CC-BY-4.0",
+      "published_reference": {"pyannote-community1_der_strict_ami_ihm": 0.17}
+    },
+    "voxconverse": {
+      "kind": "external",
+      "status": "planned",
+      "clone_subdir": "voxconverse",
+      "note": "RTTMs in clone (dev/ and test/); audio fetch script to be added when needed"
+    }
+  }
+}

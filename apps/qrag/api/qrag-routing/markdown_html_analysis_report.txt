@@ -1,0 +1,56 @@
+Markdown and HTML Analysis Report for /Users/bs/Programming/corpus-tools/data/floodlamp/reg/fda-policy-ivd/2020-05-29_FDA Template - Home Specimen Collection Molecular Diagnostic Template_fixed.md
+
+Number of tables: 2
+  Markdown tables: 1
+  HTML tables: 1
+
+Table 1 (Markdown):
+  Title: 
+  Rows: 345
+  Columns: 1
+
+Table 2 (HTML):
+  Title: 
+  Rows: 2
+  Columns: 3
+
+Number of headings: 32
+Number of heading levels: 3
+
+Level 1 headings: 15
+Level 2 headings: 16
+Level 3 headings: 1
+
+List of headings:
+# Home Specimen Collection Molecular Diagnostic Template [1]
+## **GENERAL INFORMATION ABOUT THIS TEMPLATE**
+## **EXAMPLE TEMPLATE:**
+# **A. PURPOSE FOR SUBMISSION**
+# **B. APPLICANT**
+# **D. PROPRIETARY AND ESTABLISHED NAMES**
+# **C. REGULATORY INFORMATION**
+# **D. PROPOSED INTENDED USE**
+## ***1) <u>Intended Use:</u>***
+## ***2) <u>Special Conditions for Use Statements:</u>***
+# **E. DEVICE DESCRIPTION** 
+## ***<u>Device Description:</u>***
+## ***<u>Home Collection Kit Ordering and Processing:</u>***
+## 3.  ***Specimen Collection Control:***
+## 4.  ***<u>Partnering Laboratories:</u>***
+# **F. PRODUCT MANUFACTURING**
+## ***<u>Overview of Manufacturing and Distribution:</u>*** 
+## 2. ***<u>Components Included with the Home Collection Kit</u>***
+### **Kit components** 
+## 3. *<u>**Collection Device Stability:**</u>* 
+# **G. <span class="smallcaps">PERFORMANCE EVALUATION</span>**
+## **Home Collection Sample Stability Study Design**
+## **Clinical Validation of Saliva as a sample type (if the COVID-19 NAAT test EUA does not have saliva as an acceptable validated sample type):**
+## **Flex studies:**
+## **<u>Human Usability Study:</u>** for home-collection and mailing the sample to a CLIA-certified lab for testing:
+## **User Labeling:**
+# **H. UNMET NEED ADDRESSED BY THE PRODUCT** 
+# **I. APPROVED/CLEARED ALTERNATIVE PRODUCTS**
+# **J. BENEFITS AND RISKS:**
+# **K. FACT SHEET FOR HEALTHCARE PROVIDERS AND PATIENTS:**
+# **L. INSTRUCTIONS FOR USE/ PROPOSED LABELING/PACKAGE INSERT:**
+# **M. RECORD KEEPING AND REPORTING INFORMATION TO FDA:**

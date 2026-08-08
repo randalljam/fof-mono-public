@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "mathquest",
+  "version": "${version}",
+  "name": "MathQuest",
+  "description": "Practice multiplication while playing Minecraft! Earn treasures by solving math problems.",
+  "authors": [
+    "KidGames"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.kidgames.mathquest.MathQuestMod"
+    ],
+    "client": [
+      "com.kidgames.mathquest.MathQuestClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.18.0",
+    "fabric-api": "*",
+    "minecraft": "~1.21.11",
+    "java": ">=21"
+  }
+}

@@ -1,0 +1,13 @@
+{
+    "title": "Synthetic Sensor Demonstration",
+    "duration": 39,
+    "subtitles": {},
+    "automatic_captions": {
+        "en": [
+            {
+                "url": "https://example.test/captions/synthetic-sensor.json",
+                "ext": "json3"
+            }
+        ]
+    }
+}

@@ -1,0 +1,110 @@
+// Fabric build for Minecraft 26.1.2 — first unobfuscated release line. Uses the new
+// `net.fabricmc.fabric-loom` plugin id (no remap step) and Mojang's official mappings
+// since Yarn/Intermediary are no longer published past 1.21.11.
+//
+// The shared fabric/ source is Mojang-named and consumed directly by this target.
+
+plugins {
+    id 'net.fabricmc.fabric-loom' version "${loom_version}.+"
+    id 'maven-publish'
+}
+
+base {
+    archivesName = "${project.archives_base_name}-fabric"
+}
+
+tasks.withType(AbstractArchiveTask).configureEach {
+    archiveVersion = "${project.version}-mc${project.minecraft_version}"
+}
+
+// Use `srcDirs = [...]` (plural, assignment) rather than `srcDir x` (singular, appends)
+// so we replace Gradle's default list outright; otherwise `src/main/resources` would
+// appear twice and processResources would fail with a duplicate fabric.mod.json error.
+sourceSets {
+    main {
+        java {
+            srcDirs = [
+                layout.buildDirectory.dir('generated/shared-main').get().asFile,
+                rootProject.file('common/src/main/java'),         // platform-agnostic
+                'src/main/java',                                  // 26.1 API compatibility overrides
+            ]
+        }
+        resources {
+            srcDirs = [
+                'src/main/resources',                             // target-local: fabric.mod.json
+                rootProject.file('shared/src/main/resources'),    // shared: assets, lang, textures
+            ]
+        }
+    }
+    test {
+        java {
+            srcDirs = [rootProject.file('shared/src/test/java')]
+        }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    // Aggregated fabric-api + vanilla Fabric installer omit this submodule; compile + JiJ-runtime ship it like sqlite-jdbc.
+    include implementation("net.fabricmc.fabric-api:fabric-key-binding-api-v1:${project.fabric_key_binding_api_version}")
+
+    include implementation('org.xerial:sqlite-jdbc:3.49.1.0')
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.xerial:sqlite-jdbc:3.49.1.0'
+    testImplementation 'com.google.code.gson:gson:2.11.0'
+}
+
+tasks.register('syncSharedSourceFor26', Sync) {
+    from rootProject.file('shared/src/main/java')
+    into layout.buildDirectory.dir('generated/shared-main')
+    exclude 'com/kidgames/mathquest/client/MathQuestTitleScreenOverlay.java'
+    exclude 'com/kidgames/mathquest/MathQuestCommands.java'
+    exclude 'com/kidgames/mathquest/MathQuestMod.java'
+    exclude 'com/kidgames/mathquest/entity/WanderingNerdEntity.java'
+    exclude 'com/kidgames/mathquest/entity/WanderingNerdSpawner.java'
+    exclude 'com/kidgames/mathquest/screen/QuizOfferScreen.java'
+    exclude 'com/kidgames/mathquest/screen/QuestInvitationScreen.java'
+    exclude 'com/kidgames/mathquest/screen/QuizScreen.java'
+    exclude 'com/kidgames/mathquest/screen/QuizResultScreen.java'
+    exclude 'com/kidgames/mathquest/screen/WrittenColumnQuizScreen.java'
+}
+
+compileJava.dependsOn syncSharedSourceFor26
+
+processResources {
+    dependsOn rootProject.tasks.named('generateNerdTexture')
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+    withSourcesJar()
+}
+
+tasks.configureEach {
+    if (it.name == 'sourcesJar') it.dependsOn syncSharedSourceFor26
+    if (it.name == 'sourcesJar') it.dependsOn rootProject.tasks.named('generateNerdTexture')
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 25
+}
+
+jar {
+    from(rootProject.file('LICENSE')) {
+        rename { "${it}_${project.archives_base_name}" }
+    }
+}

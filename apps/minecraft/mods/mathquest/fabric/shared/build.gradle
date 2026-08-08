@@ -1,0 +1,43 @@
+// Shared Fabric source. Both fabric-* targets pull this directory in as an extra source
+// directory; the target subprojects own the actual Loom configuration, mappings choice,
+// and Minecraft version.
+//
+// IMPORTANT: this module does not apply Loom directly. It exists so the source tree has
+// a stable home and the per-target subprojects share it. We mark this as a plain Java
+// project so IDE indexing works, but the real compile happens inside each target.
+//
+// As of the initial multi-target setup, the source here is Yarn-named for 1.21.11. The
+// fabric-26.1.2 target won't compile until you migrate this source to Mojang mappings —
+// see docs/migration-1.21-to-26.1.md.
+
+apply plugin: 'java-library'
+
+base {
+    archivesName = "${project.archives_base_name}-fabric-shared"
+}
+
+// We deliberately don't add Minecraft / Fabric API as dependencies here — those land in
+// each target's classpath via Loom. This module compiles only as a stub for IDE comfort;
+// the target builds are the authoritative compilation.
+sourceSets {
+    main {
+        java {
+            srcDirs = []  // disabled: real compilation happens in target subprojects
+        }
+        resources {
+            srcDirs = []
+        }
+    }
+    test {
+        java { srcDirs = [] }
+        resources { srcDirs = [] }
+    }
+}
+
+// Disable the jar — nothing to package here.
+tasks.named('jar').configure { enabled = false }
+tasks.named('compileJava').configure { enabled = false }
+tasks.named('compileTestJava').configure { enabled = false }
+tasks.named('processResources').configure { enabled = false }
+tasks.named('processTestResources').configure { enabled = false }
+tasks.named('test').configure { enabled = false }

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson Logger</title>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.23/dist/full.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="bg-base-200 min-h-screen">
+
+  <!-- Header -->
+  <div class="navbar bg-base-100 shadow-sm px-4 sticky top-0 z-40">
+    <div class="flex-1">
+      <span class="text-lg font-semibold tracking-tight">Lesson Logger</span>
+    </div>
+    <div class="flex-none gap-2 items-center">
+      <a href="/schedule" class="btn btn-ghost btn-sm">Family Schedule ›</a>
+      <span class="text-sm text-base-content/60">{{ username }}</span>
+    </div>
+  </div>
+
+  <main class="max-w-5xl mx-auto px-4 py-6 space-y-6">
+
+    <!-- Controls row -->
+    <div class="flex flex-wrap items-center gap-3">
+      <!-- Student selector -->
+      <select id="student-select" class="select select-bordered select-sm"
+              onchange="updateParam('student', this.value)">
+        {% for s in all_students %}
+        <option value="{{ s }}" {% if s == student %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+
+      <!-- Time mode toggle -->
+      <div class="join">
+        {% for m, label in [("week", "Week"), ("month", "Month"), ("year", "Learning Year")] %}
+        <a href="?mode={{ m }}&student={{ student }}&ref={{ ref }}"
+           class="join-item btn btn-sm {% if mode == m %}btn-primary{% else %}btn-ghost{% endif %}">
+          {{ label }}
+        </a>
+        {% endfor %}
+      </div>
+
+      <!-- Date nav -->
+      <div class="flex items-center gap-1">
+        <a href="?mode={{ mode }}&student={{ student }}&ref={{ prev_ref }}"
+           class="btn btn-ghost btn-sm btn-circle">‹</a>
+        <span class="text-sm font-medium whitespace-nowrap">{{ range_label }}</span>
+        <a href="?mode={{ mode }}&student={{ student }}&ref={{ next_ref }}"
+           class="btn btn-ghost btn-sm btn-circle">›</a>
+        <a href="?mode={{ mode }}&student={{ student }}"
+           class="btn btn-ghost btn-xs text-xs ml-1">Today</a>
+      </div>
+
+      <!-- Filters drawer toggle -->
+      <button class="btn btn-ghost btn-sm ml-auto" onclick="document.getElementById('filter-drawer').classList.toggle('hidden')">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+        Filters
+        {% if filter_subject or filter_curricula or filter_teacher or filter_location or filter_created_by %}
+        <span class="badge badge-primary badge-xs">•</span>
+        {% endif %}
+      </button>
+    </div>
+
+    <!-- Filter drawer -->
+    <div id="filter-drawer" class="hidden">
+      <div class="card bg-base-100 shadow-sm">
+        <div class="card-body p-4">
+          <form method="get" action="/" class="flex flex-wrap gap-3 items-end">
+            <input type="hidden" name="mode" value="{{ mode }}">
+            <input type="hidden" name="student" value="{{ student }}">
+            <input type="hidden" name="ref" value="{{ ref }}">
+
+            <div class="form-control">
+              <label class="label py-0"><span class="label-text text-xs">Subject</span></label>
+              <select name="subject" class="select select-bordered select-xs">
+                <option value="">All</option>
+                {% for s in all_subjects %}
+                <option value="{{ s }}" {% if filter_subject == s %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-control">
+              <label class="label py-0"><span class="label-text text-xs">Curricula</span></label>
+              <select name="curricula" class="select select-bordered select-xs">
+                <option value="">All</option>
+                {% for c in all_curricula %}
+                <option value="{{ c }}" {% if filter_curricula == c %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-control">
+              <label class="label py-0"><span class="label-text text-xs">Teacher</span></label>
+              <select name="teacher" class="select select-bordered select-xs">
+                <option value="">All</option>
+                {% for t in all_teachers %}
+                <option value="{{ t }}" {% if filter_teacher == t %}selected{% endif %}>{{ t }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-control">
+              <label class="label py-0"><span class="label-text text-xs">Location</span></label>
+              <select name="location" class="select select-bordered select-xs">
+                <option value="">All</option>
+                {% for l in all_locations %}
+                <option value="{{ l }}" {% if filter_location == l %}selected{% endif %}>{{ l }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-control">
+              <label class="label py-0"><span class="label-text text-xs">Logged by</span></label>
+              <select name="created_by" class="select select-bordered select-xs">
+                <option value="">All</option>
+                {% for c in all_created_by %}
+                <option value="{{ c }}" {% if filter_created_by == c %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-xs">Apply</button>
+            <a href="?mode={{ mode }}&student={{ student }}&ref={{ ref }}" class="btn btn-ghost btn-xs">Clear</a>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div class="card bg-base-100 shadow-sm">
+        <div class="card-body p-4 items-center text-center">
+          <div class="text-3xl font-bold text-primary">{{ summary.time_display }}</div>
+          <div class="text-xs text-base-content/60 uppercase tracking-wide">Total Time</div>
+        </div>
+      </div>
+      <div class="card bg-base-100 shadow-sm">
+        <div class="card-body p-4 items-center text-center">
+          <div class="text-3xl font-bold">{{ summary.total_sessions }}</div>
+          <div class="text-xs text-base-content/60 uppercase tracking-wide">Sessions</div>
+        </div>
+      </div>
+      <div class="card bg-base-100 shadow-sm">
+        <div class="card-body p-4 items-center text-center">
+          <div class="text-3xl font-bold">{{ summary.subjects_covered }}</div>
+          <div class="text-xs text-base-content/60 uppercase tracking-wide">Subjects</div>
+        </div>
+      </div>
+      <div class="card bg-base-100 shadow-sm">
+        <div class="card-body p-4 items-center text-center">
+          <div class="text-3xl font-bold">{{ summary.avg_per_active_day }}<span class="text-lg">m</span></div>
+          <div class="text-xs text-base-content/60 uppercase tracking-wide">Avg / Active Day</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts row -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <!-- Subject time chart -->
+      <div class="card bg-base-100 shadow-sm">
+        <div class="card-body p-4">
+          <h2 class="card-title text-sm">Minutes by Subject</h2>
+          <div class="h-56">
+            <canvas id="subject-chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Consistency chart -->
+      <div class="card bg-base-100 shadow-sm">
+        <div class="card-body p-4">
+          <h2 class="card-title text-sm">
+            {% if mode == "week" %}Daily Consistency{% elif mode == "month" %}Daily Activity{% else %}Monthly Activity{% endif %}
+          </h2>
+          <div class="h-56">
+            <canvas id="consistency-chart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Curricula breakdown -->
+    {% if curricula_breakdown %}
+    <div class="card bg-base-100 shadow-sm">
+      <div class="card-body p-4">
+        <h2 class="card-title text-sm">Curricula & Activities</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+          {% for subj, items in curricula_breakdown.items() %}
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="w-3 h-3 rounded-full inline-block" style="background-color: {{ items[0].color }}"></span>
+              <span class="font-medium text-sm">{{ subj }}</span>
+            </div>
+            <div class="pl-5 space-y-0.5">
+              {% for item in items %}
+              <div class="flex justify-between text-xs text-base-content/70">
+                <span>{{ item.curricula }}</span>
+                <span class="tabular-nums">{{ item.minutes }}m · {{ item.sessions }} session{{ "s" if item.sessions != 1 }}</span>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Recent lessons -->
+    <div class="card bg-base-100 shadow-sm">
+      <div class="card-body p-4">
+        <h2 class="card-title text-sm">Recent Lessons</h2>
+        {% if recent %}
+        <div class="overflow-x-auto">
+          <table class="table table-xs">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Subject</th>
+                <th>Duration</th>
+                <th class="hidden sm:table-cell">Curricula</th>
+                <th class="hidden md:table-cell">Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for e in recent %}
+              <tr class="hover">
+                <td class="whitespace-nowrap">{{ e.date }}</td>
+                <td>
+                  <span class="badge badge-sm" style="background-color: {{ subject_colors.get(e.subject, '#94a3b8') }}20; color: {{ subject_colors.get(e.subject, '#94a3b8') }}; border-color: {{ subject_colors.get(e.subject, '#94a3b8') }}40;">
+                    {{ e.subject }}
+                  </span>
+                </td>
+                <td class="tabular-nums">{{ e.duration }}m</td>
+                <td class="hidden sm:table-cell text-base-content/60">{{ e.curricula or "—" }}</td>
+                <td class="hidden md:table-cell text-base-content/60 max-w-xs truncate">{{ e.notes or "—" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <p class="text-sm text-base-content/50 py-4 text-center">No lessons found for this range.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Preferences (small footer form) -->
+    <div class="card bg-base-100 shadow-sm">
+      <div class="card-body p-4">
+        <h2 class="card-title text-sm">My Defaults</h2>
+        <form method="post" action="/preferences" class="flex flex-wrap gap-3 items-end">
+          <div class="form-control">
+            <label class="label py-0"><span class="label-text text-xs">Default student</span></label>
+            <select name="default_student" class="select select-bordered select-xs">
+              {% for s in all_students %}
+              <option value="{{ s }}" {% if prefs.default_student == s %}selected{% endif %}>{{ s }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-control">
+            <label class="label py-0"><span class="label-text text-xs">Default view</span></label>
+            <select name="default_time_mode" class="select select-bordered select-xs">
+              {% for m, label in [("week", "Week"), ("month", "Month"), ("year", "Learning Year")] %}
+              <option value="{{ m }}" {% if prefs.default_time_mode == m %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary btn-xs">Save</button>
+        </form>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    const subjectData = {{ subject_breakdown_json|safe }};
+    const consistencyData = {{ consistency_json|safe }};
+
+    // Subject bar chart
+    new Chart(document.getElementById('subject-chart'), {
+      type: 'bar',
+      data: {
+        labels: subjectData.map(d => d.subject),
+        datasets: [{
+          data: subjectData.map(d => d.minutes),
+          backgroundColor: subjectData.map(d => d.color + '80'),
+          borderColor: subjectData.map(d => d.color),
+          borderWidth: 1,
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => ctx.parsed.y + ' min'
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'Minutes', font: { size: 11 } },
+            grid: { color: '#e5e7eb40' }
+          },
+          x: {
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    // Consistency chart
+    const consistencyColors = consistencyData.map(d =>
+      d.minutes > 0 ? '#6366f180' : '#e5e7eb60'
+    );
+    const consistencyBorders = consistencyData.map(d =>
+      d.minutes > 0 ? '#6366f1' : '#d1d5db'
+    );
+    new Chart(document.getElementById('consistency-chart'), {
+      type: 'bar',
+      data: {
+        labels: consistencyData.map(d => d.label),
+        datasets: [{
+          data: consistencyData.map(d => d.minutes),
+          backgroundColor: consistencyColors,
+          borderColor: consistencyBorders,
+          borderWidth: 1,
+          borderRadius: 4,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => ctx.parsed.y + ' min'
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'Minutes', font: { size: 11 } },
+            grid: { color: '#e5e7eb40' }
+          },
+          x: {
+            grid: { display: false },
+            ticks: {
+              maxRotation: 0,
+              autoSkip: true,
+              maxTicksLimit: {% if mode == "month" %}15{% elif mode == "year" %}12{% else %}7{% endif %}
+            }
+          }
+        }
+      }
+    });
+
+    function updateParam(key, value) {
+      const url = new URL(window.location);
+      url.searchParams.set(key, value);
+      window.location = url;
+    }
+  </script>
+
+</body>
+</html>

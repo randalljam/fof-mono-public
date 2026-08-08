@@ -1,0 +1,84 @@
+// Forge build for Minecraft 1.20.1. Forge entrypoints differ from Fabric (no
+// `ClientModInitializer`; instead an `@Mod`-annotated class registers itself onto the
+// Forge event bus), so the Forge source lives in a target-local java tree under this
+// directory rather than sharing the fabric/ module.
+//
+// Java target is 17 (Forge 47.x on 1.20.1 was built against Java 17), overriding the
+// repo-wide Java 21 default applied in the root build.gradle.
+
+plugins {
+    id 'net.minecraftforge.gradle' version "${forgegradle_version}.+"
+    id 'maven-publish'
+}
+
+base {
+    archivesName = "${project.archives_base_name}-forge"
+}
+
+tasks.withType(AbstractArchiveTask).configureEach {
+    archiveVersion = "${project.version}-mc${project.minecraft_version}"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 17
+    options.encoding = 'UTF-8'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = [
+                'src/main/java',
+                rootProject.file('common/src/main/java'),
+            ]
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+}
+
+minecraft {
+    mappings channel: 'official', version: project.minecraft_version
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                removesingleplayer { source sourceSets.main }
+            }
+        }
+    }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('META-INF/mods.toml') {
+        expand 'version': project.version
+    }
+}
+
+jar {
+    manifest {
+        attributes([
+            'Specification-Title'     : 'removesingleplayer',
+            'Specification-Vendor'    : 'KidGames',
+            'Specification-Version'   : '1',
+            'Implementation-Title'    : 'removesingleplayer',
+            'Implementation-Version'  : project.version,
+            'Implementation-Vendor'   : 'KidGames'
+        ])
+    }
+}

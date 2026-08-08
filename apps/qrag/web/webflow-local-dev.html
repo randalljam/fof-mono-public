@@ -1,0 +1,219 @@
+<!-- START OF FILE webflow-local-dev.html -->
+<!-- deploy: run at terminal:   python -m http.server 8000  -->
+<!--         then open browser: http://localhost:8000/  -->
+<!-- contains: setup to inject components into local page -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRAG Input Component - Local Development</title>
+
+    <!-- Webflow's generated CSS -->
+    <link href="https://cdn.prod.website-files.com/66f32336260d050c6e0fffa0/css/floodlamp-8c9d00d6ef3e90c375de806594d04.webflow.f32955762.css" rel="stylesheet" type="text/css"/>
+    
+    <!-- Google Fonts Setup -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
+    <script>
+        console.log('Running Local Dev Page: webflow-local-dev.html   1-14 1659');
+    </script>
+    <script type="text/javascript">
+        WebFont.load({
+            google: {
+                families: [
+                    "Lato:100,100italic,300,300italic,400,400italic,700,700italic,900,900italic",
+                    "Poppins:300,regular,500,600,700,800",
+                    "Inter:regular"
+                ]
+            }
+        });
+    </script>
+
+    <!-- Your component's specific resources -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <script src="https://cdn.jsdelivr.net/npm/validator@latest/validator.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sygnaltech/webflow-util@5.4.6/dist/css/webflow-membership.css">
+    <script defer src="https://cdn.jsdelivr.net/gh/sygnaltech/webflow-util@5.4.6/dist/nocode/webflow-membership.js"></script>
+
+    <!-- Placeholder for injected styles -->
+    <style id="injected-styles"></style>
+
+    <!-- Add this before other scripts -->
+    <script>
+        // Mock Webflow object for local development
+        window.Webflow = window.Webflow || [];
+        window.Webflow.push = function(fn) {
+            fn();
+        };
+    </script>
+</head>
+<body>
+    <script>
+        const containerId = "container_deutsch-demo_qrag";
+        const htmlFilename1 = "webflow-qrag-input-component-date-embed.html";
+        const htmlFilename2 = "webflow-privacy-consent-embed.html";
+        console.log("Container ID:", containerId);
+        // Create and insert the display div
+        document.write(`
+            <div style="text-align: center; padding: 10px; background-color: #ffff00; margin-top: 50px; margin-bottom: 50px; font-size: 24px;">
+                HTML Filename 1: <span style="font-weight: bold;">${htmlFilename1}</span>
+                <div style="margin: 15px 0;"></div>
+                HTML Filename 2: <span style="font-weight: bold;">${htmlFilename2}</span>
+                <div style="margin: 15px 0;"></div>
+                Container ID: <span style="font-weight: bold;">${containerId}</span>
+            </div>
+        `);
+    </script>
+    <section class="bot-section">
+        <div class="bot-container" id="container_deutsch-demo_qrag">
+            <!-- First user input container for privacy consent -->
+            <div class="w-layout-blockcontainer user-input-container w-container">
+                <div id="privacy-consent-container" class="code-embed-privacy-consent w-embed w-script">
+                    <!-- Privacy consent component will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Second user input container for QRAG input -->
+            <div class="w-layout-blockcontainer user-input-container w-container">
+                <div id="qrag-input-container" class="code-embed-qrag-input w-embed w-script">
+                    <!-- QRAG component will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="accordion-container">
+                <div class="accordion-card"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Include your JavaScript files -->
+    <script src="../../../web-shared/webflow/webflow-fof-site-body.js"></script>
+    <script src="webflow-rag-devpage.js"></script>
+
+    <script>
+        // Function to extract and inject styles and scripts from site-head
+        async function injectSiteHeadContent() {
+            try {
+                const response = await fetch('../../../web-shared/webflow/webflow-fof-site-head.html');
+                const text = await response.text();
+                
+                // Create a temporary container to parse the HTML
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                
+                // Extract and inject styles
+                const styles = doc.querySelectorAll('style');
+                const styleContainer = document.getElementById('injected-styles');
+                styles.forEach(style => {
+                    styleContainer.textContent += style.textContent;
+                });
+                
+                // Extract and inject scripts
+                const scripts = doc.querySelectorAll('script:not([src])');
+                scripts.forEach(script => {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = script.textContent;
+                    document.body.appendChild(newScript);
+                });
+                
+                console.log('Successfully injected site-head content');
+            } catch (error) {
+                console.error('Error injecting site-head content:', error);
+            }
+        }
+
+        // Function to inject component content and its scripts
+        async function injectComponentContent() {
+            try {
+                // Inject Privacy Consent component
+                const privacyContainer = document.getElementById('privacy-consent-container');
+                const qragContainer = document.getElementById('qrag-input-container');
+                
+                if (!privacyContainer || !qragContainer) {
+                    throw new Error('Required containers not found in the DOM');
+                }
+
+                // Inject Privacy Consent component
+                const response1 = await fetch(htmlFilename2);
+                const text1 = await response1.text();
+                privacyContainer.innerHTML = text1;
+                
+                // Inject QRAG component
+                const response2 = await fetch(htmlFilename1);
+                const text2 = await response2.text();
+                qragContainer.innerHTML = text2;
+                
+                // Extract and inject all scripts from both components
+                const parser = new DOMParser();
+                const doc1 = parser.parseFromString(text1, 'text/html');
+                const doc2 = parser.parseFromString(text2, 'text/html');
+                
+                const allScripts = [...doc1.querySelectorAll('script'), ...doc2.querySelectorAll('script')];
+                allScripts.forEach(script => {
+                    const newScript = document.createElement('script');
+                    if (script.src) {
+                        newScript.src = script.src;
+                    } else {
+                        newScript.textContent = script.textContent;
+                    }
+                    document.body.appendChild(newScript);
+                });
+
+                console.log('Successfully injected both components');
+
+                // Re-initialize event listeners
+                document.querySelectorAll('[id^="inputText_"], [id^="submitButton_"]').forEach(element => {
+                    if (element.tagName.toLowerCase() === 'textarea') {
+                        element.addEventListener('keydown', function(event) {
+                            if (event.key === 'Enter' && !event.shiftKey) {
+                                event.preventDefault();
+                                const trailingId = getElementIDTrailingString(element.id);
+                                const buttonId = `submitButton_${trailingId}`;
+                                const buttonElement = document.getElementById(buttonId);
+                                if (buttonElement) {
+                                    console.log('Enter pressed, triggering button click for:', buttonId);
+                                    buttonElement.click();
+                                }
+                            }
+                        });
+                    } else if (element.tagName.toLowerCase() === 'button') {
+                        element.addEventListener('click', function(event) {
+                            console.log(`Click event on element with ID ${event.target.id}`);
+                            try {
+                                submitInputRag(event);
+                            } catch (error) {
+                                console.error('Error in submitInputRag:', error);
+                            }
+                            this.blur();
+                        });
+                    }
+                });
+
+                // Initialize dynamic ID assignments
+                initializeDynamicIdAssignments();
+                
+            } catch (error) {
+                console.error('Error injecting component content:', error);
+                // Add visible error message on the page
+                const errorDiv = document.createElement('div');
+                errorDiv.style.color = 'red';
+                errorDiv.style.padding = '20px';
+                errorDiv.textContent = `Error loading components: ${error.message}`;
+                document.querySelector('.bot-container').prepend(errorDiv);
+            }
+        }
+
+        // Load site-head content first, then the component
+        injectSiteHeadContent()
+            .then(() => injectComponentContent())
+            .catch(error => {
+                console.error('Error loading content:', error);
+            });
+    </script>
+</body>
+</html>
+
+<!-- END OF FILE webflow-local-dev.html -->

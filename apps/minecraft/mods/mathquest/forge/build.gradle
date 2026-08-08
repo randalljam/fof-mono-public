@@ -1,0 +1,70 @@
+// Root build script for the Forge gradle root.
+
+allprojects {
+    group = project.findProperty('maven_group') ?: 'com.kidgames'
+    version = project.findProperty('mod_version') ?: '0.0.0'
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        it.options.release = 17
+        it.options.encoding = 'UTF-8'
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    tasks.matching { it.name == 'processResources' }.configureEach {
+        from(rootProject.file('../../../../math-quiz/tools')) {
+            include 'anchor_store.py'
+            include 'session_ingest.py'
+            include 'fluency_feast_bridge.mjs'
+            into 'mathquest-tools'
+        }
+        from(rootProject.file('../../../../math-quiz')) {
+            include 'fluency_core.js'
+            include 'math_utils.js'
+            into 'mathquest-tools'
+        }
+    }
+}
+
+tasks.register('buildAll') {
+    group = 'mathquest'
+    description = 'Builds every selected target (filter via -Ptargets=...)'
+    def selected = (gradle.ext.has('selectedTargets') ? gradle.ext.selectedTargets : []) as List
+    selected.each { name ->
+        dependsOn ":targets:${name}:build"
+    }
+    doFirst {
+        println "[mathquest/forge] Building targets: ${selected.join(', ')}"
+    }
+}
+
+tasks.register('cleanAll') {
+    group = 'mathquest'
+    description = 'Cleans every selected target'
+    def selected = (gradle.ext.has('selectedTargets') ? gradle.ext.selectedTargets : []) as List
+    selected.each { name ->
+        dependsOn ":targets:${name}:clean"
+    }
+    dependsOn 'clean'
+}
+
+tasks.register('listTargets') {
+    group = 'mathquest'
+    description = 'Prints the targets selected for this build invocation'
+    doLast {
+        def selected = (gradle.ext.has('selectedTargets') ? gradle.ext.selectedTargets : []) as List
+        println "Selected targets:"
+        selected.each { println "  - ${it}" }
+    }
+}

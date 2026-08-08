@@ -1,0 +1,26 @@
+{
+  "id": "profile:stoicism",
+  "label": "Stoicism",
+  "summary": "Hellenistic philosophy (Zeno; Roman Stoics Seneca, Epictetus, Marcus Aurelius) holding that virtue is the only true good and suffices for flourishing. The core practical doctrine is the dichotomy of control: only our judgments, values, and volitions are up to us; externals are 'preferred indifferents'. The modern revival applies these practices as a secular life philosophy and a root of CBT.",
+  "thinkers": ["Epictetus", "Marcus Aurelius", "Seneca", "Massimo Pigliucci"],
+  "sources": [
+    {"title": "SEP: Stoicism", "url": "https://plato.stanford.edu/entries/stoicism/"},
+    {"title": "Stoicism — Wikipedia", "url": "https://en.wikipedia.org/wiki/Stoicism"},
+    {"title": "Modern Stoicism", "url": "https://modernstoicism.com/"}
+  ],
+  "variants": "Classical Stoicism (providential pantheist cosmology, strict 'virtue is the only good') vs the modern secular revival (drops the physics and theology) vs internet self-help dilutions that scholars flag as departing from the virtue core. Positions below follow the modern revival where the two diverge; progress and risk are omitted as orthogonal — Stoicism counsels equanimity in any external circumstances rather than a stance on progress.",
+  "cited_from_graph": false,
+  "positions": [
+    {"axis": "axis:epistemology", "position": -0.5, "summary": "Classical Stoicism was confidently rationalist (kataleptic impressions could yield certain knowledge); modern Stoicism is scientifically informed and more fallibilist, keeping the ethics while updating the physics.", "evidence": [{"url": "https://plato.stanford.edu/entries/stoicism/", "title": "SEP: Stoicism"}]},
+    {"axis": "axis:authority-of-belief", "position": 1.0, "summary": "Reason practiced through personal discipline and exemplars; texts are training manuals, not revelation.", "evidence": [{"url": "https://plato.stanford.edu/entries/stoicism/", "title": "SEP: Stoicism"}]},
+    {"axis": "axis:realism", "position": 1.0, "summary": "The cosmos is rationally ordered and knowable; virtue rests on seeing things as they are.", "evidence": [{"url": "https://plato.stanford.edu/entries/stoicism/", "title": "SEP: Stoicism"}]},
+    {"axis": "axis:agency", "position": 0.5, "summary": "A distinctive split: total agency over the inner life (judgments, character), acceptance of determinism over externals — aim well, accept outcomes; compatibilist.", "evidence": [{"url": "https://plato.stanford.edu/entries/stoicism/", "title": "SEP: Stoicism (dichotomy of control)"}]},
+    {"axis": "axis:human-significance", "position": 0.5, "summary": "All humans share in cosmic reason (logos) — significant as rational beings, though the focus is character, not cosmic destiny.", "evidence": [{"url": "https://plato.stanford.edu/entries/stoicism/", "title": "SEP: Stoicism"}]},
+    {"axis": "axis:morality", "position": 1.5, "summary": "Virtue is objectively good, grounded in rational human nature; cosmopolitan ethics — all humans share reason.", "evidence": [{"url": "https://plato.stanford.edu/entries/stoicism/", "title": "SEP: Stoicism"}]},
+    {"axis": "axis:metaphysics", "position": 0.5, "summary": "Classical: pantheist-immanent (the cosmos as a rational, providential, material God). Modern revival: straightforwardly naturalist, reading 'live according to nature' as 'live according to reason'.", "evidence": [{"url": "https://plato.stanford.edu/entries/stoicism/", "title": "SEP: Stoicism"}]},
+    {"axis": "axis:change", "position": -0.5, "summary": "Temperamentally accepting: premeditatio malorum and amor fati counsel equanimity toward externals rather than campaigns to transform them.", "evidence": [{"url": "https://modernstoicism.com/", "title": "Modern Stoicism"}]},
+    {"axis": "axis:nature", "position": -1.0, "summary": "'Live according to nature': fit oneself to the rational order of the cosmos rather than remake it.", "evidence": [{"url": "https://plato.stanford.edu/entries/stoicism/", "title": "SEP: Stoicism"}]},
+    {"axis": "axis:meaning", "position": -0.5, "summary": "Meaning is living virtuously in agreement with nature and reason — partly given by rational human nature, partly achieved by practice.", "evidence": [{"url": "https://plato.stanford.edu/entries/stoicism/", "title": "SEP: Stoicism"}]},
+    {"axis": "axis:social", "position": 0.5, "summary": "Individual self-discipline within cosmopolitan duty to all rational beings.", "evidence": [{"url": "https://plato.stanford.edu/entries/stoicism/", "title": "SEP: Stoicism"}]}
+  ]
+}

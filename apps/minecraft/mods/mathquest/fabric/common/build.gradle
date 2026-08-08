@@ -1,0 +1,22 @@
+// Loader-agnostic code lives here. Anything in this module must NOT import from
+// net.minecraft.*, net.fabricmc.*, or any forge namespace.
+
+apply plugin: 'java-library'
+
+base {
+    archivesName = "${project.archives_base_name}-common"
+}
+
+dependencies {
+    api 'com.google.code.gson:gson:2.11.0'
+    api 'org.slf4j:slf4j-api:2.0.9'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.xerial:sqlite-jdbc:3.49.1.0'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.named('jar').configure { enabled = false }

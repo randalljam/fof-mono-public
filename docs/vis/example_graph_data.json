@@ -1,0 +1,259 @@
+{
+  "nodes": [
+    {
+      "id": "A1",
+      "label": "plant_seed",
+      "group": "A",
+      "module": "moduleA.py",
+      "line": 1
+    },
+    {
+      "id": "A2",
+      "label": "water_plant",
+      "group": "A",
+      "module": "moduleA.py",
+      "line": 4
+    },
+    {
+      "id": "A3",
+      "label": "add_fertilizer",
+      "group": "A",
+      "module": "moduleA.py",
+      "line": 7
+    },
+    {
+      "id": "A4",
+      "label": "start_plant",
+      "group": "A",
+      "module": "moduleA.py",
+      "line": 10
+    },
+    {
+      "id": "A5",
+      "label": "grow_plant",
+      "group": "A",
+      "module": "moduleA.py",
+      "line": 13
+    },
+    {
+      "id": "A6",
+      "label": "harvest_plant",
+      "group": "A",
+      "module": "moduleA.py",
+      "line": 16
+    },
+    {
+      "id": "A7",
+      "label": "manage_single_plant",
+      "group": "A",
+      "module": "moduleA.py",
+      "line": 19
+    },
+    {
+      "id": "A8",
+      "label": "select_plants",
+      "group": "A",
+      "module": "moduleA.py",
+      "line": 24
+    },
+    {
+      "id": "A9",
+      "label": "run_small_garden",
+      "group": "A",
+      "module": "moduleA.py",
+      "line": 27
+    },
+    {
+      "id": "B1",
+      "label": "create_plot",
+      "group": "B",
+      "module": "moduleB.py",
+      "line": 1
+    },
+    {
+      "id": "B2",
+      "label": "prepare_soil",
+      "group": "B",
+      "module": "moduleB.py",
+      "line": 4
+    },
+    {
+      "id": "B3",
+      "label": "plan_crop_rotation",
+      "group": "B",
+      "module": "moduleB.py",
+      "line": 7
+    },
+    {
+      "id": "B4",
+      "label": "install_irrigation",
+      "group": "B",
+      "module": "moduleB.py",
+      "line": 10
+    },
+    {
+      "id": "B5",
+      "label": "manage_pests",
+      "group": "B",
+      "module": "moduleB.py",
+      "line": 13
+    },
+    {
+      "id": "B6",
+      "label": "manage_plot",
+      "group": "B",
+      "module": "moduleB.py",
+      "line": 16
+    },
+    {
+      "id": "B7",
+      "label": "run_medium_farm",
+      "group": "B",
+      "module": "moduleB.py",
+      "line": 24
+    },
+    {
+      "id": "C1",
+      "label": "analyze_market_demand",
+      "group": "C",
+      "module": "moduleC.py",
+      "line": 1
+    },
+    {
+      "id": "C2",
+      "label": "manage_inventory",
+      "group": "C",
+      "module": "moduleC.py",
+      "line": 4
+    },
+    {
+      "id": "C3",
+      "label": "handle_distribution",
+      "group": "C",
+      "module": "moduleC.py",
+      "line": 7
+    },
+    {
+      "id": "C4",
+      "label": "manage_farm_finances",
+      "group": "C",
+      "module": "moduleC.py",
+      "line": 10
+    },
+    {
+      "id": "C5",
+      "label": "hire_farm_workers",
+      "group": "C",
+      "module": "moduleC.py",
+      "line": 13
+    },
+    {
+      "id": "C6",
+      "label": "oversee_farm_operations",
+      "group": "C",
+      "module": "moduleC.py",
+      "line": 16
+    },
+    {
+      "id": "C7",
+      "label": "run_large_scale_farm",
+      "group": "C",
+      "module": "moduleC.py",
+      "line": 24
+    }
+  ],
+  "edges": [
+    {
+      "from": "A4",
+      "to": "A1"
+    },
+    {
+      "from": "A4",
+      "to": "A2"
+    },
+    {
+      "from": "A4",
+      "to": "A2"
+    },
+    {
+      "from": "A4",
+      "to": "A3"
+    },
+    {
+      "from": "A7",
+      "to": "A6"
+    },
+    {
+      "from": "A7",
+      "to": "A5"
+    },
+    {
+      "from": "A7",
+      "to": "A4"
+    },
+    {
+      "from": "A9",
+      "to": "A8"
+    },
+    {
+      "from": "A9",
+      "to": "A7"
+    },
+    {
+      "from": "B6",
+      "to": "B1"
+    },
+    {
+      "from": "B6",
+      "to": "B2"
+    },
+    {
+      "from": "B6",
+      "to": "B3"
+    },
+    {
+      "from": "B6",
+      "to": "B4"
+    },
+    {
+      "from": "B6",
+      "to": "B5"
+    },
+    {
+      "from": "B7",
+      "to": "B6"
+    },
+    {
+      "from": "C6",
+      "to": "C2"
+    },
+    {
+      "from": "C6",
+      "to": "C3"
+    },
+    {
+      "from": "C6",
+      "to": "C4"
+    },
+    {
+      "from": "C6",
+      "to": "C5"
+    },
+    {
+      "from": "C7",
+      "to": "C1"
+    },
+    {
+      "from": "C7",
+      "to": "C6"
+    },
+    {
+      "from": "B3",
+      "to": "A8"
+    },
+    {
+      "from": "C6",
+      "to": "B7"
+    }
+  ]
+}

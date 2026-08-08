@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Reference only — DO NOT hand-install this file.
+  Plists are generated and (un)loaded by core/cron/install_launchd_plist.py from
+  an app's JSON job registry (e.g. agents/hermes/cron_jobs.json). This example
+  shows the shape of what gets written to ~/Library/LaunchAgents/<label>.plist.
+
+  StartCalendarInterval runs in the machine's LOCAL time zone (launchd has no
+  per-job TZ key). The example below = every Sunday at 03:00 local time.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>org.focusonfoundations.example-weekly</string>
+    <key>Comment</key>
+    <string>Example weekly job</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/ABS/PATH/TO/repo/.venv/bin/python3</string>
+        <string>/ABS/PATH/TO/repo/agents/example/some_job.py</string>
+        <string>--flag</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/ABS/PATH/TO/repo</string>
+    <key>StandardOutPath</key>
+    <string>/Users/you/Library/Logs/fof-mono/example-weekly.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/you/Library/Logs/fof-mono/example-weekly.err.log</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin</string>
+        <key>HOME</key>
+        <string>/Users/you</string>
+    </dict>
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Weekday</key>
+        <integer>0</integer>
+        <key>Hour</key>
+        <integer>3</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>

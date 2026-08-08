@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PreCalc Test 1 — Interactive Study Guide</title>
+<script>
+  window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+  :root{
+    --bg:#0d1117; --bg2:#131a24; --panel:#161d29; --panel2:#1c2634;
+    --border:#243040; --border2:#2f3d50;
+    --ink:#e6edf3; --muted:#9aa7b6; --dim:#6d7b8c;
+    --accent:#58a6ff; --accent2:#7ee787; --gold:#f0c674; --pink:#ff7b9c;
+    --violet:#bc8cff; --teal:#39d3c3; --red:#ff6b6b;
+    --shadow:0 8px 30px rgba(0,0,0,.4);
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:linear-gradient(180deg,#0b0f16,#0d1117 400px);color:var(--ink);font-family:var(--sans);line-height:1.55;font-size:15px}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  code{font-family:var(--mono);background:#0b1220;border:1px solid var(--border);border-radius:5px;padding:1px 5px;font-size:.86em;color:#cde3ff}
+  h1,h2,h3,h4{line-height:1.25;margin:0}
+  .layout{display:grid;grid-template-columns:250px 1fr;gap:0;max-width:1400px;margin:0 auto}
+  nav.side{position:sticky;top:0;height:100vh;overflow-y:auto;padding:26px 16px 40px;border-right:1px solid var(--border);background:rgba(10,14,20,.6);backdrop-filter:blur(6px)}
+  nav.side .brand{font-weight:800;font-size:16px;letter-spacing:.4px}
+  nav.side .brand span{color:var(--accent)}
+  nav.side .sub{color:var(--dim);font-size:11.5px;margin:4px 0 18px;font-family:var(--mono)}
+  nav.side a.navlink{display:block;color:var(--muted);padding:7px 11px;border-radius:8px;font-size:13.5px;margin:2px 0;border:1px solid transparent}
+  nav.side a.navlink:hover{background:var(--panel);color:var(--ink);text-decoration:none}
+  nav.side a.navlink.active{background:var(--panel2);color:#fff;border-color:var(--border2)}
+  nav.side a.navlink .n{color:var(--dim);font-family:var(--mono);font-size:11px;margin-right:8px}
+  nav.side .foot{margin-top:26px;color:var(--dim);font-size:11px;border-top:1px solid var(--border);padding-top:14px}
+  main{padding:34px 44px 120px;min-width:0}
+  section{margin-bottom:66px;scroll-margin-top:70px}
+  .eyebrow{font-family:var(--mono);color:var(--accent);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+  .hero h1{font-size:36px;margin:10px 0 6px;letter-spacing:-.5px}
+  .hero .lede{color:var(--muted);font-size:17px;max-width:760px}
+  h2.sec{font-size:24px;margin-bottom:6px;letter-spacing:-.3px}
+  .sec-lede{color:var(--muted);max-width:820px;margin-bottom:20px}
+  h3.sub{font-size:17px;margin:26px 0 12px;color:#fff;border-left:3px solid var(--accent);padding-left:10px}
+  .kicker{color:var(--gold);font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px 18px 16px;position:relative;transition:.15s}
+  .card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow)}
+  .card h4{font-size:15.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .card .desc{color:var(--muted);font-size:13.5px;margin:8px 0 0}
+  .pill{font-family:var(--mono);font-size:10.5px;padding:2px 8px;border-radius:20px;border:1px solid var(--border2);color:var(--muted);white-space:nowrap}
+  .callout{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-left:4px solid var(--accent);border-radius:10px;padding:16px 20px;margin:16px 0}
+  .callout.gold{border-left-color:var(--gold)}
+  .callout.pink{border-left-color:var(--pink)}
+  .callout.red{border-left-color:var(--red)}
+  .callout.green{border-left-color:var(--accent2)}
+  .callout h4{font-size:15px;margin-bottom:6px}
+  .callout p{margin:6px 0;color:var(--muted);font-size:14px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  ul.tidy{margin:8px 0;padding-left:20px;color:var(--muted);font-size:14px}
+  ul.tidy li{margin:5px 0}
+  ul.tidy b{color:var(--ink);font-weight:600}
+  .divider{height:1px;background:var(--border);margin:30px 0}
+  /* top bar: search + progress */
+  .topbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:6px 0 20px;position:sticky;top:0;background:rgba(13,17,23,.94);backdrop-filter:blur(6px);padding:12px 0;z-index:5;border-bottom:1px solid var(--border)}
+  #search{flex:1;min-width:200px;background:var(--panel);border:1px solid var(--border2);border-radius:20px;padding:8px 16px;color:var(--ink);font-family:var(--sans);font-size:13.5px;outline:none}
+  #search:focus{border-color:var(--accent)}
+  .count{color:var(--dim);font-family:var(--mono);font-size:11.5px;white-space:nowrap}
+  .progresswrap{display:flex;align-items:center;gap:10px;min-width:220px;flex:1}
+  .pbar{flex:1;height:8px;background:var(--panel);border:1px solid var(--border);border-radius:6px;overflow:hidden}
+  .pbar .fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .3s}
+  .plabel{font-family:var(--mono);font-size:11.5px;color:var(--muted);white-space:nowrap}
+  .hidden{display:none!important}
+  /* formula flashcards */
+  .flash{cursor:pointer;user-select:none}
+  .flash .face{margin-top:10px;background:#0b1220;border:1px dashed var(--border2);border-radius:8px;padding:12px 14px;text-align:center;font-size:15px;min-height:52px;display:flex;align-items:center;justify-content:center}
+  .flash .face.answer{display:none;border-style:solid;border-color:var(--accent)}
+  .flash.revealed .face.prompt-face{display:none}
+  .flash.revealed .face.answer{display:flex}
+  .flash .hint{color:var(--dim);font-size:11px;font-family:var(--mono);margin-top:8px;text-align:center}
+  /* quick check */
+  .qc{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin:12px 0}
+  .qc .q{font-size:14.5px;color:var(--ink)}
+  .qc .q .qn{color:var(--violet);font-family:var(--mono);font-size:11.5px;margin-right:8px}
+  .qc .ans{display:none;margin-top:12px;border-top:1px dashed var(--border2);padding-top:12px;color:var(--muted);font-size:14px}
+  .qc.open .ans{display:block}
+  .qc button.reveal{margin-top:10px;font-family:var(--mono);font-size:11.5px;padding:5px 12px;border-radius:16px;border:1px solid var(--border2);background:var(--panel2);color:var(--accent);cursor:pointer}
+  .qc button.reveal:hover{border-color:var(--accent)}
+  /* mastered checkbox */
+  .mastercheck{position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:6px;font-size:10.5px;font-family:var(--mono);color:var(--dim);cursor:pointer}
+  .mastercheck input{accent-color:var(--accent2);cursor:pointer}
+  .card.mastered{border-color:#2b5;background:linear-gradient(180deg,rgba(46,160,67,.08),var(--panel))}
+  .card.mastered h4::after{content:"✓";color:var(--accent2);font-weight:800}
+  /* steps checklist */
+  .steps{counter-reset:step;margin:14px 0}
+  .step{display:flex;gap:12px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin:8px 0;align-items:flex-start;cursor:pointer;transition:.12s}
+  .step:hover{border-color:var(--border2)}
+  .step .box{width:20px;height:20px;border:2px solid var(--border2);border-radius:5px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;color:#0d1117;font-weight:800;font-size:13px}
+  .step.done .box{background:var(--accent2);border-color:var(--accent2)}
+  .step.done .box::after{content:"✓"}
+  .step.done .txt{color:var(--dim);text-decoration:line-through}
+  .step .txt{font-size:14px;color:var(--muted)}
+  .step .txt b{color:var(--ink)}
+  .step.done .txt b{color:var(--dim)}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{color:var(--dim);font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:1px}
+  tr:hover td{background:var(--panel)}
+  .formula-big{background:#0b1220;border:1px solid var(--border2);border-radius:10px;padding:14px 18px;margin:10px 0;font-size:16px;text-align:center}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 18px}
+  .abtn{font-family:var(--mono);font-size:12px;padding:6px 12px;border-radius:20px;border:1px solid var(--border2);background:var(--panel);color:var(--muted);cursor:pointer;transition:.12s}
+  .abtn:hover{color:#fff;border-color:var(--accent)}
+  mark{background:rgba(240,198,116,.35);color:#fff;border-radius:3px;padding:0 2px}
+  @media(max-width:880px){.two{grid-template-columns:1fr}.layout{grid-template-columns:1fr}nav.side{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border)}main{padding:24px}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="side">
+    <div class="brand">precalc<span>-test-1</span></div>
+    <div class="sub">interactive study guide</div>
+    <a class="navlink active" href="#howto"><span class="n">00</span>How to Solve Problems</a>
+    <a class="navlink" href="#s21"><span class="n">2.1</span>Quantities &amp; Co-variation</a>
+    <a class="navlink" href="#s22"><span class="n">2.2</span>Representing Quantities</a>
+    <a class="navlink" href="#s23"><span class="n">2.3</span>Rate of Change &amp; Linear</a>
+    <a class="navlink" href="#s24"><span class="n">2.4</span>Proportionality</a>
+    <a class="navlink" href="#s25"><span class="n">2.5</span>Average Speed</a>
+    <a class="navlink" href="#s31"><span class="n">3.1</span>The Box Problem</a>
+    <a class="navlink" href="#s32"><span class="n">3.2</span>Functions, Domain, Range</a>
+    <a class="navlink" href="#s33"><span class="n">3.3</span>Function Notation</a>
+    <a class="navlink" href="#summary"><span class="n">★</span>Summary — Must Know</a>
+    <a class="navlink" href="index.html" style="margin-top:14px;background:var(--panel2);border-color:var(--gold);color:#fff"><span class="n" style="color:var(--gold)">▶</span>AutoLearner Practice →</a>
+    <div class="foot">
+      Tap formula cards to flip them. Use the checkboxes to mark what you've mastered — progress is saved in your browser.
+    </div>
+  </nav>
+
+  <main>
+    <div class="topbar">
+      <input id="search" type="search" placeholder="Search the guide (e.g. slope, domain, average speed)…" />
+      <span class="count" id="searchcount"></span>
+      <div class="progresswrap">
+        <div class="pbar"><div class="fill" id="pfill"></div></div>
+        <span class="plabel" id="plabel">0 / 0 mastered</span>
+      </div>
+    </div>
+
+    <section class="hero" id="top">
+      <div class="eyebrow">Math · PreCalc · Test 1 · Chapters 2–3</div>
+      <h1>PreCalc Test 1 Study Guide</h1>
+      <p class="lede">Everything on the test, organized for active studying: flip the formula cards before you peek, answer the quick-checks out loud, and check off each concept only when you can do it <b style="color:var(--ink)">without looking</b>.</p>
+    </section>
+
+    <!-- 00 HOW TO -->
+    <section id="howto" data-sec>
+      <div class="kicker">00 · Before anything else</div>
+      <h2 class="sec">How to solve problems (every time)</h2>
+      <p class="sec-lede">This checklist is worth more points than any single formula. Click each step as you internalize it.</p>
+      <div class="steps" id="howtosteps">
+        <div class="step" data-step="1"><div class="box"></div><div class="txt"><b>Write down</b> relevant information and equations; draw a diagram if possible.</div></div>
+        <div class="step" data-step="2"><div class="box"></div><div class="txt"><b>Reread the question</b> — make sure you interpreted it correctly and copied all information correctly.</div></div>
+        <div class="step" data-step="3"><div class="box"></div><div class="txt"><b>Solve.</b> Double-check each step to ensure no errors.</div></div>
+        <div class="step" data-step="4"><div class="box"></div><div class="txt"><b>Check your answer.</b> Algebra is easy to check once done — plug real values in for your variables and make sure they make sense all the way through.</div></div>
+      </div>
+      <div class="callout gold">
+        <h4>Why this matters</h4>
+        <p>Most lost points aren't from not knowing the math — they're from misreading the question, dropping a negative, or never checking. The checklist catches all three.</p>
+      </div>
+    </section>
+
+    <!-- 2.1 -->
+    <section id="s21" data-sec>
+      <div class="kicker">2.1 · Quantities and co-variation of quantities</div>
+      <h2 class="sec">Quantities &amp; Co-variation</h2>
+      <h3 class="sub">Key terms</h3>
+      <div class="cards">
+        <div class="card" data-master="21-quantity"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Quantity</h4><p class="desc">A measurable value — time, distance, cost, temperature, etc.</p>
+        </div>
+        <div class="card" data-master="21-indep"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Independent variable</h4><p class="desc"><b style="color:var(--ink)">Input</b> — it causes change.</p>
+        </div>
+        <div class="card" data-master="21-dep"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Dependent variable</h4><p class="desc"><b style="color:var(--ink)">Output</b> — it depends on the input.</p>
+        </div>
+        <div class="card" data-master="21-covar"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Co-variation</h4><p class="desc">How two quantities change <b style="color:var(--ink)">together</b>.</p>
+        </div>
+      </div>
+      <h3 class="sub">Strategy</h3>
+      <ul class="tidy">
+        <li><b>Identify</b> the two quantities.</li>
+        <li><b>Determine</b> which depends on the other.</li>
+        <li><b>Describe</b> the relationship: Increase → Increase · Increase → Decrease · Constant.</li>
+      </ul>
+      <div class="qc"><div class="q"><span class="qn">QUICK CHECK</span>"The temperature of a cooling cup of coffee over time." Which is the independent variable, and how do the quantities co-vary?</div>
+        <button class="reveal">Reveal answer</button>
+        <div class="ans"><b style="color:var(--ink)">Time</b> is independent (input), temperature is dependent. As time increases, temperature decreases: Increase → Decrease.</div>
+      </div>
+    </section>
+
+    <!-- 2.2 -->
+    <section id="s22" data-sec>
+      <div class="kicker">2.2 · Represent quantities and changes in quantities</div>
+      <h2 class="sec">Representing Quantities</h2>
+      <p class="sec-lede">Know how to move between all four representations of the same relationship.</p>
+      <div class="cards">
+        <div class="card"><h4>Words</h4><p class="desc">"Costs $3 per ride plus a $5 entry fee."</p></div>
+        <div class="card"><h4>Table</h4><p class="desc">Rows of $(x, y)$ pairs — check how $y$ changes per unit of $x$.</p></div>
+        <div class="card"><h4>Graph</h4><p class="desc">Picture of the relationship — slope and intercept visible at a glance.</p></div>
+        <div class="card"><h4>Equation</h4><p class="desc">$y = 3x + 5$ — compact and computable.</p></div>
+      </div>
+      <div class="callout" data-master-callout>
+        <h4>Ask yourself</h4>
+        <p>What is changing? &nbsp;·&nbsp; Is the change constant? &nbsp;·&nbsp; What do the variables represent?</p>
+      </div>
+      <div class="qc"><div class="q"><span class="qn">QUICK CHECK</span>A table shows $x$: 0, 1, 2, 3 and $y$: 5, 8, 11, 14. Give the equation.</div>
+        <button class="reveal">Reveal answer</button>
+        <div class="ans">$y$ goes up 3 for each step of 1 in $x$ (constant change → linear), and $y=5$ when $x=0$. So $y = 3x + 5$.</div>
+      </div>
+    </section>
+
+    <!-- 2.3 -->
+    <section id="s23" data-sec>
+      <div class="kicker">2.3 · Constant rate of change and linear formulas</div>
+      <h2 class="sec">Rate of Change &amp; Linear Formulas</h2>
+      <h3 class="sub">The three formulas — flip each card before peeking</h3>
+      <div class="cards">
+        <div class="card flash" data-master="23-slope"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Slope</h4>
+          <div class="face prompt-face">$m = \ ?$</div>
+          <div class="face answer">$m=\dfrac{y_2-y_1}{x_2-x_1}=\dfrac{\Delta y}{\Delta x}$</div>
+          <div class="hint">tap to flip</div>
+        </div>
+        <div class="card flash" data-master="23-si"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Slope-intercept form</h4>
+          <div class="face prompt-face">$y = \ ?$</div>
+          <div class="face answer">$y=mx+b$</div>
+          <div class="hint">tap to flip</div>
+        </div>
+        <div class="card flash" data-master="23-ps"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Point-slope form</h4>
+          <div class="face prompt-face">$y - y_1 = \ ?$</div>
+          <div class="face answer">$y-y_1=m(x-x_1)$</div>
+          <div class="hint">tap to flip</div>
+        </div>
+      </div>
+      <h3 class="sub">Strategy: find the line through two points</h3>
+      <ul class="tidy">
+        <li><b>1.</b> Find the slope using the two points.</li>
+        <li><b>2.</b> Solve for $b$ (plug one point into $y=mx+b$).</li>
+        <li><b>3.</b> Write $y=mx+b$.</li>
+      </ul>
+      <div class="callout green">
+        <h4>Linear relationship — the definition</h4>
+        <p>Equal changes in $x$ produce <b style="color:var(--ink)">equal changes</b> in $y$. That's what "constant rate of change" means.</p>
+      </div>
+      <div class="qc"><div class="q"><span class="qn">QUICK CHECK</span>Find the equation of the line through $(2, 7)$ and $(5, 16)$.</div>
+        <button class="reveal">Reveal answer</button>
+        <div class="ans">$m = \dfrac{16-7}{5-2} = \dfrac{9}{3} = 3$. Then $7 = 3(2) + b \Rightarrow b = 1$. So $y = 3x + 1$. <b style="color:var(--ink)">Check:</b> $3(5)+1 = 16$ ✓</div>
+      </div>
+    </section>
+
+    <!-- 2.4 -->
+    <section id="s24" data-sec>
+      <div class="kicker">2.4 · Constant rate of change and proportionality</div>
+      <h2 class="sec">Proportionality</h2>
+      <div class="formula-big">$y = kx$ &nbsp;&nbsp;<span style="color:var(--dim);font-size:13px">where $k$ = constant of proportionality</span></div>
+      <div class="two">
+        <div class="card" data-master="24-test"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Test for proportionality</h4>
+          <p class="desc">Check whether $\dfrac{y}{x}$ is <b style="color:var(--ink)">constant</b> for every pair in the table.</p>
+        </div>
+        <div class="card" data-master="24-rate"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Rate equations</h4>
+          <p class="desc">Always $\dfrac{\text{quantity}}{\text{time}}$.</p>
+        </div>
+      </div>
+      <div class="two" style="margin-top:16px">
+        <div class="callout green" style="margin:0">
+          <h4>Proportional</h4>
+          <p>Passes through $(0,0)$ — no y-intercept. Graph is a line through the origin.</p>
+        </div>
+        <div class="callout red" style="margin:0">
+          <h4>Not proportional</h4>
+          <p>$y = mx + b$ with $b \neq 0$. Still linear, but not proportional.</p>
+        </div>
+      </div>
+      <div class="qc"><div class="q"><span class="qn">QUICK CHECK</span>Table: $(2, 5)$, $(4, 10)$, $(6, 15)$. Proportional? If so, what is $k$?</div>
+        <button class="reveal">Reveal answer</button>
+        <div class="ans">$\frac{5}{2} = 2.5$, $\frac{10}{4} = 2.5$, $\frac{15}{6} = 2.5$ — constant ratio, so yes: proportional with $k = 2.5$, i.e. $y = 2.5x$.</div>
+      </div>
+    </section>
+
+    <!-- 2.5 -->
+    <section id="s25" data-sec>
+      <div class="kicker">2.5 · Exploring average speed</div>
+      <h2 class="sec">Average Speed</h2>
+      <div class="cards">
+        <div class="card flash" data-master="25-drt"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Distance – rate – time</h4>
+          <div class="face prompt-face">$d = \ ?$ &nbsp; (and solve for $r$, $t$)</div>
+          <div class="face answer">$d=rt \quad\Rightarrow\quad r=\dfrac{d}{t}, \quad t=\dfrac{d}{r}$</div>
+          <div class="hint">tap to flip</div>
+        </div>
+        <div class="card flash" data-master="25-avg"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Average speed</h4>
+          <div class="face prompt-face">$\text{Average Speed} = \ ?$</div>
+          <div class="face answer">$\dfrac{\text{Total Distance}}{\text{Total Time}}$</div>
+          <div class="hint">tap to flip</div>
+        </div>
+      </div>
+      <div class="callout red">
+        <h4>⚠ The classic trap</h4>
+        <p><b style="color:var(--ink)">Never average the speeds directly</b> (unless equal <em>times</em> are spent at each speed). Always compute separately: total distance, total time — then divide.</p>
+      </div>
+      <div class="qc"><div class="q"><span class="qn">QUICK CHECK</span>You drive 60 miles at 30 mph, then 60 miles at 60 mph. What's your average speed? (Hint: it is <em>not</em> 45.)</div>
+        <button class="reveal">Reveal answer</button>
+        <div class="ans">Leg 1: $t = \frac{60}{30} = 2$ h. Leg 2: $t = \frac{60}{60} = 1$ h. Total: 120 miles in 3 hours → $\frac{120}{3} = 40$ mph. The slow leg takes longer, so it drags the average below the midpoint.</div>
+      </div>
+    </section>
+
+    <!-- 3.1 -->
+    <section id="s31" data-sec>
+      <div class="kicker">3.1 · Modeling function relationships</div>
+      <h2 class="sec">The Box Problem</h2>
+      <div class="cards">
+        <div class="card flash" data-master="31-v"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Volume — basic</h4>
+          <div class="face prompt-face">$V = \ ?$</div>
+          <div class="face answer">$V = lwh$</div>
+          <div class="hint">tap to flip</div>
+        </div>
+        <div class="card flash" data-master="31-box"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Open-top box (corners cut out, side $x$)</h4>
+          <div class="face prompt-face">$V(x) = \ ?$ &nbsp; and the domain?</div>
+          <div class="face answer">$V(x)=x(L-2x)(W-2x)$,&nbsp; domain $\left[0,\ \tfrac{\text{shortest side}}{2}\right]$</div>
+          <div class="hint">tap to flip</div>
+        </div>
+      </div>
+      <h3 class="sub">Strategy</h3>
+      <ul class="tidy">
+        <li><b>1.</b> Draw the figure.</li>
+        <li><b>2.</b> Label dimensions.</li>
+        <li><b>3.</b> Determine how each dimension changes (cutting $x$ from each corner removes $2x$ from length <em>and</em> width; the flap height becomes $x$).</li>
+        <li><b>4.</b> Write the function.</li>
+      </ul>
+      <div class="qc"><div class="q"><span class="qn">QUICK CHECK</span>A 10″ × 8″ sheet has squares of side $x$ cut from each corner and is folded into an open box. Write $V(x)$ and its domain.</div>
+        <button class="reveal">Reveal answer</button>
+        <div class="ans">$V(x) = x(10-2x)(8-2x)$. Shortest side is 8, so the domain is $[0, 4]$ — cut more than 4″ and the width goes negative.</div>
+      </div>
+    </section>
+
+    <!-- 3.2 -->
+    <section id="s32" data-sec>
+      <div class="kicker">3.2 · Function relationships and domain of functions</div>
+      <h2 class="sec">Functions, Domain &amp; Range</h2>
+      <div class="callout">
+        <h4>Function — the definition</h4>
+        <p>Every input has <b style="color:var(--ink)">exactly one output</b>. Default: $y$ is a function of $x$ ($x$ is the input → use the <b style="color:var(--ink)">vertical line test</b>). When $x$ is a function of $y$, $y$ is the input → use the <b style="color:var(--ink)">horizontal line test</b>.</p>
+      </div>
+      <div class="two">
+        <div class="card" data-master="32-domain"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Domain — all allowable x-values</h4>
+          <p class="desc">"A monarch looks over their (horizontal) <b style="color:var(--ink)">domain</b>." Common restrictions:</p>
+          <ul class="tidy">
+            <li><b>Denominator:</b> cannot equal $0$</li>
+            <li><b>Square root:</b> inside $\ge 0$</li>
+            <li><b>Context:</b> dimensions (like in a box) cannot be negative</li>
+          </ul>
+        </div>
+        <div class="card" data-master="32-range"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Range — all allowable y-values</h4>
+          <p class="desc">"The (vertical) <b style="color:var(--ink)">range</b> of an archer's bow." Common restrictions:</p>
+          <ul class="tidy">
+            <li><b>$y=x^2$:</b> outputs can't go below the minimum → $y \ge 0$</li>
+            <li><b>$y=\sqrt{x}$:</b> outputs never negative → $y \ge 0$</li>
+            <li><b>$y=\frac{1}{x}$:</b> output can never be $0$ → $y \neq 0$</li>
+            <li><b>Context:</b> volume, height, distance can't be negative</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout gold">
+        <h4>When in doubt, graph the function</h4>
+        <p>At the very least, sketch your best approximation on paper — domain and range problems usually become obvious from the picture.</p>
+      </div>
+      <div class="qc"><div class="q"><span class="qn">QUICK CHECK</span>Give the domain of $f(x)=\dfrac{\sqrt{x-2}}{x-5}$.</div>
+        <button class="reveal">Reveal answer</button>
+        <div class="ans">Square root needs $x - 2 \ge 0 \Rightarrow x \ge 2$; denominator needs $x \neq 5$. Domain: $x \ge 2$ and $x \neq 5$, i.e. $[2, 5) \cup (5, \infty)$.</div>
+      </div>
+    </section>
+
+    <!-- 3.3 -->
+    <section id="s33" data-sec>
+      <div class="kicker">3.3 · Using and interpreting function notation</div>
+      <h2 class="sec">Function Notation</h2>
+      <p class="sec-lede">$y = 2x + 3$ becomes $f(x) = 2x + 3$. Same relationship, better labeling.</p>
+      <h3 class="sub">Evaluating</h3>
+      <div class="two">
+        <div class="card" data-master="33-eval"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Steps</h4>
+          <ul class="tidy">
+            <li><b>1.</b> Replace every $x$ with the given value.</li>
+            <li><b>2.</b> Use parentheses.</li>
+            <li><b>3.</b> Simplify carefully.</li>
+          </ul>
+          <p class="desc">Example: $f(x) = 3x - 2$, so $f(5) = 3(5) - 2 = 13$.</p>
+        </div>
+        <div class="card" data-master="33-not-mult"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Remember</h4>
+          <div class="formula-big" style="margin:10px 0">$f(2) \neq f \times 2$</div>
+          <p class="desc">It means <b style="color:var(--ink)">"the value of the function when $x = 2$."</b></p>
+        </div>
+      </div>
+      <h3 class="sub">"Don't find the y-intercept" problems</h3>
+      <div class="callout pink" data-master-callout>
+        <h4>The shortcut (linear only)</h4>
+        <p><b style="color:var(--ink)">1.</b> Use whatever y-value they gave you as the new "intercept". <b style="color:var(--ink)">2.</b> Subtract the associated x-value from the $x$ in the function.</p>
+        <p>Given the point $(3, 13)$ and slope $-2$: instead of solving for $b$, write $f(x) = -2(x-3) + 13$. You're translating the graph so it passes through the point — <b style="color:var(--ink)">this only works for linear equations</b>. Simplifying reveals the y-intercept anyway: $f(x) = -2x + 19$.</p>
+      </div>
+      <div class="qc"><div class="q"><span class="qn">QUICK CHECK</span>A line has slope $4$ and passes through $(2, 9)$. Write it without solving for $b$, then simplify.</div>
+        <button class="reveal">Reveal answer</button>
+        <div class="ans">$f(x) = 4(x-2) + 9$. Simplified: $f(x) = 4x + 1$. <b style="color:var(--ink)">Check:</b> $f(2) = 8 + 1 = 9$ ✓</div>
+      </div>
+    </section>
+
+    <!-- SUMMARY -->
+    <section id="summary" data-sec>
+      <div class="kicker" style="color:var(--red)">★ · The most important things to remember</div>
+      <h2 class="sec">Summary — Must Know Cold</h2>
+      <p class="sec-lede">If you can flip all four of these without hesitating, you're ready for the core of the test.</p>
+      <div class="cards">
+        <div class="card flash" data-master="sum-linear"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Linear function</h4>
+          <div class="face prompt-face">$y = \ ?$ &nbsp; (what are $m$ and $b$?)</div>
+          <div class="face answer">$y = mx + b$ — $m$: slope (rate of change) · $b$: y-intercept</div>
+          <div class="hint">tap to flip</div>
+        </div>
+        <div class="card flash" data-master="sum-slope"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Slope</h4>
+          <div class="face prompt-face">$m = \ ?$ &nbsp; ("… over …")</div>
+          <div class="face answer">$m = \dfrac{\Delta y}{\Delta x}$ — "rise over run"</div>
+          <div class="hint">tap to flip</div>
+        </div>
+        <div class="card flash" data-master="sum-avg"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Average speed</h4>
+          <div class="face prompt-face">$\text{Average Speed} = \ ?$</div>
+          <div class="face answer">$\dfrac{\text{Total Distance}}{\text{Total Time}}$ — never average speeds directly</div>
+          <div class="hint">tap to flip</div>
+        </div>
+        <div class="card flash" data-master="sum-prop"><label class="mastercheck"><input type="checkbox">got it</label>
+          <h4>Proportional relationship</h4>
+          <div class="face prompt-face">$y = \ ?$ &nbsp; (and the constant ratio?)</div>
+          <div class="face answer">$y = kx$ — constant ratio $\dfrac{y}{x} = k$, passes through $(0,0)$</div>
+          <div class="hint">tap to flip</div>
+        </div>
+      </div>
+      <div class="btnrow" style="margin-top:18px">
+        <button class="abtn" id="flipall">Flip all cards</button>
+        <button class="abtn" id="resetflips">Hide all answers</button>
+        <button class="abtn" id="resetprogress">Reset my progress</button>
+      </div>
+      <div class="callout green">
+        <h4>Next step: prove it</h4>
+        <p>Reading is the weakest form of studying. Open the <a href="index.html">AutoLearner practice app</a> and work real problems out loud — it will find the gaps for you.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+(function(){
+  var LS_KEY = 'precalc-t1-guide';
+  function load(){ try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e){ return {}; } }
+  function save(st){ localStorage.setItem(LS_KEY, JSON.stringify(st)); }
+  var state = load();
+
+  // --- mastery checkboxes + progress bar ---
+  var cards = document.querySelectorAll('[data-master]');
+  function refreshProgress(){
+    var done = 0;
+    cards.forEach(function(c){ if (state[c.dataset.master]) done++; });
+    var pct = cards.length ? Math.round(100 * done / cards.length) : 0;
+    document.getElementById('pfill').style.width = pct + '%';
+    document.getElementById('plabel').textContent = done + ' / ' + cards.length + ' mastered';
+  }
+  cards.forEach(function(card){
+    var cb = card.querySelector('.mastercheck input');
+    if (!cb) return;
+    var key = card.dataset.master;
+    if (state[key]) { cb.checked = true; card.classList.add('mastered'); }
+    cb.addEventListener('change', function(e){
+      e.stopPropagation();
+      state[key] = cb.checked;
+      card.classList.toggle('mastered', cb.checked);
+      save(state); refreshProgress();
+    });
+    cb.addEventListener('click', function(e){ e.stopPropagation(); });
+  });
+  refreshProgress();
+
+  // --- flashcards ---
+  document.querySelectorAll('.flash').forEach(function(card){
+    card.addEventListener('click', function(e){
+      if (e.target.closest('.mastercheck')) return;
+      card.classList.toggle('revealed');
+    });
+  });
+  document.getElementById('flipall').addEventListener('click', function(){
+    document.querySelectorAll('.flash').forEach(function(c){ c.classList.add('revealed'); });
+  });
+  document.getElementById('resetflips').addEventListener('click', function(){
+    document.querySelectorAll('.flash').forEach(function(c){ c.classList.remove('revealed'); });
+  });
+  document.getElementById('resetprogress').addEventListener('click', function(){
+    state = {}; save(state);
+    cards.forEach(function(c){
+      c.classList.remove('mastered');
+      var cb = c.querySelector('.mastercheck input'); if (cb) cb.checked = false;
+    });
+    document.querySelectorAll('#howtosteps .step').forEach(function(s){ s.classList.remove('done'); });
+    refreshProgress();
+  });
+
+  // --- how-to steps checklist ---
+  document.querySelectorAll('#howtosteps .step').forEach(function(step){
+    var key = 'step-' + step.dataset.step;
+    if (state[key]) step.classList.add('done');
+    step.addEventListener('click', function(){
+      step.classList.toggle('done');
+      state[key] = step.classList.contains('done');
+      save(state);
+    });
+  });
+
+  // --- quick-check reveal ---
+  document.querySelectorAll('.qc .reveal').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var qc = btn.closest('.qc');
+      qc.classList.toggle('open');
+      btn.textContent = qc.classList.contains('open') ? 'Hide answer' : 'Reveal answer';
+    });
+  });
+
+  // --- search: filter sections by text match ---
+  var searchBox = document.getElementById('search');
+  var counter = document.getElementById('searchcount');
+  var sections = document.querySelectorAll('section[data-sec]');
+  searchBox.addEventListener('input', function(){
+    var q = searchBox.value.trim().toLowerCase();
+    if (!q) {
+      sections.forEach(function(s){ s.classList.remove('hidden'); });
+      counter.textContent = '';
+      return;
+    }
+    var shown = 0;
+    sections.forEach(function(s){
+      var hit = s.textContent.toLowerCase().indexOf(q) !== -1;
+      s.classList.toggle('hidden', !hit);
+      if (hit) shown++;
+    });
+    counter.textContent = shown + ' section' + (shown === 1 ? '' : 's');
+  });
+
+  // --- active nav highlight on scroll ---
+  var navlinks = document.querySelectorAll('nav.side a.navlink[href^="#"]');
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if (en.isIntersecting) {
+        navlinks.forEach(function(a){ a.classList.toggle('active', a.getAttribute('href') === '#' + en.target.id); });
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  document.querySelectorAll('section[id]').forEach(function(s){ obs.observe(s); });
+})();
+</script>
+</body>
+</html>

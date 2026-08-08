@@ -1,0 +1,17 @@
+# Repo-relative local-only mount points.
+# These paths are symlinked from each worktree into:
+# /Users/randytrue/Documents/Code/_LOCAL_FILES/fof-mono/
+data
+exchanges
+_archive
+logs
+apps/math-quiz/_data
+apps/math-quiz/_assets
+apps/math-quiz/dragon/data
+apps/content_studio/_data
+apps/minecraft/prism-sync/_data
+apps/holodeck/data
+apps/autolearner/data
+apps/voice-router/data
+apps/education/lesson-logger/data
+docs/personal

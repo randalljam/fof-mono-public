@@ -1,0 +1,12 @@
+schema: spec-driven
+
+context: |
+  App: worldview-mirror
+  App stage: S1-dev
+  Spec stage: openspec-single-spec
+  Capability model: one living capability named "app" covers the whole app until the spec grows enough to split.
+  Tech stack: Python engine package (wvmirror/) with implicit typing; FastAPI + uvicorn local server bound to 127.0.0.1; hand-authored static HTML/JS UI served with a per-run session token; OpenAI calls go through core/llm.py (raw-requests path while the venv's openai SDK is httpx-incompatible); pytest with a stubbed LLM.
+  Data model: the Worldview Atlas taxonomy is hand-curated committed data (taxonomy/axes.jsonl + taxonomy/profiles/*.json, positions on a shared -2.0..+2.0 scale, omission = no position); user profiles and threads are local JSON files under gitignored data/ with a generated markdown mirror of the profile; the deutsch-graph committed graph plus the S3-fetched corpus provide grounding.
+  Key conventions: taxonomy/ is curated source reviewed like deutsch-graph overlays and must validate against the committed deutsch-graph (evidence node ids resolve); deep-optimism.json is the only graph-cited profile and seeds the deutsch-graph L5 layer; web/worldview-mirror.html is hand-authored source; wvmirror/engine.py must stay importable without API keys (core.llm imported lazily inside _chat only); data/ is user data — never committed, never read without need.
+  Security baseline: localhost-only binding, session-token auth on /api/, local-file user data with full visibility/edit/delete, non-medical framing with crisis pointer. Accounts, server-side thread storage, client-side encryption, and no-retention inference are explicit placeholders (the confidentiality ladder), not current behavior.
+  Roadmap boundary: current behavior belongs in openspec/specs/app/spec.md; the confidentiality ladder, divergence-detection service, clip/TTS delivery, additional profiles, and elicitation instruments belong in README TODOs or future OpenSpec changes, not in the baseline spec.

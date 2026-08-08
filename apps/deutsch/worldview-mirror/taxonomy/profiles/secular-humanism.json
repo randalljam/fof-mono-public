@@ -1,0 +1,29 @@
+{
+  "id": "profile:secular-humanism",
+  "label": "Secular Humanism",
+  "summary": "A progressive philosophy of life that, without supernaturalism, affirms human ability and responsibility to lead ethical lives of personal fulfillment aspiring to the greater good of humanity (Humanist Manifesto III). Knowledge comes from observation, experimentation, and rational analysis; ethics derive from human need and interest tested by experience.",
+  "thinkers": ["Paul Kurtz", "Corliss Lamont", "A.C. Grayling"],
+  "sources": [
+    {"title": "Humanist Manifesto III (2003)", "url": "https://americanhumanist.org/what-is-humanism/manifesto3/"},
+    {"title": "Humanism and Its Aspirations — Wikipedia", "url": "https://en.wikipedia.org/wiki/Humanism_and_Its_Aspirations"},
+    {"title": "Secular humanism — Wikipedia", "url": "https://en.wikipedia.org/wiki/Secular_humanism"}
+  ],
+  "variants": "Manifesto I (1933, religious humanism) vs II (1973, more political) vs III (2003, minimal); confrontational New Atheist wing vs accommodationist community-building wing (Ethical Culture, humanist chaplaincies). Overlaps with scientific materialism but is defined by its ethical-social program rather than its ontology.",
+  "cited_from_graph": false,
+  "positions": [
+    {"axis": "axis:epistemology", "position": 0.5, "summary": "Empiricist and scientific, moderately fallibilist in practice: knowledge derived by observation, experimentation, and rational analysis, open to revision.", "evidence": [{"url": "https://americanhumanist.org/what-is-humanism/manifesto3/", "title": "Humanist Manifesto III"}]},
+    {"axis": "axis:knowledge-reach", "position": 0.5, "summary": "Confident in expanding human understanding without a strong doctrine about ultimate limits.", "evidence": [{"url": "https://americanhumanist.org/what-is-humanism/manifesto3/", "title": "Humanist Manifesto III"}]},
+    {"axis": "axis:authority-of-belief", "position": 1.5, "summary": "Reason, science, and democratic deliberation; explicitly rejects revelation and mere tradition as truth sources.", "evidence": [{"url": "https://americanhumanist.org/what-is-humanism/manifesto3/", "title": "Humanist Manifesto III"}]},
+    {"axis": "axis:realism", "position": 1.0, "summary": "Scientific realism about nature; humans are an unguided product of evolution in a knowable world.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Humanism_and_Its_Aspirations", "title": "Humanism and Its Aspirations"}]},
+    {"axis": "axis:progress", "position": 1.0, "summary": "Optimistic-meliorist: social progress through reason, science, education, human rights, and democratic institutions — achievable but requiring deliberate humane effort.", "evidence": [{"url": "https://americanhumanist.org/what-is-humanism/manifesto3/", "title": "Humanist Manifesto III"}]},
+    {"axis": "axis:risk", "position": 0.0, "summary": "Balanced: pro-science and pro-technology in service of human welfare, with ethical oversight and environmental responsibility — neither accelerationist nor deep-precautionary.", "evidence": [{"url": "https://americanhumanist.org/what-is-humanism/manifesto3/", "title": "Humanist Manifesto III"}]},
+    {"axis": "axis:agency", "position": 1.5, "summary": "High: the ability and responsibility of humans, individually and collectively, to shape their lives and societies.", "evidence": [{"url": "https://americanhumanist.org/what-is-humanism/manifesto3/", "title": "Humanist Manifesto III"}]},
+    {"axis": "axis:human-significance", "position": 1.0, "summary": "Human dignity and flourishing are central — within a naturalist humility about humanity's place in the cosmos.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Secular_humanism", "title": "Secular humanism"}]},
+    {"axis": "axis:morality", "position": 0.5, "summary": "Humanly-grounded quasi-objectivity: values are neither divine nor arbitrary, derived from shared human needs and interests tested by experience; strong universalist commitments.", "evidence": [{"url": "https://americanhumanist.org/what-is-humanism/manifesto3/", "title": "Humanist Manifesto III"}]},
+    {"axis": "axis:metaphysics", "position": 2.0, "summary": "Naturalist, explicitly without supernaturalism; humans are integral to nature; no afterlife.", "evidence": [{"url": "https://americanhumanist.org/what-is-humanism/manifesto3/", "title": "Humanist Manifesto III"}]},
+    {"axis": "axis:change", "position": 1.0, "summary": "Progressive: institutions and norms should be reformed by reasoned deliberation rather than preserved for tradition's sake.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Secular_humanism", "title": "Secular humanism"}]},
+    {"axis": "axis:nature", "position": 0.5, "summary": "Humans may shape nature for human welfare, joined to an ethic of planetary responsibility.", "evidence": [{"url": "https://americanhumanist.org/what-is-humanism/manifesto3/", "title": "Humanist Manifesto III"}]},
+    {"axis": "axis:meaning", "position": 1.5, "summary": "Self-made and this-worldly: fulfillment through relationships, participation, and service to the greater good — no cosmic purpose required.", "evidence": [{"url": "https://americanhumanist.org/what-is-humanism/manifesto3/", "title": "Humanist Manifesto III"}]},
+    {"axis": "axis:social", "position": 0.5, "summary": "Individual dignity and rights balanced with responsibility to humanity as a whole.", "evidence": [{"url": "https://americanhumanist.org/what-is-humanism/manifesto3/", "title": "Humanist Manifesto III"}]}
+  ]
+}

@@ -1,0 +1,59 @@
+// Root build script. Defines aggregate tasks (buildAll, cleanAll) that fan out to the
+// selected target subprojects. Per-target details live in targets/<target>/build.gradle.
+
+allprojects {
+    group = project.findProperty('maven_group') ?: 'com.kidgames'
+    version = project.findProperty('mod_version') ?: '0.0.0'
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        it.options.release = 21
+        it.options.encoding = 'UTF-8'
+    }
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+tasks.register('buildAll') {
+    group = 'remove-singleplayer'
+    description = 'Builds every selected target (filter via -Ptargets=...)'
+    def selected = (gradle.ext.has('selectedTargets') ? gradle.ext.selectedTargets : []) as List
+    selected.each { name ->
+        dependsOn ":targets:${name}:build"
+    }
+    doFirst {
+        println "[remove-singleplayer] Building targets: ${selected.join(', ')}"
+    }
+}
+
+tasks.register('cleanAll') {
+    group = 'remove-singleplayer'
+    description = 'Cleans every selected target'
+    def selected = (gradle.ext.has('selectedTargets') ? gradle.ext.selectedTargets : []) as List
+    selected.each { name ->
+        dependsOn ":targets:${name}:clean"
+    }
+    dependsOn 'clean'
+}
+
+tasks.register('listTargets') {
+    group = 'remove-singleplayer'
+    description = 'Prints the targets selected for this build invocation'
+    doLast {
+        def selected = (gradle.ext.has('selectedTargets') ? gradle.ext.selectedTargets : []) as List
+        println "Selected targets:"
+        selected.each { println "  - ${it}" }
+        println ""
+        println "Filter with: -Ptargets=name1,name2  (or omit to build all enabled)"
+    }
+}

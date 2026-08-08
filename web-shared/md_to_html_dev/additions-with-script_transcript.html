@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<body>
+  <header>
+    <h1></h1>
+    <div class="control-panel">
+      <button class="button button-small-text" onclick="toggleLevel('sections')">Show All Sections</button>
+      <button class="button button-small-text" onclick="toggleLevel('collapse')">Collapse All</button>
+    </div>
+    <div class="header-row">
+      <h3></h3>
+      <button id="toggleButton" class="button button-small-text button-orange">View Q&A</button>
+    </div>
+  </header>
+
+  <script>
+    function toggleLevel(level) {
+        // Get all details elements
+        const allDetails = document.querySelectorAll('details');
+        
+        if (level === 'collapse') {
+            // Close everything
+            allDetails.forEach(detail => {
+                detail.removeAttribute('open');
+            });
+            return;  // Exit early
+        }
+        
+        allDetails.forEach(detail => {
+            if (level === 'sections') {
+                // Open all details elements since there's only one level
+                detail.setAttribute('open', '');
+            }
+        });
+    }
+  </script>
+</body>
+</html>

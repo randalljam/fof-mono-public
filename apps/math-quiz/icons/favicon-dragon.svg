@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Dragon game">
+  <rect width="32" height="32" rx="7" fill="#7b5ea7"/>
+  <ellipse cx="16" cy="20" rx="8" ry="7" fill="#fff"/>
+  <circle cx="16" cy="11" r="6" fill="#fff"/>
+  <circle cx="18" cy="10" r="1.5" fill="#7b5ea7"/>
+  <path fill="#e1bee7" d="M9 16 Q6 10 8 14 Q9 18 11 17"/>
+  <path fill="#e1bee7" d="M23 16 Q26 10 24 14 Q23 18 21 17"/>
+  <path fill="#fff" d="M22 22 Q28 20 26 26 Q24 24 22 24"/>
+  <path fill="#ffc107" d="M14 14 Q16 12 18 14 Q16 16 14 14"/>
+</svg>

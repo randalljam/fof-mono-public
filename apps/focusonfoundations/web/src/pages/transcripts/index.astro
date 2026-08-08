@@ -1,0 +1,21 @@
+---
+import TranscriptPage from '../../layouts/TranscriptPage.astro';
+import { getCorpusList } from '../../lib/corpus-config.js';
+
+const corpora = getCorpusList();
+---
+<TranscriptPage title="Transcripts — Focus on Foundations" backHref="/" backLabel="← Home">
+  <h1>Transcript corpora</h1>
+  <p class="lead">Browse source transcripts and extracted Q&amp;A for each corpus. AI Q&amp;A demos live under <a href="/demos/">Demos</a>.</p>
+  <ul class="transcript-index-list">
+    {corpora.map((corpus) => (
+      <li class="transcript-index-item">
+        <strong><a href={corpus.indexPath}>{corpus.title}</a></strong>
+        <div class="transcript-index-links">
+          <a href={corpus.indexPath}>Source index</a>
+          <a href={corpus.demoPath}>QRAG demo</a>
+        </div>
+      </li>
+    ))}
+  </ul>
+</TranscriptPage>

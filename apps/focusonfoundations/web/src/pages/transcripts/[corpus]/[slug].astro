@@ -1,0 +1,45 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import TranscriptPage from '../../../layouts/TranscriptPage.astro';
+import TranscriptViewer from '../../../components/TranscriptViewer.astro';
+import Van11yTranscript from '../../../components/Van11yTranscript.astro';
+import { CORPORA, getAllCorpusItems } from '../../../lib/corpus-config.js';
+
+export function getStaticPaths() {
+  return getAllCorpusItems().map((item) => ({
+    params: { corpus: item.corpusKey, slug: item.slug },
+    props: { item },
+  }));
+}
+
+const { corpus, slug } = Astro.params;
+const { item } = Astro.props;
+const meta = CORPORA[corpus];
+if (!meta || !item) throw new Error(`Unknown transcript item: ${corpus}/${slug}`);
+
+let markdownContent = '';
+if (item.viewerVariant === 'van11y' && item.markdownFile) {
+  const mdPath = path.join(process.cwd(), 'src/corpus', item.markdownFile);
+  markdownContent = fs.readFileSync(mdPath, 'utf8');
+}
+
+const viewerId = `transcript-viewer-${slug}`;
+---
+<TranscriptPage
+  title={`${item.name} — ${meta.title}`}
+  backHref={meta.indexPath}
+  backLabel={`← ${meta.title} index`}
+>
+  <h1>{item.name}</h1>
+  {item.viewerVariant === 'van11y' ? (
+    <Van11yTranscript rootId={viewerId} markdownContent={markdownContent} />
+  ) : (
+    <TranscriptViewer
+      rootId={viewerId}
+      transcriptUrl={item.transcriptHtmlUrl}
+      qaUrl={item.qaHtmlUrl}
+      variant={item.viewerVariant === 'fda' ? 'fda' : 'generic'}
+    />
+  )}
+</TranscriptPage>

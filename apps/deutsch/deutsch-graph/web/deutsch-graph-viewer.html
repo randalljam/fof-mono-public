@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Deutsch Graph</title>
+<!-- Hand-authored viewer SOURCE (not generated). Data loads from ./graphdata/ shards,
+     written by `build_graph.py export-vis`. Works from file:// — no server needed. -->
+<script src="../../../../lib/vis-9.1.2/vis-network.min.js"></script>
+<link rel="stylesheet" href="../../../../lib/vis-9.1.2/vis-network.css">
+<style>
+  :root { --panel-w: 380px; --side-w: 220px; }
+  html, body { margin: 0; height: 100%; font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; overflow: hidden; }
+  #topbar { position: fixed; top: 0; left: 0; right: 0; height: 46px; background: #2b2d42; color: #fff;
+            display: flex; align-items: center; gap: 10px; padding: 0 12px; z-index: 30; }
+  #topbar h1 { font-size: 15px; margin: 0 8px 0 0; font-weight: 600; white-space: nowrap; }
+  .modebtn { background: #4a4e69; color: #ddd; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+  .modebtn.active { background: #9d4edd; color: #fff; }
+  #search { flex: 1; max-width: 420px; padding: 6px 8px; border-radius: 4px; border: none; font-size: 13px; }
+  #searchresults { position: fixed; top: 44px; left: 0; background: #fff; border: 1px solid #bbb; border-radius: 0 0 6px 6px;
+                   max-height: 50vh; overflow-y: auto; z-index: 40; min-width: 380px; max-width: 520px; display: none;
+                   box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+  #searchresults div { padding: 6px 10px; font-size: 12.5px; cursor: pointer; border-bottom: 1px solid #eee; }
+  #searchresults div:hover { background: #f1e6fb; }
+  .tbtn { background: #4a4e69; color: #ddd; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12.5px; white-space: nowrap; }
+  .tbtn:hover { background: #5d6285; }
+  #status { font-size: 12px; color: #bfc0d4; white-space: nowrap; }
+  #side { position: fixed; top: 46px; left: 0; bottom: 0; width: var(--side-w); background: #f6f5fa; border-right: 1px solid #ddd;
+          overflow-y: auto; padding: 10px 12px; box-sizing: border-box; z-index: 20; font-size: 13px; }
+  #side h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: #666; margin: 14px 0 6px; }
+  #side label { display: flex; align-items: center; gap: 6px; margin: 3px 0; cursor: pointer; }
+  .swatch { display: inline-block; width: 11px; height: 11px; border-radius: 3px; }
+  .count { color: #999; font-size: 11.5px; margin-left: auto; }
+  #side .hint { font-size: 11.5px; color: #888; line-height: 1.45; }
+  #graph { position: fixed; top: 46px; left: var(--side-w); right: var(--panel-w); bottom: 0; }
+  #panel { position: fixed; top: 46px; right: 0; bottom: 0; width: var(--panel-w); background: #fff; border-left: 1px solid #ddd;
+           overflow-y: auto; box-sizing: border-box; z-index: 20; }
+  #panelhead { position: sticky; top: 0; background: #fff; border-bottom: 1px solid #eee; padding: 8px 12px; display: flex; gap: 6px; align-items: center; }
+  #panelbody { padding: 10px 14px 30px; font-size: 13.5px; line-height: 1.5; }
+  .badge { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; color: #fff; padding: 2px 7px; border-radius: 9px; }
+  .ntitle { font-size: 16px; font-weight: 650; margin: 8px 0 4px; line-height: 1.35; }
+  .meta { color: #777; font-size: 12px; margin-bottom: 8px; }
+  .defbox { background: #f7f2fd; border-left: 3px solid #9d4edd; padding: 8px 10px; border-radius: 4px; margin: 8px 0; }
+  .item { border: 1px solid #e8e8ef; border-radius: 6px; padding: 7px 9px; margin: 6px 0; cursor: pointer; }
+  .item:hover { background: #f6f0fc; border-color: #c8a4e8; }
+  .item .src { color: #888; font-size: 11.5px; margin-top: 3px; }
+  .chip { display: inline-block; background: #fdf3d5; border: 1px solid #e8cf8b; border-radius: 10px;
+          padding: 1px 9px; margin: 2px 3px 2px 0; font-size: 12px; cursor: pointer; }
+  .chip:hover { background: #f9e6ac; }
+  .chip.cat { background: #f1e4fb; border-color: #c8a4e8; }
+  .navlink { color: #6b2fa8; cursor: pointer; text-decoration: underline; }
+  a.ext { color: #0b6e99; }
+  .play { color: #c1121f; text-decoration: none; font-weight: 600; }
+  .stars { color: #e0a800; }
+  h3.sec { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: #666; margin: 16px 0 4px; }
+  .research-only { display: none; }
+  body.research .research-only { display: block; }
+  body.research span.research-only, body.research a.research-only, body.research label.research-only { display: inline-flex; }
+  #loading { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+             background: #fff; z-index: 100; font-size: 15px; color: #555; }
+  input[type=range] { width: 100%; }
+</style>
+</head>
+<body class="explore">
+<div id="loading">Loading Deutsch Graph data…</div>
+<div id="topbar">
+  <h1>Deutsch Graph</h1>
+  <button id="mode-explore" class="modebtn active" title="Simplified view: start from the first-tier categories and drill down.">Explore</button>
+  <button id="mode-research" class="modebtn" title="Full graph: every layer, ids, file paths, no caps.">Research</button>
+  <input id="search" type="text" placeholder="Search the graph…" autocomplete="off">
+  <button id="btn-reset" class="tbtn" title="Back to the starting view for this mode">Reset view</button>
+  <button id="btn-physics" class="tbtn" title="Toggle force layout">Physics: on</button>
+  <span id="status"></span>
+</div>
+<div id="searchresults"></div>
+<div id="side">
+  <h2>Layers</h2>
+  <div id="layer-toggles"></div>
+  <div class="research-only">
+    <h2>Filters</h2>
+    <label style="display:block">Topic min QA: <span id="mintopicqa-val">3</span>
+      <input id="mintopicqa" type="range" min="1" max="30" value="3"></label>
+    <label style="display:block">Edge min weight: <span id="minweight-val">2</span>
+      <input id="minweight" type="range" min="1" max="10" value="2"></label>
+  </div>
+  <h2>How to use</h2>
+  <div class="hint">
+    <b>Click</b> a node → details on the right.<br>
+    <b>Double-click</b> a node → expand / collapse its children in the graph.<br>
+    Links in the panel navigate the content; “Show in graph” reveals the node.<br>
+    <span class="research-only" style="display:inline"><b>Research mode</b> adds ids, file paths, all layers, uncapped expansion.</span>
+  </div>
+</div>
+<div id="graph"></div>
+<div id="panel">
+  <div id="panelhead">
+    <button id="btn-back" class="tbtn" title="Back">←</button>
+    <button id="btn-reveal" class="tbtn" title="Reveal and focus this node in the graph">Show in graph</button>
+    <button id="btn-isolate" class="tbtn" title="Hide everything not connected to this node">Isolate</button>
+  </div>
+  <div id="panelbody">
+    <p style="color:#888">Click any node to see its content here.<br><br>
+    In <b>Explore</b> mode you start from the first-tier categories of Deutsch's worldview.
+    Double-click one to unfold its claims; double-click a claim to see the verbatim excerpts behind it.
+    Yellow topic chips lead into the interview corpus: works, then individual Q&amp;A items with
+    ▶ links that jump straight to the moment on YouTube.</p>
+  </div>
+</div>
+<script src="./graphdata/index.js"></script>
+<script>
+"use strict";
+// ---------- data loading (script shards; works on file://) ----------
+const REPO_PREFIX = "../../../../";   // web/ -> repo root, for open-file links
+let D = null;                          // merged payload sections
+let E = null;                          // entity index and adjacency
+(function loadShards() {
+  let remaining = window.DGRAPH_SHARDS.length;
+  window.DGRAPH_SHARDS.forEach(name => {
+    const s = document.createElement("script");
+    s.src = "./graphdata/" + name;
+    s.onload = () => { if (--remaining === 0) boot(); };
+    s.onerror = () => { document.getElementById("loading").textContent = "Failed to load " + name + " — run: build_graph.py export-vis"; };
+    document.head.appendChild(s);
+  });
+})();
+function mergeParts() {
+  const sections = {};
+  window.DGRAPH_PARTS.forEach(([name, arr]) => {
+    (sections[name] = sections[name] || []).push(...arr);
+  });
+  return sections;
+}
+
+// ---------- visual vocabulary ----------
+const TYPES = {
+  category: { label: "Categories", color: "#9d4edd", border: "#5a189a", shape: "hexagon", size: 26, font: 17 },
+  claim:    { label: "Claims", color: "#c77dff", border: "#7b2cbf", shape: "box", size: 12, font: 11 },
+  excerpt:  { label: "Excerpts", color: "#e0aaff", border: "#a663cc", shape: "dot", size: 7, font: 10 },
+  topic:    { label: "Topics", color: "#f9c74f", border: "#c79a2a", shape: "dot", size: 12, font: 13 },
+  work:     { label: "Works", color: "#4d908e", border: "#2f5d5c", shape: "dot", size: 14, font: 12 },
+  qa:       { label: "Q&A items", color: "#48bfe3", border: "#2384a8", shape: "dot", size: 7, font: 10 },
+  concept:  { label: "Concepts", color: "#80b918", border: "#55750f", shape: "triangle", size: 10, font: 11 },
+  chapter:  { label: "Chapters", color: "#f3722c", border: "#b34a12", shape: "triangleDown", size: 11, font: 11 },
+};
+const WORK_SHAPES = { book: "diamond", essay: "square", tcs_post: "square", about: "square", paper: "square" };
+const MODES = {
+  explore:  { layers: ["category", "claim", "excerpt", "topic", "work"], caps: { excerpt: 10, work: 10, qa: 8, topic: 12 } },
+  research: { layers: Object.keys(TYPES), caps: {} },
+};
+let mode = "explore";
+
+// ---------- entity index ----------
+function buildIndex() {
+  const byId = {}, adj = {};
+  function reg(list, ntype) { list.forEach(o => { o.ntype = ntype; byId[o.id] = o; }); }
+  reg(D.categories, "category"); reg(D.claims, "claim"); reg(D.excerpts, "excerpt");
+  reg(D.topics, "topic"); reg(D.works, "work"); reg(D.qa, "qa");
+  reg(D.concepts, "concept"); reg(D.chapters, "chapter");
+  const edges = [];
+  function link(a, b, etype, w) {
+    if (!byId[a] || !byId[b]) return;
+    edges.push({ from: a, to: b, etype, w: w || 1 });
+    (adj[a] = adj[a] || []).push({ id: b, etype, w: w || 1 });
+    (adj[b] = adj[b] || []).push({ id: a, etype, w: w || 1 });
+  }
+  D.category_topic.forEach(([c, t]) => link(c, t, "bridge"));
+  D.claims.forEach(c => link(c.cat, c.id, "claim_of"));
+  D.excerpts.forEach(x => { link(x.claim, x.id, "excerpt_of"); if (x.work) link(x.id, x.work, "source"); if (x.chap) link(x.id, x.chap, "source"); });
+  D.work_topic.forEach(([w, t, n]) => link(w, t, "work_topic", n));
+  D.qa.forEach(q => { link(q.work, q.id, "qa_of"); q.topics.forEach(t => link(q.id, t, "qa_topic")); });
+  D.chapters.forEach(c => link(c.book, c.id, "chapter_of"));
+  D.concepts.forEach(c => link(c.chap || c.work, c.id, "concept_of"));
+  // convenience lists
+  const claimsByCat = {}, excerptsByClaim = {}, qaByWork = {}, worksByTopic = {}, qaByTopic = {}, chaptersByBook = {}, conceptsByParent = {};
+  D.claims.forEach(c => (claimsByCat[c.cat] = claimsByCat[c.cat] || []).push(c));
+  D.excerpts.forEach(x => (excerptsByClaim[x.claim] = excerptsByClaim[x.claim] || []).push(x));
+  D.qa.forEach(q => {
+    (qaByWork[q.work] = qaByWork[q.work] || []).push(q);
+    q.topics.forEach(t => (qaByTopic[t] = qaByTopic[t] || []).push(q));
+  });
+  D.work_topic.forEach(([w, t, n]) => (worksByTopic[t] = worksByTopic[t] || []).push({ work: w, w: n }));
+  Object.values(worksByTopic).forEach(l => l.sort((a, b) => b.w - a.w));
+  D.chapters.forEach(c => (chaptersByBook[c.book] = chaptersByBook[c.book] || []).push(c));
+  D.concepts.forEach(c => { const p = c.chap || c.work; (conceptsByParent[p] = conceptsByParent[p] || []).push(c); });
+  return { byId, adj, edges, claimsByCat, excerptsByClaim, qaByWork, worksByTopic, qaByTopic, chaptersByBook, conceptsByParent };
+}
+function qaSort(a, b) { return (b.starred - a.starred) || (b.stars - a.stars) || a.id.localeCompare(b.id); }
+
+// ---------- graph view state ----------
+let network, nodesDS, edgesDS;
+const visible = new Set();      // entity ids in the graph
+const addedBy = {};             // id -> expander id (for collapse)
+const expanded = new Set();     // ids whose children are currently expanded
+let layerOn = {};               // ntype -> bool
+let physicsOn = true;
+
+function nodeSpec(o) {
+  const t = TYPES[o.ntype];
+  let label = o.label || o.q || o.text || o.id;
+  if (label.length > 46) label = label.slice(0, 44) + "…";
+  const spec = {
+    id: o.id, label, group: o.ntype,
+    shape: o.ntype === "work" ? (WORK_SHAPES[o.kind] || "dot") : t.shape,
+    color: { background: t.color, border: t.border, highlight: { background: "#fff", border: t.border } },
+    font: { size: t.font }, size: t.size,
+  };
+  if (o.ntype === "category") spec.size = 18 + Math.min(16, (o.excerpts || 0) / 25);
+  if (o.ntype === "topic") spec.size = 8 + Math.min(16, (o.qa_count || 0) / 8);
+  if (o.ntype === "work") spec.size = 8 + Math.min(14, (o.qa_count || 0) / 4);
+  if (o.ntype === "claim") { spec.widthConstraint = { maximum: 200 }; }
+  spec.title = tooltip(o);
+  return spec;
+}
+function tooltip(o) {
+  switch (o.ntype) {
+    case "category": return `${o.label} — ${o.claims} claims, ${o.excerpts} excerpts (${o.origin})`;
+    case "claim": return o.text;
+    case "excerpt": return o.text.slice(0, 160) + "…";
+    case "topic": return `${o.label} — ${o.qa_count} Q&A in ${o.work_count} works`;
+    case "work": return `${o.label} (${o.kind}${o.date ? ", " + o.date : ""}) — ${o.qa_count} Q&A`;
+    case "qa": return o.q;
+    case "concept": return `${o.label}: ${(o.def || "").slice(0, 140)}`;
+    case "chapter": return `Ch ${o.num} — ${o.title}`;
+  }
+}
+function syncEdges() {
+  const want = [];
+  const minW = mode === "research" ? +document.getElementById("minweight").value : 1;
+  E.edges.forEach((e, i) => {
+    if (!visible.has(e.from) || !visible.has(e.to)) return;
+    if (e.etype === "work_topic" && e.w < minW) return;
+    const spec = { id: "e" + i, from: e.from, to: e.to };
+    if (e.etype === "bridge") { spec.dashes = true; spec.color = { color: "#b07fd6" }; spec.width = 2; }
+    else if (e.etype === "work_topic") { spec.color = { color: "#e3e3ea", opacity: 0.7 }; spec.width = 0.6 + Math.log2(e.w) / 2; }
+    else if (e.etype === "source") { spec.dashes = [2, 4]; spec.color = { color: "#c9b6d8" }; spec.width = 1; }
+    else { spec.color = { color: "#e0e0e8", opacity: 0.8 }; spec.width = 0.8; }
+    want.push(spec);
+  });
+  edgesDS.clear(); edgesDS.add(want);
+}
+function show(ids, expander) {
+  const add = [];
+  ids.forEach(id => {
+    const o = E.byId[id];
+    if (!o || visible.has(id) || !layerOn[o.ntype]) return;
+    visible.add(id);
+    if (expander) addedBy[id] = expander;
+    add.push(nodeSpec(o));
+  });
+  if (add.length) nodesDS.add(add);
+  syncEdges(); updateStatus();
+  return add.length;
+}
+function hide(ids) {
+  ids.forEach(id => { visible.delete(id); delete addedBy[id]; expanded.delete(id); });
+  nodesDS.remove(ids);
+  syncEdges(); updateStatus();
+}
+function collapse(id) {
+  const doomed = [];
+  let frontier = [id];
+  while (frontier.length) {
+    const next = [];
+    for (const vid of visible) {
+      if (frontier.includes(addedBy[vid])) { doomed.push(vid); next.push(vid); }
+    }
+    frontier = next;
+  }
+  hide(doomed);
+  expanded.delete(id);
+}
+function childrenOf(id) {
+  const o = E.byId[id];
+  const caps = MODES[mode].caps;
+  switch (o.ntype) {
+    case "category": {
+      const kids = (E.claimsByCat[id] || []).map(c => c.id);
+      return kids.concat((o.topics || []).slice(0, caps.topic || 999));
+    }
+    case "claim": return (E.excerptsByClaim[id] || []).slice(0, caps.excerpt || 9999).map(x => x.id);
+    case "excerpt": { const x = E.byId[id]; return [x.chap || x.work].filter(Boolean); }
+    case "topic": {
+      const works = (E.worksByTopic[id] || []).slice(0, caps.work || 9999).map(r => r.work);
+      if (mode === "research") return works.concat((E.qaByTopic[id] || []).slice().sort(qaSort).slice(0, 15).map(q => q.id));
+      return works;
+    }
+    case "work": {
+      const qa = (E.qaByWork[id] || []).slice().sort(qaSort).slice(0, caps.qa || 25).map(q => q.id);
+      return qa.concat((E.chaptersByBook[id] || []).map(c => c.id));
+    }
+    case "chapter": return (E.conceptsByParent[id] || []).map(c => c.id);
+    case "qa": return E.byId[id].topics;
+    default: return [];
+  }
+}
+function toggleExpand(id) {
+  if (expanded.has(id)) { collapse(id); return; }
+  const added = show(childrenOf(id), id);
+  expanded.add(id);
+  if (!added) flashStatus("nothing new to expand (check layer toggles)");
+}
+function updateStatus() {
+  document.getElementById("status").textContent = `${visible.size} nodes · ${edgesDS.length} edges`;
+}
+let flashTimer;
+function flashStatus(msg) {
+  const el = document.getElementById("status");
+  el.textContent = msg;
+  clearTimeout(flashTimer); flashTimer = setTimeout(updateStatus, 2500);
+}
+
+// ---------- initial views / modes ----------
+function resetView() {
+  visible.clear(); Object.keys(addedBy).forEach(k => delete addedBy[k]); expanded.clear();
+  nodesDS.clear(); edgesDS.clear();
+  if (mode === "explore") {
+    show(D.categories.map(c => c.id));
+  } else {
+    const minQA = +document.getElementById("mintopicqa").value;
+    show(D.categories.map(c => c.id));
+    show(D.topics.filter(t => t.qa_count >= minQA).map(t => t.id));
+    show(D.works.filter(w => w.qa_count > 0).map(w => w.id));
+  }
+  network.fit({ animation: false });
+  setPhysics(true);
+}
+function setMode(m) {
+  mode = m;
+  document.body.className = m;
+  document.getElementById("mode-explore").classList.toggle("active", m === "explore");
+  document.getElementById("mode-research").classList.toggle("active", m === "research");
+  layerOn = {};
+  Object.keys(TYPES).forEach(t => layerOn[t] = MODES[m].layers.includes(t));
+  renderLayerToggles();
+  resetView();
+}
+function renderLayerToggles() {
+  const box = document.getElementById("layer-toggles");
+  box.innerHTML = "";
+  const counts = { category: D.categories.length, claim: D.claims.length, excerpt: D.excerpts.length,
+                   topic: D.topics.length, work: D.works.length, qa: D.qa.length,
+                   concept: D.concepts.length, chapter: D.chapters.length };
+  Object.entries(TYPES).forEach(([t, cfg]) => {
+    if (mode === "explore" && !MODES.explore.layers.includes(t)) return;
+    const lab = document.createElement("label");
+    lab.innerHTML = `<input type="checkbox" ${layerOn[t] ? "checked" : ""} data-type="${t}">
+      <span class="swatch" style="background:${cfg.color}"></span> ${cfg.label}
+      <span class="count">${counts[t]}</span>`;
+    lab.querySelector("input").addEventListener("change", ev => {
+      layerOn[t] = ev.target.checked;
+      if (!ev.target.checked) hide([...visible].filter(id => E.byId[id].ntype === t));
+      else if (mode === "research" && ["category", "topic", "work"].includes(t)) {
+        if (t === "category") show(D.categories.map(c => c.id));
+        if (t === "topic") show(D.topics.filter(x => x.qa_count >= +document.getElementById("mintopicqa").value).map(x => x.id));
+        if (t === "work") show(D.works.filter(w => w.qa_count > 0).map(w => w.id));
+      }
+    });
+    box.appendChild(lab);
+  });
+}
+
+// ---------- detail panel ----------
+const trail = [];
+function esc(s) { return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+function nav(id, push) {
+  const o = E.byId[id];
+  if (!o) return;
+  if (push !== false && trail[trail.length - 1] !== id) trail.push(id);
+  document.getElementById("panelbody").innerHTML = renderPanel(o);
+  document.getElementById("panel").scrollTop = 0;
+  bindPanelLinks();
+  if (visible.has(id)) network.selectNodes([id]);
+}
+function ref(id, text) { return `<span class="navlink" data-nav="${id}">${esc(text)}</span>`; }
+function chips(ids, cls) {
+  return ids.map(id => { const o = E.byId[id]; return o ? `<span class="chip ${cls || ""}" data-nav="${id}">${esc(o.label)}</span>` : ""; }).join("");
+}
+function fileLink(path, text) {
+  return `<a class="ext research-only" href="${REPO_PREFIX + encodeURI(path)}" target="_blank">${text}</a>`;
+}
+function playLink(u, t) {
+  if (!u) return "";
+  const mm = t != null ? ` ${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}` : "";
+  return `<a class="play" href="${u}" target="_blank" title="Listen on YouTube at this moment">▶${mm}</a>`;
+}
+function header(o, sub) {
+  const t = TYPES[o.ntype];
+  return `<span class="badge" style="background:${t.color}">${t.label.replace(/s$| items$/, "")}</span>
+    <div class="ntitle">${esc(o.label || o.q || o.text)}</div>
+    <div class="meta">${sub || ""}${mode === "research" ? ` · <code>${o.id}</code>` : ""}</div>`;
+}
+function renderPanel(o) {
+  switch (o.ntype) {
+    case "category": {
+      const claims = E.claimsByCat[o.id] || [];
+      let h = header(o, `${o.origin === "deutsch-well-2023" ? "Deutsch Well 2023" : "added v0.2"} · ${o.claims} claims · ${o.excerpts} excerpts`);
+      if (o.def) h += `<div class="defbox">${esc(o.def)}</div>`;
+      h += `<h3 class="sec">Claims — “${esc(o.label)}…”</h3>`;
+      h += claims.map(c => `<div class="item" data-nav="${c.id}">${esc(c.text)}<div class="src">${(E.excerptsByClaim[c.id] || []).length} excerpts</div></div>`).join("") || "<p class='meta'>No claims yet — added category awaiting curation.</p>";
+      if (o.topics.length) h += `<h3 class="sec">Related topics</h3>` + chips(o.topics);
+      return h;
+    }
+    case "claim": {
+      const cat = E.byId[o.cat];
+      const excerpts = E.excerptsByClaim[o.id] || [];
+      let h = header({ ...o, label: cat.label + " …" }, `claim · ${excerpts.length} excerpts`);
+      h += `<div class="defbox">${esc(o.text)}</div>`;
+      h += `<div class="meta">Category: ${ref(o.cat, cat.label)}</div>`;
+      h += `<h3 class="sec">Supporting excerpts</h3>`;
+      h += excerpts.map(x => {
+        const src = E.byId[x.chap || x.work];
+        return `<div class="item" data-nav="${x.id}">${esc(x.text.slice(0, 150))}…<div class="src">— ${src ? esc(src.ntype === "chapter" ? `Ch ${src.num} — ${src.title}` : src.label) : esc(x.id)}</div></div>`;
+      }).join("");
+      return h;
+    }
+    case "excerpt": {
+      const src = E.byId[o.chap || o.work];
+      const claim = E.byId[o.claim];
+      let h = header({ ...o, label: "Excerpt" }, `${o.chars} chars in source`);
+      h += `<div class="defbox">${esc(o.text)}${o.chars > o.text.length ? "…" : ""}</div>`;
+      if (src) h += `<div>Source: ${ref(src.id, src.ntype === "chapter" ? `Ch ${src.num} — ${src.title}` : src.label)}</div>`;
+      h += `<div>Claim: ${ref(claim.id, claim.text)}</div>`;
+      h += `<p>${fileLink(o.path, "open vault file →")}</p>`;
+      return h;
+    }
+    case "topic": {
+      const qa = (E.qaByTopic[o.id] || []).slice().sort(qaSort);
+      const works = E.worksByTopic[o.id] || [];
+      const cap = mode === "explore" ? 12 : 40;
+      let h = header(o, `${o.qa_count} Q&A items across ${o.work_count} works`);
+      h += `<h3 class="sec">Best Q&A</h3>`;
+      h += qa.slice(0, cap).map(q => qaItem(q)).join("");
+      if (qa.length > cap) h += `<p class="meta">…and ${qa.length - cap} more.</p>`;
+      h += `<h3 class="sec">Works</h3>` + works.map(r => { const w = E.byId[r.work]; return `<span class="chip" data-nav="${r.work}">${esc(w.label)} (${r.w})</span>`; }).join("");
+      return h;
+    }
+    case "work": {
+      const qa = (E.qaByWork[o.id] || []).slice().sort(qaSort);
+      const chapters = E.chaptersByBook[o.id] || [];
+      let h = header(o, `${o.kind}${o.date ? " · " + o.date : ""}${o.qa_count ? ` · ${o.qa_count} Q&A (${o.starred} starred)` : ""}`);
+      const links = [];
+      if (o.youtube) links.push(`<a class="play" href="${o.youtube}" target="_blank">▶ watch</a>`);
+      if (o.link) links.push(`<a class="ext" href="${o.link}" target="_blank">source page →</a>`);
+      if (o.path) links.push(fileLink(o.path, "open file →"));
+      if (links.length) h += `<p>${links.join(" &nbsp; ")}</p>`;
+      if (chapters.length) h += `<h3 class="sec">Chapters</h3>` + chapters.slice().sort((a, b) => a.num - b.num).map(c => `<div class="item" data-nav="${c.id}">Ch ${c.num} — ${esc(c.title)}</div>`).join("");
+      if (qa.length) {
+        const cap = mode === "explore" ? 15 : 60;
+        h += `<h3 class="sec">Q&A</h3>` + qa.slice(0, cap).map(q => qaItem(q, true)).join("");
+        if (qa.length > cap) h += `<p class="meta">…and ${qa.length - cap} more.</p>`;
+      }
+      return h;
+    }
+    case "qa": {
+      const w = E.byId[o.work];
+      let h = header(o, `${w ? esc(w.label) : ""}${o.stars ? ` · <span class="stars">${"★".repeat(Math.min(o.stars, 5))}</span>` : ""}${o.starred ? " · top-starred" : ""}`);
+      h += `<p>${playLink(o.u, o.t)} &nbsp; ${o.path ? fileLink(o.path, "open transcript →") : ""}</p>`;
+      if (mode === "research") h += `<div class="meta">answer block #${o.block} in <code>${esc(o.path)}</code></div>`;
+      if (o.topics.length) h += `<h3 class="sec">Topics</h3>` + chips(o.topics);
+      if (w) h += `<div class="meta">Work: ${ref(o.work, w.label)}</div>`;
+      return h;
+    }
+    case "concept": {
+      const parent = E.byId[o.chap || o.work];
+      let h = header(o, "defined term");
+      h += `<div class="defbox">${esc(o.def)}</div>`;
+      if (parent) h += `<div>Defined in: ${ref(parent.id, parent.ntype === "chapter" ? `Ch ${parent.num} — ${parent.title}` : parent.label)}</div>`;
+      return h;
+    }
+    case "chapter": {
+      const book = E.byId[o.book];
+      const concepts = E.conceptsByParent[o.id] || [];
+      let h = header({ ...o, label: `Ch ${o.num} — ${o.title}` }, book ? esc(book.label) : "");
+      if (o.summary) h += `<div class="defbox">${esc(o.summary)}</div>`;
+      h += `<p>${fileLink(o.path, "open chapter file →")}</p>`;
+      if (concepts.length) h += `<h3 class="sec">Terms defined here</h3>` + concepts.map(c => `<span class="chip cat" data-nav="${c.id}">${esc(c.label)}</span>`).join("");
+      if (book) h += `<div class="meta">Book: ${ref(book.id, book.label)}</div>`;
+      return h;
+    }
+  }
+}
+function qaItem(q, hideWork) {
+  const w = E.byId[q.work];
+  return `<div class="item" data-nav="${q.id}">${q.starred ? "★ " : ""}${esc(q.q)}
+    <div class="src">${playLink(q.u, q.t)}${hideWork || !w ? "" : " — " + esc(w.label)}</div></div>`;
+}
+function bindPanelLinks() {
+  document.querySelectorAll("#panelbody [data-nav]").forEach(el => {
+    el.addEventListener("click", ev => {
+      if (ev.target.closest("a")) return;    // real links (YouTube, files) pass through
+      ev.stopPropagation();
+      nav(el.getAttribute("data-nav"));
+    });
+  });
+}
+
+// ---------- reveal / isolate ----------
+function currentPanelId() { return trail[trail.length - 1]; }
+function parentOf(o) {
+  return o.ntype === "claim" ? o.cat : o.ntype === "excerpt" ? o.claim
+       : o.ntype === "qa" ? o.work : o.ntype === "chapter" ? o.book
+       : o.ntype === "concept" ? (o.chap || o.work) : null;
+}
+function revealInGraph(id) {
+  const o = E.byId[id];
+  if (!o) return;
+  const chain = [];
+  let cur = o;
+  while (cur) {
+    chain.unshift(cur.id);
+    const pid = parentOf(cur);
+    cur = pid && !visible.has(pid) ? E.byId[pid] : null;
+    if (chain.length > 6) break;
+  }
+  chain.forEach((cid, i) => {
+    const obj = E.byId[cid];
+    const was = layerOn[obj.ntype];
+    layerOn[obj.ntype] = true;
+    show([cid], i > 0 ? chain[i - 1] : null);
+    layerOn[obj.ntype] = was;
+  });
+  network.focus(id, { scale: 1.0, animation: true });
+  network.selectNodes([id]);
+}
+function isolate(id) {
+  const o = E.byId[id];
+  if (!o) return;
+  const keep = new Set([id]);
+  (E.adj[id] || []).forEach(n => keep.add(n.id));
+  hide([...visible].filter(v => !keep.has(v)));
+  const was = layerOn[o.ntype]; layerOn[o.ntype] = true;
+  show([id]); layerOn[o.ntype] = was;
+  (E.adj[id] || []).forEach(n => { const c = E.byId[n.id]; if (c && layerOn[c.ntype]) show([n.id], id); });
+  network.fit({ animation: true });
+}
+
+// ---------- search ----------
+function runSearch(needle) {
+  needle = needle.toLowerCase().trim();
+  const box = document.getElementById("searchresults");
+  if (needle.length < 2) { box.style.display = "none"; return; }
+  const pools = [
+    [D.categories, o => o.label], [D.topics, o => o.label], [D.works, o => o.label],
+    [D.claims, o => o.text], [D.concepts, o => o.label],
+  ];
+  if (mode === "research") pools.push([D.qa, o => o.q], [D.excerpts, o => o.text], [D.chapters, o => o.title]);
+  const hits = [];
+  for (const [pool, get] of pools) {
+    for (const o of pool) {
+      if (hits.length >= 20) break;
+      if ((get(o) || "").toLowerCase().includes(needle)) hits.push(o);
+    }
+  }
+  box.innerHTML = hits.map(o =>
+    `<div data-nav="${o.id}"><span class="swatch" style="background:${TYPES[o.ntype].color}"></span> ${esc((o.label || o.q || o.text || "").slice(0, 90))}</div>`).join("")
+    || "<div>No matches.</div>";
+  box.style.display = "block";
+  box.style.left = document.getElementById("search").getBoundingClientRect().left + "px";
+  box.querySelectorAll("[data-nav]").forEach(el => el.addEventListener("click", () => {
+    box.style.display = "none";
+    const id = el.getAttribute("data-nav");
+    nav(id); revealInGraph(id);
+  }));
+}
+
+// ---------- boot ----------
+function setPhysics(on) {
+  physicsOn = on;
+  network.setOptions({ physics: { enabled: on } });
+  document.getElementById("btn-physics").textContent = "Physics: " + (on ? "on" : "off");
+}
+function boot() {
+  D = mergeParts();
+  E = buildIndex();
+  nodesDS = new vis.DataSet([]); edgesDS = new vis.DataSet([]);
+  network = new vis.Network(document.getElementById("graph"), { nodes: nodesDS, edges: edgesDS }, {
+    physics: { solver: "forceAtlas2Based", forceAtlas2Based: { gravitationalConstant: -55, springLength: 95 },
+               stabilization: { iterations: 200 } },
+    interaction: { hover: true, tooltipDelay: 150 },
+  });
+  network.on("click", p => { if (p.nodes.length) nav(p.nodes[0]); });
+  network.on("doubleClick", p => { if (p.nodes.length) toggleExpand(p.nodes[0]); });
+  network.on("stabilizationIterationsDone", () => { network.fit({ animation: false }); if (visible.size > 600) setPhysics(false); });
+  document.getElementById("mode-explore").addEventListener("click", () => setMode("explore"));
+  document.getElementById("mode-research").addEventListener("click", () => setMode("research"));
+  document.getElementById("btn-reset").addEventListener("click", resetView);
+  document.getElementById("btn-physics").addEventListener("click", () => setPhysics(!physicsOn));
+  document.getElementById("btn-back").addEventListener("click", () => { trail.pop(); const id = trail[trail.length - 1]; if (id) nav(id, false); });
+  document.getElementById("btn-reveal").addEventListener("click", () => { const id = currentPanelId(); if (id) revealInGraph(id); });
+  document.getElementById("btn-isolate").addEventListener("click", () => { const id = currentPanelId(); if (id) isolate(id); });
+  const searchEl = document.getElementById("search");
+  searchEl.addEventListener("input", () => runSearch(searchEl.value));
+  searchEl.addEventListener("keydown", ev => { if (ev.key === "Escape") document.getElementById("searchresults").style.display = "none"; });
+  document.addEventListener("click", ev => { if (!ev.target.closest("#searchresults") && ev.target.id !== "search") document.getElementById("searchresults").style.display = "none"; });
+  ["mintopicqa", "minweight"].forEach(idn => {
+    const el = document.getElementById(idn);
+    el.addEventListener("input", () => {
+      document.getElementById(idn + "-val").textContent = el.value;
+      if (idn === "minweight") syncEdges(); else resetView();
+    });
+  });
+  setMode("explore");
+  document.getElementById("loading").remove();
+}
+</script>
+</body>
+</html>

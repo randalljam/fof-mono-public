@@ -1,0 +1,143 @@
+---
+import SiteLayout from '../../components/SiteLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+<SiteLayout title="Create account — Focus on Foundations">
+  <Header />
+  <main class="auth-page">
+    <div class="container">
+      <div class="auth-card">
+        <h1>Create an account</h1>
+        <p class="auth-unavailable" id="auth-unavailable" hidden>
+          Accounts aren’t live yet — this page will activate when the account system is deployed.
+        </p>
+        <div id="auth-active" hidden>
+          <p class="auth-guest-note" id="guest-note" hidden>
+            Good news: the work you’ve done as a guest is saved in this browser and will
+            carry over to your new account.
+          </p>
+          <form class="auth-form" id="create-form" novalidate>
+            <div id="create-details">
+              <div class="form-field">
+                <label for="create-email">Email</label>
+                <input id="create-email" type="email" autocomplete="email" required />
+              </div>
+              <div class="form-field">
+                <label for="create-password">Password</label>
+                <input id="create-password" type="password" autocomplete="new-password" required
+                  minlength="8" aria-describedby="password-help" />
+                <small id="password-help">At least 8 characters with an uppercase letter, a lowercase letter, and a number.</small>
+              </div>
+              <div class="form-field">
+                <label for="create-password2">Confirm password</label>
+                <input id="create-password2" type="password" autocomplete="new-password" required />
+              </div>
+              <div class="form-field">
+                <label class="consent-label">
+                  <input id="terms-consent" type="checkbox" />
+                  <span>I have read and agree to the
+                    <a href="/terms/" target="_blank" rel="noopener">Terms of Service</a> and
+                    <a href="/privacy/" target="_blank" rel="noopener">Privacy Policy</a>.</span>
+                </label>
+              </div>
+            </div>
+            <div class="form-field" id="create-confirm-entry" hidden>
+              <label for="create-confirm-code">Verification code</label>
+              <input id="create-confirm-code" type="text" inputmode="numeric" autocomplete="one-time-code" />
+              <small>We emailed a code to <span id="create-confirm-email"></span>. Enter it to finish — you’ll be signed in right away.</small>
+            </div>
+            <button class="primary-button" type="submit" id="create-submit">Create account</button>
+          </form>
+          <p class="auth-status" id="auth-status" role="status"></p>
+          <p class="auth-links">
+            <a href="/account/sign-in/">Already have an account? Sign in</a>
+          </p>
+          <p class="auth-links legal-links">
+            <a href="/terms/">Terms of Service</a>
+            <a href="/privacy/">Privacy Policy</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</SiteLayout>
+
+<script>
+  import { isAuthConfigured } from '../../lib/auth-config.js';
+  import { confirmAccount, createAccount, signInWithPassword } from '../../lib/auth.js';
+  import { hasGuestData } from '../../lib/guest-store.js';
+
+  const statusEl = document.getElementById('auth-status');
+  function showStatus(message, isError = false) {
+    statusEl.textContent = message;
+    statusEl.classList.toggle('is-error', isError);
+  }
+  function init() {
+    if (!isAuthConfigured()) {
+      document.getElementById('auth-unavailable').hidden = false;
+      return;
+    }
+    document.getElementById('auth-active').hidden = false;
+    if (hasGuestData()) document.getElementById('guest-note').hidden = false;
+
+    // Confirmation happens inline on this page (not a separate page) so the
+    // user lands signed in right after entering the code — first via Cognito's
+    // auto-sign-in session, with the just-entered password as fallback.
+    let awaitingConfirm = false;
+    document.getElementById('create-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const email = document.getElementById('create-email').value.trim();
+      const password = document.getElementById('create-password').value;
+      const password2 = document.getElementById('create-password2').value;
+      try {
+        if (awaitingConfirm) {
+          const code = document.getElementById('create-confirm-code').value.trim();
+          if (!code) return;
+          showStatus('Confirming…');
+          const { signedIn } = await confirmAccount(email, code);
+          if (!signedIn) {
+            showStatus('Signing you in…');
+            await signInWithPassword(email, password);
+          }
+          try {
+            // Record the terms/privacy acceptance from the create form on the profile.
+            const { updateProfile } = await import('../../lib/family.js');
+            await updateProfile({ termsConsent: { version: '2024-12-17' } });
+          } catch {
+            // Best-effort; acceptance was still required to submit the form.
+          }
+          sessionStorage.removeItem('fofAuthPendingEmail');
+          window.location.href = '/account/';
+          return;
+        }
+        if (!email || !password) return;
+        if (password !== password2) {
+          showStatus('Passwords don’t match.', true);
+          return;
+        }
+        if (!document.getElementById('terms-consent').checked) {
+          showStatus('Please read and agree to the Terms of Service and Privacy Policy first.', true);
+          return;
+        }
+        showStatus('Creating your account…');
+        const nextStep = await createAccount(email, password);
+        sessionStorage.setItem('fofAuthPendingEmail', email);
+        if (nextStep?.signUpStep === 'CONFIRM_SIGN_UP') {
+          awaitingConfirm = true;
+          document.getElementById('create-details').hidden = true;
+          document.getElementById('create-confirm-entry').hidden = false;
+          document.getElementById('create-confirm-email').textContent = email;
+          document.getElementById('create-submit').textContent = 'Confirm email';
+          showStatus('');
+        } else {
+          window.location.href = '/account/';
+        }
+      } catch (error) {
+        showStatus(error.message || (awaitingConfirm ? 'Confirmation failed.' : 'Could not create the account.'), true);
+      }
+    });
+  }
+  init();
+</script>

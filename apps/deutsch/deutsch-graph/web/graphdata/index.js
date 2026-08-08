@@ -1,0 +1,2 @@
+window.DGRAPH_PARTS = [];
+window.DGRAPH_SHARDS = ["dgraph-00-categories.js", "dgraph-01-claims.js", "dgraph-02-topics.js", "dgraph-03-works.js", "dgraph-04-concepts.js", "dgraph-05-chapters.js", "dgraph-06-qa.js", "dgraph-07-qa.js", "dgraph-08-qa.js", "dgraph-09-excerpts.js", "dgraph-10-excerpts.js", "dgraph-11-excerpts.js", "dgraph-12-excerpts.js", "dgraph-13-work_topic.js", "dgraph-14-category_topic.js"];

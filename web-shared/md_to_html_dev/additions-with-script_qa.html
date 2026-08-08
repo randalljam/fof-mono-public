@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<body>
+    <header>
+    <h1></h1>
+    <div class="control-panel">
+        <button class="button button-small-text" onclick="toggleLevel('questions')">Show All Questions</button>
+        <button class="button button-small-text" onclick="toggleLevel('answers')">Show All Answers</button>
+        <button class="button button-small-text" onclick="toggleLevel('all')">Show All QA Blocks</button>
+        <button class="button button-small-text" onclick="toggleLevel('collapse')">Collapse All</button>
+    </div>
+    <div class="header-row">
+        <h3></h3>
+        <button id="toggleButton" class="button button-small-text button-orange">View Transcript</button>
+    </div>
+    </header>
+
+  <script>
+    function toggleLevel(level) {
+        // Get all details elements
+        const allDetails = document.querySelectorAll('details');
+        
+        if (level === 'collapse') {
+            // Close everything
+            allDetails.forEach(detail => {
+                detail.removeAttribute('open');
+            });
+            return;  // Exit early
+        }
+        
+        allDetails.forEach(detail => {
+            switch(level) {
+                case 'questions':
+                    // First level details (questions)
+                    if (detail.parentElement.tagName !== 'DETAILS') {
+                        detail.setAttribute('open', '');
+                    }
+                    break;
+                    
+                case 'answers':
+                    // Second level details (answers)
+                    if (detail.parentElement.tagName === 'DETAILS' && 
+                        detail.parentElement.parentElement.tagName !== 'DETAILS') {
+                        detail.setAttribute('open', '');
+                        // Also open parent to show answer
+                        detail.parentElement.setAttribute('open', '');
+                    }
+                    break;
+                    
+                case 'all':
+                    // All levels
+                    detail.setAttribute('open', '');
+                    break;
+            }
+        });
+    }
+  </script>
+</body>
+</html>

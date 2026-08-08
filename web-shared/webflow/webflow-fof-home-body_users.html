@@ -1,0 +1,193 @@
+<!-- ========= START OF FILE webflow-fof-home_users.html ========== -->
+<!-- ================ START Body Custom Code ================ -->
+<script>
+    var fileInfo = 'webflow-fof-home_users.html 4-7 0722 url at top, PREV 12-03-2024 1239 Update API Key to single demo one';
+    const AWS_API_KEY_DEMO = 'Fhhs7ubSQK5zK06RywPls53v0qRWSBJG6rsk7XPz';
+    console.log('Loading JavaScript for Home Page Body: ', fileInfo);
+
+    const HMAC_HASH_API_ENDPOINT_URL = 'https://[API-GATEWAY-ID].execute-api.us-west-2.amazonaws.com/api/generate-hash';
+    
+    // Ensure the SA5 library is initialized
+    window.sa5 = window.sa5 || [];
+
+    let isLoggingOut = false;
+    let logoutDebugEnabled = true;  // Set to false in production
+
+    // Function to clear user info from sessionStorage
+    function clearUserInfoFromSessionStorage() {
+        console.log('Clearing user info from sessionStorage');
+        sessionStorage.removeItem('userEmail');
+        sessionStorage.removeItem('userName');
+        sessionStorage.removeItem('userIdAlt');
+        sessionStorage.removeItem('userEmailHmacHash');
+        sessionStorage.removeItem('userDataHash'); // Clear stored user data hash
+    }
+
+    // Function to log user info
+    function logUserInfo() {
+        const userEmail = sessionStorage.getItem('userEmail');
+        const userName = sessionStorage.getItem('userName');
+        const userIdAlt = sessionStorage.getItem('userIdAlt');
+        const userEmailHmacHash = sessionStorage.getItem('userEmailHmacHash');
+
+        console.log('User info:\n' +
+            'Email: ' + (userEmail || 'null') + '\n' +
+            'Name: ' + (userName || 'Not set') + '\n' +
+            'ID: ' + (userIdAlt || 'Not set') + '\n' +
+            'HMAC Hash: ' + (userEmailHmacHash || 'Not set'));
+    }
+
+    // Function to process user info
+    function processUserInfo(user) {
+        console.log('Starting processUserInfo function.');
+
+        // Serialize the user data for comparison
+        const newUserData = JSON.stringify({
+            email: user?.email || null,
+            name: user?.name || null,
+            userIdAlt: user?.user_id_alt || null
+        });
+
+        // Get the previously stored user data hash
+        const previousUserDataHash = sessionStorage.getItem('userDataHash');
+
+        // Compute hash of the new user data
+        const newUserDataHash = computeHash(newUserData);
+
+        console.log('Previous user data hash:', previousUserDataHash);
+        console.log('New user data hash:', newUserDataHash);
+
+        if (previousUserDataHash === newUserDataHash) {
+            console.log('User data has not changed. Skipping processing.');
+            return;
+        }
+
+        // Update the stored user data hash
+        sessionStorage.setItem('userDataHash', newUserDataHash);
+
+        if (user && user.email) {
+            console.log('User is logged in - Processing user info because user and user.email are both true.');
+            // Generate and store email HMAC hash
+            generateAndStoreEmailHash(user.email)
+                .then(function(hash) {
+                    // Store user info in sessionStorage
+                    sessionStorage.setItem('userEmail', user.email);
+                    sessionStorage.setItem('userName', user.name || '');
+                    sessionStorage.setItem('userIdAlt', user.user_id_alt || '');
+                    sessionStorage.setItem('userEmailHmacHash', hash);
+                    // Log the user info including HMAC hash
+                    console.log('Storing user info in sessionStorage.');
+                    logUserInfo();
+                })
+                .catch(function(error) {
+                    console.error('Error generating HMAC hash:', error);
+                });
+        } else {
+            console.log('User is not logged in.');
+            clearUserInfoFromSessionStorage();
+            // Log the cleared user info
+            console.log('Current sessionStorage User Info after clearing:');
+            logUserInfo();
+        }
+    }
+
+    // Function to compute a simple hash
+    function computeHash(str) {
+        // Simple hash function for demonstration purposes
+        var hash = 0, i, chr;
+        if (str.length === 0) return hash;
+        for (i = 0; i < str.length; i++) {
+            chr   = str.charCodeAt(i);
+            hash  = ((hash << 5) - hash) + chr;
+            hash |= 0; // Convert to 32bit integer
+        }
+        return hash.toString();
+    }
+
+    // Function to generate and store email hash
+    function generateAndStoreEmailHash(email) {
+        console.log('Attempting to generate hash for email:', email);
+        return fetch(HMAC_HASH_API_ENDPOINT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': AWS_API_KEY_DEMO
+            },
+            body: JSON.stringify({
+                input_text: email
+            }),
+        })
+        .then(response => {
+            console.log('Hash generation response status:', response.status);
+            return response.json();
+        })
+        .then(data => {
+            if (data.hash) {
+                console.log('Email HMAC hash generated:', data.hash);
+                return data.hash;
+            } else {
+                console.error('Failed to generate email HMAC hash:', data.error);
+                throw new Error(data.error || 'Hash generation failed');
+            }
+        });
+    }
+
+    // Listen for userInfoChanged events
+    window.sa5.push(['userInfoChanged', function(user) {
+        console.log('🔄 userInfoChanged event triggered.');
+        console.log('📦 Raw SA5 user object:', user);
+        console.log('📧 User email status:', user?.email ? 'Present' : 'Missing');
+        processUserInfo(user);
+    }]);
+
+    // Update the logout button click handler
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOMContentLoaded event fired');
+        const logoutButton = document.querySelector('.user-log-in-log-out');
+        console.log('Logout button:', logoutButton);
+        if (logoutButton) {
+            logoutButton.addEventListener('click', function(e) {
+                console.log('Logout button click handler triggered');
+                console.log('isLoggingOut flag:', isLoggingOut);
+                if (logoutDebugEnabled && !isLoggingOut) {
+                    e.preventDefault();  // Prevent immediate logout
+                    console.log('🔑 Logout button clicked - starting custom logout process');
+                    isLoggingOut = true;
+
+                    // Clear session storage immediately
+                    clearUserInfoFromSessionStorage();
+                    console.log('🧹 Cleared session storage upon logout click');
+
+                    // Proceed with logout after a small delay
+                    setTimeout(() => {
+                        console.log('Initiating actual logout by simulating button click');
+                        isLoggingOut = true;
+                        logoutButton.click();
+                    }, 100);
+                } else {
+                    // Allow the default logout behavior
+                    console.log('Proceeding with default logout behavior');
+                }
+            });
+        } else {
+            console.log('Logout button not found');
+        }
+
+        // Optional: Log user info on page load
+        console.log('Current sessionStorage User Info on page load:');
+        logUserInfo();
+    });
+
+    // Additional logging for SA5 library initialization
+    window.sa5.push(['getMembershipConfig', (config) => {
+        console.log('Current SA5 membership config:', config);
+        return config;
+    }]);
+
+    // Log when SA5 library is loaded
+    document.addEventListener('sa5-initialized', function() {
+        console.log('SA5 library initialized');
+    });
+</script>
+<!-- ================ END Body Custom Code ================ -->
+<!-- ========= END OF FILE webflow-fof-home_users.html ========== -->

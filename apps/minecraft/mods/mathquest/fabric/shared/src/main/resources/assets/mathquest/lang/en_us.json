@@ -1,0 +1,25 @@
+{
+  "mathquest.screen.offer.title": "Math Quest!",
+  "mathquest.screen.offer.question": "Ready to practice math and earn treasure?",
+  "mathquest.screen.offer.accept": "Let's Go!",
+  "mathquest.screen.offer.decline": "Not Now",
+  "mathquest.screen.quiz.title": "Multiplication Challenge",
+  "mathquest.screen.quiz.progress": "Question %d of %d",
+  "mathquest.screen.quiz.correct": "Amazing!",
+  "mathquest.screen.quiz.incorrect": "The answer is %d",
+  "mathquest.screen.result.title": "Quiz Complete!",
+  "mathquest.screen.result.score": "You got %d out of %d correct!",
+  "mathquest.screen.result.perfect": "PERFECT SCORE!",
+  "mathquest.screen.result.great": "Great job!",
+  "mathquest.screen.result.good": "Nice try! Keep practicing!",
+  "mathquest.screen.result.reward": "You earned: %s",
+  "mathquest.screen.result.done": "Back to Adventure!",
+
+  "key.mathquest.open_panel": "Open Control Panel",
+
+  "key.categories.mathquest": "MathQuest",
+  "key.categories.mathquest.main": "MathQuest",
+  "key.mathquest.main": "MathQuest",
+  "category.mathquest.main": "MathQuest",
+  "mathquest.main": "MathQuest"
+}

@@ -1,0 +1,50 @@
+// Forge gradle root for MathQuest. Pinned at Gradle 8.10.2 because ForgeGradle 6 rejects
+// Gradle 9. The sibling fabric/ directory is a separate gradle root running Gradle 9.x.
+
+pluginManagement {
+    repositories {
+        maven {
+            name = 'MinecraftForge'
+            url = 'https://maven.minecraftforge.net/'
+        }
+        maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = 'mathquest-forge'
+
+def ALL_TARGETS = [
+    'forge-1.20.1',
+]
+def DEFAULT_TARGETS = [
+    'forge-1.20.1',
+]
+
+def selectedRaw = startParameter.projectProperties.get('targets') ?: System.getProperty('targets')
+def selected = selectedRaw ? selectedRaw.split(/[\s,]+/).findAll { it } as List : new ArrayList(DEFAULT_TARGETS)
+
+def taskNames = startParameter.taskNames ?: []
+ALL_TARGETS.each { name ->
+    def needle = ":targets:${name}:"
+    if (taskNames.any { it.contains(needle) }) {
+        if (!selected.contains(name)) selected.add(name)
+    }
+}
+
+selected.each { name ->
+    if (!ALL_TARGETS.contains(name)) {
+        throw new GradleException("Unknown target '${name}'. Known: ${ALL_TARGETS.join(', ')}")
+    }
+}
+
+selected.each { name ->
+    include "targets:${name}"
+    project(":targets:${name}").projectDir = file("targets/${name}")
+}
+
+gradle.ext.selectedTargets = selected

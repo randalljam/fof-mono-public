@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Factory.ai (Droids) — deep dive for fof-mono</title>
+<style>
+  :root{--bg:#0d1117;--panel:#161d29;--panel2:#1c2634;--border:#243040;--border2:#2f3d50;--ink:#e6edf3;--muted:#9aa7b6;--dim:#6d7b8c;--accent:#58a6ff;--accent2:#7ee787;--gold:#f0c674;--red:#ff6b6b;--acc:#39d3c3;--shadow:0 8px 30px rgba(0,0,0,.4);--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  *{box-sizing:border-box}html{scroll-behavior:smooth}
+  body{margin:0;background:linear-gradient(180deg,#0b0f16,#0d1117 400px);color:var(--ink);font-family:var(--sans);line-height:1.55;font-size:15px}
+  a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+  code{font-family:var(--mono);background:#0b1220;border:1px solid var(--border);border-radius:5px;padding:1px 5px;font-size:.86em;color:#cde3ff}
+  h1,h2,h3,h4{line-height:1.25;margin:0}
+  .layout{display:grid;grid-template-columns:250px 1fr;max-width:1440px;margin:0 auto}
+  nav.side{position:sticky;top:0;height:100vh;overflow-y:auto;padding:26px 16px 40px;border-right:1px solid var(--border);background:rgba(10,14,20,.6);backdrop-filter:blur(6px)}
+  nav.side .brand{font-weight:800;font-size:16px}.brand span{color:var(--acc)}
+  nav.side .sub{color:var(--dim);font-size:11.5px;margin:4px 0 22px;font-family:var(--mono)}
+  nav.side a.navlink{display:block;color:var(--muted);padding:7px 11px;border-radius:8px;font-size:13.5px;margin:2px 0;border:1px solid transparent}
+  nav.side a.navlink:hover{background:var(--panel);color:var(--ink);text-decoration:none}
+  nav.side a.navlink.active{background:var(--panel2);color:#fff;border-color:var(--border2)}
+  nav.side a.navlink .n{color:var(--dim);font-family:var(--mono);font-size:11px;margin-right:8px}
+  nav.side .foot{margin-top:22px;color:var(--dim);font-size:11px;border-top:1px solid var(--border);padding-top:14px}
+  main{padding:34px 44px 120px;min-width:0}
+  section{margin-bottom:52px;scroll-margin-top:20px}
+  .eyebrow{font-family:var(--mono);color:var(--acc);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+  .hero h1{font-size:33px;margin:10px 0 6px;letter-spacing:-.5px}
+  .hero .lede{color:var(--muted);font-size:17px;max-width:820px}
+  .kicker{color:var(--acc);font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+  h2.sec{font-size:23px;margin-bottom:6px}h3.sub{font-size:16px;margin:24px 0 10px;color:#fff;border-left:3px solid var(--acc);padding-left:10px}
+  .sec-lede{color:var(--muted);max-width:840px;margin-bottom:16px}
+  .callout{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-left:4px solid var(--acc);border-radius:10px;padding:16px 20px;margin:16px 0}
+  .callout.gold{border-left-color:var(--gold)}.callout.pink{border-left-color:#ff7b9c}
+  .callout h4{font-size:15px;margin-bottom:6px}.callout p{margin:6px 0;color:var(--muted);font-size:14px}.callout b{color:var(--ink)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px}.card:hover{border-color:var(--border2)}
+  .card h4{font-size:15px}.card .desc{color:var(--muted);font-size:13.5px;margin:8px 0}.card b{color:var(--ink)}
+  .card ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:13px}.card li{margin:4px 0}
+  ul.tidy{margin:8px 0;padding-left:20px;color:var(--muted);font-size:14px}ul.tidy li{margin:6px 0}ul.tidy b{color:var(--ink)}
+  table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{color:var(--dim);font-family:var(--mono);font-size:10.5px;text-transform:uppercase}tr:hover td{background:var(--panel)}
+  td .s{font-family:var(--mono);font-size:12px;color:#cde3ff}.scroll{overflow-x:auto;border:1px solid var(--border);border-radius:10px}
+  .tag{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:6px;background:#0b1220;border:1px solid var(--border);color:var(--dim)}
+  .uv{font-family:var(--mono);font-size:9.5px;padding:1px 6px;border-radius:5px;border:1px solid #a83;color:var(--gold);text-transform:uppercase;white-space:nowrap}
+  .verdict{font-family:var(--mono);font-size:10.5px;padding:2px 9px;border-radius:20px;white-space:nowrap}.v-yes{color:var(--accent2);border:1px solid #2b5}.v-partial{color:var(--gold);border:1px solid #a83}.v-no{color:var(--red);border:1px solid #a33}
+  .step{display:flex;gap:12px;margin:11px 0;align-items:flex-start}.step .n{font-family:var(--mono);color:#0d1117;background:var(--acc);border-radius:7px;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex:none}
+  .step .b b{color:#fff}.step .b p{margin:3px 0 0;color:var(--muted);font-size:13.5px}
+  .backlink{display:inline-block;margin-bottom:16px;font-family:var(--mono);font-size:12px;color:var(--dim)}
+  .flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0}.flow .chip{font-family:var(--mono);font-size:11.5px;background:#0b1220;border:1px solid var(--border2);border-radius:7px;padding:4px 9px;color:#cde3ff}.flow .arr{color:var(--dim)}
+  @media(max-width:820px){.layout{grid-template-columns:1fr}nav.side{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border)}main{padding:24px}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="side">
+    <div class="brand">Factory<span>.ai</span></div>
+    <div class="sub">Droids · deep dive · for fof-mono</div>
+    <a class="navlink active" href="#tldr"><span class="n">00</span>The practical read</a>
+    <a class="navlink" href="#how"><span class="n">01</span>How it works</a>
+    <a class="navlink" href="#fit"><span class="n">02</span>Fit vs. your setup</a>
+    <a class="navlink" href="#friction"><span class="n">03</span>Cautions</a>
+    <a class="navlink" href="#try"><span class="n">04</span>Verdict</a>
+    <div class="foot"><a href="index.html">← system snapshot</a> · <a href="index.html#discovery">OSS discovery</a><br><br>Sources: factory.ai + docs.factory.ai, funding coverage. Some pricing/model detail secondary <span class="uv">verify</span>.</div>
+  </nav>
+  <main>
+    <a class="backlink" href="index.html#discovery">← OSS discovery</a>
+    <section id="tldr" class="hero">
+      <div class="eyebrow">Deep dive · commercial autonomous platform</div>
+      <h1>Factory.ai — "Droids"</h1>
+      <p class="lede">A commercial "agent-native development" platform whose agents, <b style="color:var(--ink)">Droids</b>, run full-SDLC tasks — feature work, refactors, review, incident response — across a terminal CLI, a headless one-shot mode, IDE, web, desktop, and Slack, with state synced across all of them ("start in your terminal, finish on your phone"). It's <b style="color:var(--ink)">model-agnostic with bring-your-own-key</b>, does per-task model routing, and topped Terminal-Bench (58.75%). It's a <b style="color:var(--ink)">paid product</b> ($20/$100/$200 tiers), enterprise-leaning.</p>
+      <div class="callout">
+        <h4>The one-paragraph fit for you</h4>
+        <p>Factory is essentially <b>a commercial, productized version of the multi-model, multi-surface operation you already run by hand</b> (Claude Code cloud + Codex local + phone). Its strengths line up with your instincts: model-agnostic routing, a phone-to-terminal continuum, ticket→PR. But you're <b>happy and cheap on Claude Code</b>, and Factory is a paid platform that would <em>replace</em> your center of gravity rather than fill a gap. The highest-value read for you is not "adopt it" but "<b>steal its best patterns</b>" — headless one-shot agents in CI, tiered autonomy, and persistent per-project agent machines — into your existing flow.</p>
+      </div>
+      <div class="cards" style="margin-top:8px">
+        <div class="card"><h4>✅ Patterns worth stealing</h4><ul class="tidy" style="font-size:13px"><li><b>Droid Exec</b> — headless one-shot (<code>droid exec</code>) for CI/CD, read-only by default.</li><li><b>Tiered autonomy</b> — read-only → <code>--auto</code> gated by risk tier.</li><li><b>Droid Computers</b> — persistent, stateful per-project machines (even your own Mac Mini/VPS).</li><li>BYOK + mid-session <code>/model</code> switching.</li></ul></div>
+        <div class="card"><h4>⚠️ Why "watch," not "adopt"</h4><ul class="tidy" style="font-size:13px"><li>Paid, commercial; enterprise focus vs. your OSS-leaning posture.</li><li>Would add a 4th surface and re-center you off Claude Code.</li><li>"Fully tested" only on Anthropic/OpenAI official APIs.</li><li>CLI sandbox is agent-enforced, not OS-level — needs a container.</li></ul></div>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="kicker">01 · Technical</div>
+      <h2 class="sec">How it works</h2>
+      <h3 class="sub">Surfaces</h3>
+      <ul class="tidy">
+        <li><b>CLI / terminal (<code>droid</code>)</b> — the flagship agent surface.</li>
+        <li><b>Droid Exec (<code>droid exec</code>)</b> — headless one-shot for CI/CD, shell scripts, batch; read-only by default, <code>--auto</code> enables edits/commands under risk-tiered gating.</li>
+        <li><b>Factory Bridge</b> — connects a cloud/web Droid to your <b>local machine and local repo</b>, so the agent runs against your local dev env without provisioning a remote one.</li>
+        <li>Plus desktop, IDE, web, and Slack — state synced across all.</li>
+      </ul>
+      <h3 class="sub">Execution &amp; models</h3>
+      <ul class="tidy">
+        <li><b>Model routing / BYOK:</b> multi-provider; plug in your own Anthropic/OpenAI keys, OSS providers, or local models; switch mid-session with <code>/model</code>. Only Anthropic + OpenAI official APIs are "fully tested."</li>
+        <li><b>Execution environments:</b> (1) local via Factory Bridge; (2) <b>Droid Computers</b> — persistent remote machines (Factory cloud, or register your own VPS / Mac Mini / on-prem) that retain packages, files, and services between sessions; (3) ephemeral cloud sandboxes on higher tiers.</li>
+        <li><b>Pipeline:</b> Linear/Jira ticket → Droid reads context → branch → code → PR referencing the ticket → ticket status update. <b>MCP</b> supported. Positions "thousands of Droids in parallel" for migrations.</li>
+      </ul>
+      <h3 class="sub">Status</h3>
+      <p class="desc" style="color:var(--muted)">$50M Series B (Sept 2025, NEA + Sequoia/NVIDIA/J.P. Morgan). Pricing: no free tier — <b>Pro $20 / Plus $100 / K2 $200</b> per month, token-based; Teams/Enterprise custom (SSO, ZDR, on-prem). GA self-serve with a heavy enterprise push (EY, NVIDIA, MongoDB, Zapier cited).</p>
+    </section>
+
+    <section id="fit">
+      <div class="kicker">02 · Application</div>
+      <h2 class="sec">Fit vs. your setup</h2>
+      <div class="scroll">
+      <table>
+        <thead><tr><th>Your setup</th><th>Factory equivalent</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr><td>Claude Code cloud (Cataclysm) + phone</td><td class="s">Web/cloud Droids + synced phone surface</td><td><span class="verdict v-partial">overlaps, would replace</span></td></tr>
+          <tr><td>Codex local worktrees</td><td class="s">Local Droid via Factory Bridge / Droid Computers</td><td><span class="verdict v-partial">alternative</span></td></tr>
+          <tr><td>Hermes bot triggering ops</td><td class="s">Slack-triggered Droids</td><td><span class="verdict v-partial">similar idea, paid</span></td></tr>
+          <tr><td>No CI gate yet (your gap)</td><td class="s"><code>droid exec</code> headless one-shots in CI</td><td><span class="verdict v-yes">pattern to steal</span></td></tr>
+          <tr><td>Unattended-run safety</td><td class="s">Tiered autonomy (read-only → --auto by risk)</td><td><span class="verdict v-yes">pattern to steal</span></td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="callout">
+        <h4>The honest placement</h4>
+        <p>Factory is a strong product, but for you it's a <b>strategic alternative to evaluate, not a gap-filler</b> — adopting it means re-centering your whole operation onto a paid platform when Claude Code already serves you well and cheaply. The durable value is the <b>ideas</b>: put a headless one-shot agent in a GitHub Action (your CI-floor mission), adopt read-only-by-default → risk-gated autonomy for unattended runs, and consider registering a spare Mac/VPS as a persistent per-project agent box. You can implement all three on your current stack without paying for Factory.</p>
+      </div>
+    </section>
+
+    <section id="friction">
+      <div class="kicker">03 · Cautions</div>
+      <h2 class="sec">What to weigh</h2>
+      <div class="cards">
+        <div class="card"><h4>Commercial re-centering</h4><p class="desc">Adopting Factory means moving your center of gravity to a paid, enterprise-focused platform. <b>Handle:</b> only worth it if you outgrow Claude Code's ergonomics or need its team/enterprise features — otherwise steal patterns, stay put.</p></div>
+        <div class="card"><h4>Another surface</h4><p class="desc">You already juggle Cursor, Claude Code, Codex. Factory adds a fourth world your agents and EA must learn. <b>Handle:</b> consolidation is your stated goal — don't add a surface without retiring one.</p></div>
+        <div class="card"><h4>Sandbox is agent-enforced</h4><p class="desc">The CLI's "project directory only" limit is enforced by the agent, not the OS. <b>Handle:</b> for higher autonomy, run it in a container/VM regardless (same rule you'd apply to any agent).</p></div>
+      </div>
+    </section>
+
+    <section id="try">
+      <div class="kicker">04 · Verdict</div>
+      <h2 class="sec">Verdict</h2>
+      <div class="step"><span class="n">1</span><div class="b"><b>Steal three patterns into your current stack.</b><p>(a) A headless one-shot agent in a GitHub Action; (b) read-only-by-default → risk-gated autonomy for unattended runs; (c) a persistent per-project agent machine. All doable on Claude Code/Codex today.</p></div></div>
+      <div class="step"><span class="n">2</span><div class="b"><b>Only trial Factory itself if you feel a real limit.</b><p>If Claude Code's ergonomics or team features start to pinch, run a Pro-tier trial on a non-prod app and test <code>droid exec</code> in CI. Otherwise it's a "watch."</p></div></div>
+      <div class="callout pink" style="margin-top:18px"><p style="margin:0"><b>Bottom line:</b> Factory is a polished, benchmark-leading commercial version of the multi-model, multi-surface operation you already run — but you're well-served and low-cost on Claude Code, so the win is copying its patterns (headless CI one-shots, tiered autonomy, persistent per-project machines) rather than re-platforming onto a paid tool.</p></div>
+    </section>
+  </main>
+</div>
+<script>
+const links=[...document.querySelectorAll('nav.side a.navlink')];const secs=links.map(l=>document.querySelector(l.getAttribute('href'))).filter(Boolean);
+const obs=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){const id='#'+e.target.id;links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')===id));}})},{rootMargin:'-20% 0px -70% 0px'});secs.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

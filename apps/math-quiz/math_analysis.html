@@ -1,0 +1,945 @@
+<!-- START OF FILE math_analysis.html 10-13 1113 mobile max-width 1024-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- 🚀 WEBFLOW MISSION: BEAM THIS TO SETTINGS CUSTOM CODE HEAD 🚀 -->
+  <meta charset="UTF-8">
+  <title>Session Response Time</title>
+  <link rel="icon" href="icons/favicon-analysis.svg" type="image/svg+xml">
+  <style>
+    /* Add some basic styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 10px;
+    }
+    h1 {
+      font-size: 16px;
+      margin: 6px 0 4px;
+      font-weight: 600;
+    }
+    #controls {
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    #file-upload-section,
+    #session-selection-section {
+      margin: 6px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #fafafa;
+    }
+    .file-upload-header,
+    .collapsible-section-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .file-upload-header h3,
+    .collapsible-section-header h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .file-upload-header .toggle-icon,
+    .collapsible-section-header .toggle-icon {
+      font-size: 14px;
+      color: #666;
+      display: inline-block;
+      transition: transform 0.2s ease;
+      flex-shrink: 0;
+    }
+    #file-upload-section.expanded .file-upload-header .toggle-icon,
+    #session-selection-section.expanded .collapsible-section-header .toggle-icon {
+      transform: rotate(90deg);
+    }
+    #file-upload-section .file-upload-body,
+    #session-selection-section .collapsible-section-body {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      padding: 0 10px;
+      transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+    }
+    #file-upload-section.expanded .file-upload-body,
+    #session-selection-section.expanded .collapsible-section-body {
+      max-height: 900px;
+      opacity: 1;
+      padding: 4px 10px 10px;
+    }
+    .session-selection-layout {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 16px 24px;
+    }
+    .session-selection-left {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 220px;
+    }
+    .session-selection-left .control-element {
+      display: block;
+    }
+    .session-checklist-panel {
+      flex: 1 1 280px;
+      min-width: 240px;
+      max-width: 560px;
+    }
+    .session-checklist-heading {
+      font-size: 12px;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 4px;
+    }
+    .session-selected-count {
+      font-weight: 500;
+      color: #666;
+      margin-left: 6px;
+    }
+    .session-checklist {
+      max-height: 13.75em; /* ~10 rows visible; scroll for the rest */
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 4px 8px;
+      background: #fff;
+    }
+    .session-checklist-empty {
+      color: #888;
+      font-size: 12px;
+      padding: 6px 0;
+    }
+    .session-checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 12px;
+      padding: 2px 0;
+      line-height: 1.35;
+      cursor: pointer;
+    }
+    .session-checklist-item input {
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+    .session-checklist-item .session-label {
+      word-break: break-all;
+    }
+    #heatmap {
+      width: 100%;
+      height: auto;
+      margin: 0 auto;
+    }
+
+    #flag-filter {
+      padding: 6px 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #flag-filter.is-active {
+      border-color: #f39c12;
+      box-shadow: 0 0 0 2px rgba(243, 156, 18, 0.25);
+    }
+
+    .flag-legend {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 4px 0 6px;
+      font-size: 12px;
+      color: #555555;
+    }
+
+    .flag-legend .flag-indicator {
+      color: #f39c12;
+      margin-right: 4px;
+    }
+
+    .flag-legend .filtered-count {
+      margin-left: auto;
+      font-weight: 600;
+      color: #333333;
+    }
+
+    /* Mobile-specific styles */
+    @media screen and (max-width: 1024px) {
+      #heatmap {
+        max-width: 100%;
+      }
+      
+      /* Heatmap font sizes for tablet/mobile */
+      .js-plotly-plot .plotly .main-svg text {
+        font-size: 14px !important;
+      }
+      
+      .js-plotly-plot .plotly .main-svg .annotation-text {
+        font-size: 14px !important;
+      }
+      
+      .js-plotly-plot .plotly .main-svg .xtitle,
+      .js-plotly-plot .plotly .main-svg .ytitle {
+        font-size: 12px !important;
+      }
+      
+      .js-plotly-plot .plotly .main-svg .gtitle {
+        font-size: 14px !important;
+      }
+      
+      h1 {
+        font-size: 14px;
+      }
+
+      .visualization-container {
+        flex-direction: column;
+      }
+      
+      .problem-list-wrapper {
+        width: 100%;
+      }
+    }
+
+    .visualization-container {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      margin-bottom: 6px;
+      position: relative;
+      transition: gap 0.3s ease;
+    }
+
+    .visualization-container:has(.problem-list-wrapper.collapsed) {
+      gap: 0;
+    }
+
+    .heatmap-wrapper {
+      flex: 1;
+      min-width: 0;
+      transition: flex 0.3s ease;
+    }
+
+    .problem-list-wrapper {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: width 0.3s ease, opacity 0.3s ease;
+    }
+
+    .problem-list-wrapper:not(.collapsed) {
+      width: 350px;
+    }
+
+    .problem-list-wrapper.collapsed {
+      width: 0;
+      min-width: 0;
+      max-height: 0;        /* also collapse height so it doesn't inflate the row (whitespace) */
+      border: none;
+      padding: 0;
+      overflow: hidden;
+      opacity: 0;
+    }
+
+    .problem-list-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid #ddd;
+      background-color: #f8f9fa;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .problem-list-header h3 {
+      margin: 0 0 8px 0;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .sort-controls {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .sort-btn {
+      padding: 4px 8px;
+      font-size: 12px;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .sort-btn:hover {
+      background: #f0f0f0;
+    }
+
+    .sort-btn.active {
+      background: #2196f3;
+      color: white;
+      border-color: #2196f3;
+    }
+
+    .heatmap-toggle-btn {
+      position: absolute;
+      right: 20px;
+      margin-bottom: 10px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 8px 12px;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      font-size: 14px;
+      color: #666;
+      z-index: 10;
+      transition: all 0.3s ease;
+    }
+
+    .heatmap-toggle-btn:hover {
+      background: #f8f9fa;
+    }
+
+    .heatmap-toggle-btn .toggle-icon {
+      transition: transform 0.2s ease;
+      display: inline-block;
+    }
+
+    .heatmap-toggle-btn[aria-expanded="true"] .toggle-icon {
+      transform: rotate(90deg);
+    }
+
+    .problem-list-content {
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+
+    #problem-list-items {
+      padding: 0;
+    }
+
+    .problem-item {
+      padding: 8px 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .problem-item:last-child {
+      border-bottom: none;
+    }
+
+    .problem-item.focused {
+      background: #e3f2fd;
+      border-left: 3px solid #1565c0;
+    }
+
+    .problem-session {
+      font-size: 12px;
+      color: #8a8f98;
+      margin: 2px 0 4px;
+    }
+
+    .problem-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .problem-text {
+      font-weight: 600;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .problem-status {
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+
+    .status-correct {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .status-incorrect {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    .problem-details {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 2px;
+    }
+
+    .time-display {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 80px;
+    }
+
+    .time-value {
+      font-weight: 500;
+      min-width: 45px;
+    }
+
+    .time-bar-container {
+      flex: 1;
+      height: 6px;
+      background-color: #e0e0e0;
+      border-radius: 3px;
+      overflow: hidden;
+      min-width: 40px;
+      max-width: 60px;
+    }
+
+    .time-bar {
+      height: 100%;
+      transition: width 0.3s ease;
+      border-radius: 3px;
+    }
+
+    .time-bar.fast {
+      background-color: #4caf50;
+    }
+
+    .time-bar.medium {
+      background-color: #f9a825;
+    }
+
+    .time-bar.slow {
+      background-color: #ef5350;
+    }
+
+    .time-display {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 120px;
+    }
+
+    .time-value {
+      font-weight: 500;
+      min-width: 50px;
+    }
+
+    .time-bar-container {
+      flex: 1;
+      height: 6px;
+      background-color: #e0e0e0;
+      border-radius: 3px;
+      overflow: hidden;
+      min-width: 50px;
+    }
+
+    .time-bar {
+      height: 100%;
+      transition: width 0.3s ease;
+      border-radius: 3px;
+    }
+
+    .time-bar.fast {
+      background-color: #4caf50;
+    }
+
+    .time-bar.medium {
+      background-color: #ff9800;
+    }
+
+    .time-bar.slow {
+      background-color: #f44336;
+    }
+
+    .problem-flag-info {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 2px;
+    }
+
+    .flag-indicator-list {
+      display: inline-block;
+      color: #f39c12;
+      margin-right: 4px;
+    }
+
+    .flag-comment {
+      display: inline;
+      font-style: italic;
+      color: #666;
+      font-size: 13px;
+    }
+
+    .flag-edit-section {
+      margin-top: 6px;
+      padding: 6px;
+      background: #f9f9f9;
+      border-radius: 4px;
+      font-size: 12px;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .flag-edit-section.expanded {
+      max-height: 300px;
+      opacity: 1;
+      padding-top: 6px;
+      padding-bottom: 6px;
+    }
+
+    .flag-edit-toggle {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 2px 8px;
+      font-size: 11px;
+      color: #2196f3;
+      background: white;
+      border: 1px solid #2196f3;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .flag-edit-toggle:hover {
+      background: #2196f3;
+      color: white;
+    }
+
+    .flag-checkboxes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .flag-checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+    }
+
+    .flag-checkbox-label input[type="checkbox"] {
+      cursor: pointer;
+    }
+
+    .flag-comment-input {
+      width: 100%;
+      padding: 4px;
+      font-size: 11px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      margin-top: 4px;
+    }
+
+    .flag-save-btn {
+      margin-top: 4px;
+      padding: 3px 8px;
+      font-size: 11px;
+      background: #2196f3;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .flag-save-btn:hover {
+      background: #1976d2;
+    }
+
+    .flag-save-btn.saved {
+      background: #4caf50;
+    }
+
+    .problem-meta {
+      margin-top: 4px;
+      padding-top: 4px;
+      border-top: 1px solid #f0f0f0;
+      font-size: 11px;
+      color: #999;
+    }
+
+    .problem-list-empty {
+      padding: 16px;
+      text-align: center;
+      color: #999;
+    }
+
+    .navigation {
+      margin-bottom: 8px;
+    }
+    
+    .navigation button {
+      margin-right: 10px;
+      padding: 8px 16px;
+      background-color: #2196f3;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .navigation button:hover {
+      background-color: #1976d2;
+    }
+
+    /* Sequence / category stepper directly under the heatmap */
+    #sequence-controls {
+      margin: 2px 0 8px;
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fbfcfe;
+    }
+    /* Collapsible header — same look/feel as the problem-list editor (▶ + 15px title). */
+    .seq-header { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+    .seq-header .seq-toggle { color: #666; transition: transform 0.2s ease; flex-shrink: 0; }
+    #sequence-controls.seq-open .seq-toggle { transform: rotate(90deg); }
+    #sequence-controls:not(.seq-open) .seq-body { display: none; }
+    .seq-body { margin-top: 8px; }
+    #sequence-controls h3 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+    }
+    .seq-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; margin-bottom: 6px; }
+    .seq-cats { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; }
+    .seq-cat-label {
+      display: inline-flex; align-items: center; gap: 4px; font-size: 13px;
+      padding: 2px 8px; border: 1px solid #d8dde3; border-radius: 999px; background: #fff; cursor: pointer;
+    }
+    .seq-cat-label input { cursor: pointer; }
+    .seq-mini-btn {
+      font-size: 12px; padding: 2px 9px; border: 1px solid #cfd6de; background: #fff;
+      border-radius: 5px; cursor: pointer; color: #555;
+    }
+    .seq-mini-btn:hover { background: #eef2f7; }
+    .seq-note { font-size: 10px; color: #999; margin: 0 0 4px; }
+    .seq-range { position: relative; height: 28px; width: 100%; max-width: 720px; }
+    .seq-range .seq-track {
+      position: absolute; top: 15px; left: 0; width: 100%; height: 4px;
+      background: #dfe3e9; border-radius: 2px;
+    }
+    .seq-range .seq-fill {
+      position: absolute; top: 15px; height: 4px; background: #1565c0; border-radius: 2px;
+    }
+    .seq-range input[type=range] {
+      position: absolute; left: 0; top: 0; width: 100%; height: 28px; margin: 0;
+      background: none; pointer-events: none; -webkit-appearance: none; appearance: none;
+    }
+    .seq-range input[type=range]::-webkit-slider-thumb {
+      pointer-events: auto; -webkit-appearance: none; appearance: none;
+      height: 18px; width: 18px; border-radius: 50%; background: #1565c0;
+      border: 2px solid #fff; box-shadow: 0 0 0 1px #1565c0; cursor: pointer; margin-top: 0;
+    }
+    .seq-range input[type=range]::-moz-range-thumb {
+      pointer-events: auto; height: 16px; width: 16px; border-radius: 50%; background: #1565c0;
+      border: 2px solid #fff; box-shadow: 0 0 0 1px #1565c0; cursor: pointer;
+    }
+    .seq-range input[type=range]::-moz-range-track { background: none; }
+    #seq-label { font-size: 13px; color: #333; font-weight: 600; }
+    #seq-sublabel { font-size: 12px; color: #777; }
+  </style>
+  <!-- 🛑 END OF WEBFLOW HEAD TRANSMISSION 🛑 -->
+</head>
+<body>
+  <!-- 🎭 WEBFLOW STAGE: PASTE ALL THIS INTO THE PAGE CODE EMBED 🎭 -->
+  <div class="navigation" style="margin-bottom: 8px;">
+    <button id="go-back-to-quiz">Go Back to Quiz</button>
+    <button id="go-to-fluency">Go to Fluency Tracker</button>
+  </div>
+  <div id="file-upload-section" class="collapsed">
+    <div class="file-upload-header" id="file-upload-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="file-upload-body" aria-label="Toggle file management">
+      <span class="toggle-icon">▶</span>
+      <h3>File management</h3>
+    </div>
+    <div id="file-upload-body" class="file-upload-body">
+    <p><button id="revert-changes" style="margin: 5px; padding: 6px 12px; background-color: #f44336; color: white; border: none; border-radius: 3px; font-weight: 600;">Revert changes</button></p>
+    <!-- Per-person .sqlite: choose-and-load (auto-loads on selection) -->
+    <div style="margin-bottom: 15px; border-top: 1px dashed #ccc; padding-top: 10px;">
+      <strong>Choose and load file</strong> (per-person <code>.sqlite</code>):
+      <button id="choose-load-file" style="margin: 5px; padding: 5px 10px;">Choose and load file</button>
+      <button id="refresh-loaded-file" style="margin: 5px; padding: 5px 10px;" title="Re-read the currently loaded file (pick up external changes) without choosing it again">Refresh loaded file</button>
+      <input type="file" id="sqlite-file-input" accept=".sqlite,.db,.sqlite3" style="display: none;">
+      <div id="sqlite-status" style="margin: 5px 0; font-size: 12px; color: #666;"></div>
+      <div style="font-size: 11px; color: #999;">
+        Choosing a file loads it immediately (replacing the current view). Flag edits auto-save back to
+        that file. The loaded data is retained across reloads; the user selector locks to that one person.
+      </div>
+    </div>
+    </div>
+  </div>
+  <div id="session-selection-section" class="expanded">
+    <div class="collapsible-section-header" id="session-selection-toggle" role="button" tabindex="0" aria-expanded="true" aria-controls="session-selection-body" aria-label="Toggle session selection">
+      <span class="toggle-icon">▶</span>
+      <h3>Session selection</h3>
+    </div>
+    <div id="session-selection-body" class="collapsible-section-body">
+      <div class="session-selection-layout">
+        <div class="session-selection-left">
+          <label class="control-element">
+            User Selection:
+            <select id="username-selection">
+              <option value="all">All Users</option>
+              <!-- Options will be populated dynamically -->
+            </select>
+          </label>
+          <label class="control-element">
+            Session Selection:
+            <select id="session-selection">
+              <option value="all">All Sessions</option>
+              <option value="last">Last Session</option>
+              <option value="lastN">Last N Sessions</option>
+            </select>
+          </label>
+          <label class="control-element" id="n-sessions-label" style="display: none;">
+            Number of Sessions:
+            <input type="number" id="n-sessions" min="1" value="1" />
+          </label>
+        </div>
+        <div id="session-checklist-panel" class="session-checklist-panel">
+          <div class="session-checklist-heading">
+            Selected sessions
+            <span id="session-selected-count" class="session-selected-count"></span>
+          </div>
+          <div id="session-checklist" class="session-checklist" role="group" aria-label="Sessions to include"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h1>Session Response Time</h1>
+  <div id="controls">
+    <label class="control-element">
+      Operation Filter:
+      <select id="operation-filter">
+        <option value="all">All Operations</option>
+        <option value="+">Addition (+)</option>
+        <option value="-">Subtraction (-)</option>
+        <option value="addsub">Addition and Subtraction</option>
+        <option value="*">Multiplication (*)</option>
+        <option value="/">Division (/)</option>
+        <option value="muldiv">Multiplication and Division</option>
+        <option value="^">Exponentiation (^)</option>
+      </select>
+    </label>
+    <label class="control-element">
+      Flag Filter:
+      <select id="flag-filter">
+        <option value="exclude-flagged">Exclude All Flagged</option>
+        <option value="all">Show All Attempts</option>
+        <option value="unflagged">Unflagged Only</option>
+        <option value="flagged-distracted">Distracted Only</option>
+        <option value="flagged-interrupted">Interrupted Only</option>
+        <option value="flagged-error">Input Error Only</option>
+        <option value="flagged-stall">Stall Only</option>
+        <option value="flagged-dontknow">I Don't Know Only</option>
+        <option value="flagged-other">Other Only</option>
+      </select>
+    </label>
+    <label class="control-element">
+      Heatmap Number Range:
+      <select id="number-range">
+        <option value="0-5">0-5</option>
+        <option value="0-9" selected>0-9</option>
+        <option value="0-20">0-20</option>
+      </select>
+    </label>
+    <br>
+    <label class="control-element" style="margin-right: 30px;">
+      Min Scale (ms):
+      <input type="range" id="min-response-time-threshold" min="0" max="5000" value="2000" step="100" />
+      <span id="min-threshold-value"></span>
+    </label>
+    <label class="control-element" style="margin-right: 30px;">
+      Max Scale (ms):
+      <input type="range" id="max-response-time-threshold" min="100" max="20000" value="10000" step="100" />
+      <span id="max-threshold-value"></span>
+    </label>
+    <label class="control-element">
+      Duplicate Handling:
+      <select id="duplicate-aggregation">
+        <option value="average" selected>Average</option>
+        <option value="first">First Attempt</option>
+        <option value="last">Last Attempt</option>
+        <option value="min">Fastest (Min)</option>
+        <option value="max">Slowest (Max)</option>
+      </select>
+    </label>
+    <label class="control-element">
+      Color Scale:
+      <select id="color-scale-selector">
+        <option value="blue">Blue (Light→Dark)</option>
+        <option value="purple">Purple (Light→Dark)</option>
+        <option value="orange">Orange (Light→Dark)</option>
+        <option value="classic" selected>Classic (Green→Red)</option>
+      </select>
+    </label>
+    <br>
+    <label class="control-element" title="What the cell color shows: response time, or the fluency rating (red/yellow/green/blue)">
+      Cell metric:
+      <select id="metric-mode">
+        <option value="response-time" selected>Response time</option>
+        <option value="fluency">Fluency rating</option>
+      </select>
+    </label>
+    <label class="control-element" title="Outline each cell with its fluency rating while the fill still shows response time — see both at once">
+      <input type="checkbox" id="fluency-overlay"> Fluency overlay (borders)
+    </label>
+    <label class="control-element" style="margin-left: 18px;" title="The 'fluent' speed bar: a fact whose median correct time is at/under this counts as fluent (green). Default 2000 ms.">
+      Fluency threshold (ms):
+      <input type="range" id="fluency-threshold" min="500" max="6000" value="2000" step="100" />
+      <span id="fluency-threshold-value"></span>
+    </label>
+    <label class="control-element" title="How many recent attempts per fact feed the fluency rating">
+      Rolling window (n most recent attempts):
+      <input type="range" id="fluency-window" min="1" max="6" value="5" step="1" />
+      <span id="fluency-window-value"></span>
+    </label>
+    <label class="control-element" title="Minimum accuracy in the rolling window to count as knowing the fact (below this = gray)">
+      Min accuracy (%):
+      <input type="number" id="fluency-min-accuracy" min="0" max="100" value="80" step="1" style="width:4.5em;" />
+    </label>
+    <label class="control-element" title="Median correct response time at/above this counts as needs practice (red); between green and red = yellow">
+      Red threshold (ms):
+      <input type="range" id="fluency-red-threshold" min="500" max="12000" value="4000" step="100" />
+      <span id="fluency-red-threshold-value"></span>
+    </label>
+    <span class="control-element" style="margin-left:18px">
+      <button type="button" id="fluency-thresholds-save" title="Save these four fluency parameters into the loaded learner's profile (in this file). They drive the end-of-quiz % and the generate-by-fluency lists.">Save to loaded file</button>
+      <button type="button" id="fluency-thresholds-restore" title="Reset the four fluency parameters to the system-wide defaults (does not save)">Restore defaults</button>
+      <span id="fluency-thresholds-status" class="muted" style="margin-left:8px"></span>
+    </span>
+    <br>
+    <button id="reset-controls" style="margin-top: 8px; padding: 6px 12px; font-size: 13px; cursor: pointer; border: 1px solid #bbb; border-radius: 4px; background: #f5f5f5;">Reset all to default</button>
+  <span id="current-fluency-percentage" style="margin-left: 14px; font-size: 14px; font-weight: 600;" title="The app-wide fluency number: % of the full 0-9 addition fact universe the learner is fluent at (flagged attempts excluded), computed with the fluency parameters above. Same metric as the anchor end-of-quiz readout, the Fluency feast, the fluency tracker, and the dragon game.">Current fluency percentage: --%</span>
+  </div>
+  <div class="flag-legend">
+    <span class="legend-item"><span class="flag-indicator">⚠️</span>Flagged attempt</span>
+    <span id="filtered-count" class="filtered-count"></span>
+  </div>
+  <button id="toggle-problem-list" class="heatmap-toggle-btn" aria-expanded="false" aria-label="Toggle problem list">
+    <span class="toggle-icon">▶</span> Problem List View
+  </button>
+  <div class="visualization-container">
+    <div class="heatmap-wrapper">
+      <!-- Fluency roll-up strip (operation / 0-5·6-9 / category). Shown only in
+           the fluency view or when the fluency overlay is on. -->
+      <div id="fluency-rollup" class="fluency-rollup" style="display:none;"></div>
+      <div id="heatmap"></div>
+
+      <!-- Sequence + category stepper: step through the attempts in answer order
+           (or by difficulty), and filter by category, watching cells appear. -->
+      <div id="sequence-controls" class="seq-open">
+        <div class="seq-header" id="seq-header" role="button" tabindex="0" aria-expanded="true">
+          <span class="seq-toggle">▶</span><h3>Step through the session</h3>
+        </div>
+        <div class="seq-body">
+        <div class="seq-row">
+          <label>Order:
+            <select id="seq-ordering">
+              <option value="answer" selected>Answer order</option>
+              <option value="difficulty">Difficulty (by category)</option>
+            </select>
+          </label>
+          <span class="seq-cats" id="seq-category-checkboxes">
+            Categories:
+            <label class="seq-cat-label"><input type="checkbox" data-cat="add-zero" checked>Add 0</label>
+            <label class="seq-cat-label"><input type="checkbox" data-cat="add-one" checked>Add 1</label>
+            <label class="seq-cat-label"><input type="checkbox" data-cat="add-two" checked>Add 2</label>
+            <label class="seq-cat-label"><input type="checkbox" data-cat="doubles" checked>Doubles</label>
+            <label class="seq-cat-label"><input type="checkbox" data-cat="tough-21" checked>Tough 21</label>
+            <label class="seq-cat-label"><input type="checkbox" data-cat="hardest-six" checked>Hardest 6</label>
+            <label class="seq-cat-label"><input type="checkbox" data-cat="other" checked>Other</label>
+            <button type="button" class="seq-mini-btn" id="seq-cat-all">All</button>
+            <button type="button" class="seq-mini-btn" id="seq-cat-none">None</button>
+          </span>
+        </div>
+        <div class="seq-note">Categories are exclusive. <strong>Hardest 6</strong> (both addends ≥ 6) is split out of the Tough 21 group. <strong>Other</strong> = non-addition problems.</div>
+        <div class="seq-range">
+          <div class="seq-track"></div>
+          <div class="seq-fill" id="seq-fill"></div>
+          <input type="range" id="seq-start" min="0" max="0" value="0" step="1" aria-label="Sequence start">
+          <input type="range" id="seq-end" min="0" max="0" value="0" step="1" aria-label="Sequence end">
+        </div>
+        <div id="seq-label">No data loaded.</div>
+        <div id="seq-sublabel"></div>
+        </div>
+      </div>
+    </div>
+    <div class="problem-list-wrapper collapsed">
+      <div class="problem-list-header">
+        <h3>Problem List View</h3>
+        <div id="problem-focus-bar" style="display:none; font-size:12px; margin:0 0 6px; color:#1565c0;"></div>
+        <div class="sort-controls">
+          <button class="sort-btn active" data-sort="order">Order</button>
+          <button class="sort-btn" data-sort="time-desc">Time ↓</button>
+          <button class="sort-btn" data-sort="time-asc">Time ↑</button>
+          <button class="sort-btn" data-sort="correct">✓ First</button>
+          <button class="sort-btn" data-sort="incorrect">✗ First</button>
+          <button class="sort-btn" data-sort="flagged">⚠️ First</button>
+        </div>
+      </div>
+      <div id="problem-list-content" class="problem-list-content">
+        <div id="problem-list-items"></div>
+      </div>
+    </div>
+  </div>
+  <!-- Collapsible problem-list editor at the end of the page (same shared module as anchor.html;
+       needs the dev server + ?folder=&user=). -->
+  <div id="analysis-problem-list-editor"></div>
+  <!-- 🎬 END OF PAGE CODE EMBED CONTENT 🎬 -->
+
+  <!-- DO NOT INCLUDE ANYTHING BELOW THIS LINE IN WEBFLOW ANYWHERE-->
+
+  <!-- DO NOT DELETE FROM LOCAL FILE: Local file version to Include sql.js with cache busting -->
+  <!-- DO NOT DELETE FROM LOCAL FILE: <script src="sql-wasm.js?v=<?php echo time(); ?>"></script> -->
+  
+  <!-- Include shared utilities -->
+  <script src="math_utils.js"></script>
+  <!-- Shared fluency rubric + roll-ups (for the fluency view / overlay) -->
+  <script src="fluency_core.js?v=20260628d"></script>
+  <!-- Include math_quiz.js to access shared functions -->
+  <script src="math_quiz.js"></script>
+  <!-- Include your custom JavaScript file -->
+  <script src="math_analysis.js?v=20260801_seq_perf"></script>
+
+  <!-- Shared problem-list editor: mounted on the same person being analyzed (?folder=&user=). -->
+  <script type="module">
+    import { mountProblemListPanel } from './engine/problem_list_panel.mjs';
+    const host = document.getElementById('analysis-problem-list-editor');
+    if (host) {
+      const params = new URLSearchParams(window.location.search);
+      window.__analysisListPanel = mountProblemListPanel({
+        container: host,
+        title: 'Problem Lists (editor)',
+        startOpen: true,
+        getContext: () => {
+          // Prefer ?folder=&user= (the anchor "Load for analysis" path); otherwise fall back to
+          // the folder+user math_analysis.js resolves after a local .sqlite is loaded.
+          const folder = params.get('folder');
+          const user = params.get('user');
+          if (folder && user) return { folder, user };
+          return window.__analysisEditorCtx || null;
+        },
+        // "Generate by fluency" reuses the page's rubric/range/operation controls + loaded DB.
+        generateFluency: (spec) => window.mqGenerateProblemList && window.mqGenerateProblemList(spec),
+      });
+    }
+  </script>
+
+</body>
+</html>

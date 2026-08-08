@@ -1,0 +1,29 @@
+{
+  "id": "profile:postmodern-relativism",
+  "label": "Postmodern Relativism / Social Constructionism",
+  "summary": "Defined by Lyotard's 'incredulity toward metanarratives': skepticism toward grand legitimating stories (Enlightenment emancipation, science-as-mirror-of-nature). Knowledge claims are analyzed as products of language games, discourses, and power relations (Foucault's power/knowledge); much of social reality — and many categories treated as natural — is socially constructed.",
+  "thinkers": ["Jean-Francois Lyotard", "Michel Foucault", "Richard Rorty", "Berger & Luckmann"],
+  "sources": [
+    {"title": "SEP: Postmodernism", "url": "https://plato.stanford.edu/entries/postmodernism/"},
+    {"title": "SEP: Lyotard", "url": "https://plato.stanford.edu/entries/lyotard/"},
+    {"title": "Social constructionism — Wikipedia", "url": "https://en.wikipedia.org/wiki/Social_constructionism"}
+  ],
+  "variants": "French poststructuralism (Foucault, Derrida, Lyotard) vs American neopragmatism (Rorty) vs sociology-of-knowledge constructionism (Berger & Luckmann — much milder, compatible with realism about nature) vs later applied critical/identity theories; strong-programme relativism about science is the radical wing. Functions as the principal axis-opposite of critical rationalism on objectivity of knowledge and progress.",
+  "cited_from_graph": false,
+  "positions": [
+    {"axis": "axis:epistemology", "position": -0.5, "summary": "Anti-foundationalist — rejects justificationism, but equally rejects the fallibilist's objective-truth-seeking: criteria of truth are internal to discourses and communities, legitimated by performativity or power.", "evidence": [{"url": "https://plato.stanford.edu/entries/lyotard/", "title": "SEP: Lyotard"}]},
+    {"axis": "axis:knowledge-reach", "position": -1.0, "summary": "No view from nowhere: universal knowledge claims are unmasked as situated and partial.", "evidence": [{"url": "https://plato.stanford.edu/entries/postmodernism/", "title": "SEP: Postmodernism"}]},
+    {"axis": "axis:authority-of-belief", "position": 0.0, "summary": "Neither pole: tradition, revelation, AND universal reason are all unmasked as power-laden; authority is local, contested, and provisional.", "evidence": [{"url": "https://plato.stanford.edu/entries/postmodernism/", "title": "SEP: Postmodernism"}]},
+    {"axis": "axis:realism", "position": -2.0, "summary": "The defining position: theories and categories are social constructions; truth is relative to discourses, language games, and what our peers let us say (Rorty).", "evidence": [{"url": "https://en.wikipedia.org/wiki/Social_constructionism", "title": "Social constructionism"}]},
+    {"axis": "axis:progress", "position": -1.5, "summary": "'Progress' is a Western metanarrative that masks domination and exclusion; history is discontinuity (genealogy), not ascent; emancipatory hopes survive only as local struggles.", "evidence": [{"url": "https://plato.stanford.edu/entries/lyotard/", "title": "SEP: Lyotard"}]},
+    {"axis": "axis:risk", "position": -1.0, "summary": "Suspicious of technoscience as an instrument of power and surveillance — loosely precautionary, though the posture is critique rather than policy.", "evidence": [{"url": "https://plato.stanford.edu/entries/lyotard/", "title": "SEP: Lyotard (performativity)"}]},
+    {"axis": "axis:agency", "position": -1.5, "summary": "Subjects are constituted by discourse, institutions, and power; agency exists as local resistance within structures, not sovereign individual will.", "evidence": [{"url": "https://plato.stanford.edu/entries/postmodernism/", "title": "SEP: Postmodernism (Foucault)"}]},
+    {"axis": "axis:human-significance", "position": -0.5, "summary": "Deflationary about humanist grand narratives of Man; the subject is decentered rather than cosmically important.", "evidence": [{"url": "https://plato.stanford.edu/entries/postmodernism/", "title": "SEP: Postmodernism"}]},
+    {"axis": "axis:morality", "position": -2.0, "summary": "Relativist and anti-foundationalist: moral codes are historically contingent constructions — joined, in tension, to a strong practical ethics of anti-domination and difference.", "evidence": [{"url": "https://plato.stanford.edu/entries/postmodernism/", "title": "SEP: Postmodernism"}]},
+    {"axis": "axis:metaphysics", "position": 0.5, "summary": "Typically secular but deflationary: 'nature' itself is treated as partly a discursive category; anti-realist or quietist rather than affirmatively naturalist.", "evidence": [{"url": "https://plato.stanford.edu/entries/postmodernism/", "title": "SEP: Postmodernism"}]},
+    {"axis": "axis:change", "position": 0.5, "summary": "Anti-traditional and destabilizing toward inherited categories and canons, without a progress narrative to replace them.", "evidence": [{"url": "https://plato.stanford.edu/entries/postmodernism/", "title": "SEP: Postmodernism"}]},
+    {"axis": "axis:nature", "position": -0.5, "summary": "Skeptical of mastery narratives; nature figures mainly as another contested category.", "evidence": [{"url": "https://en.wikipedia.org/wiki/Social_constructionism", "title": "Social constructionism"}]},
+    {"axis": "axis:meaning", "position": 1.0, "summary": "Locally constructed through narrative, identity, community, and aesthetic self-creation (Rorty's private irony); no universal telos.", "evidence": [{"url": "https://plato.stanford.edu/entries/postmodernism/", "title": "SEP: Postmodernism (Rorty)"}]},
+    {"axis": "axis:social", "position": -1.0, "summary": "The community and its discourses constitute subjects; solidarity replaces objectivity (Rorty).", "evidence": [{"url": "https://plato.stanford.edu/entries/postmodernism/", "title": "SEP: Postmodernism"}]}
+  ]
+}

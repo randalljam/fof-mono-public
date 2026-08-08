@@ -1,0 +1,11 @@
+schema: spec-driven
+
+context: |
+  App: Math Quiz (`apps/math-quiz`)
+  App stage: S2-deployed
+  Spec stage: openspec-single-spec
+  Capability model: one living capability named `app`; split only if the spec becomes too large or the app reaches a stricter production stage.
+  Tech stack: vanilla HTML/CSS/JavaScript with no build step; sql.js 1.6.2 in-browser SQLite; Plotly for analysis dashboards; Playwright and Node's test runner for tests; Python stdlib dev-server/tooling with optional boto3/dotenv for local S3 backup.
+  Active surfaces: `anchor.html` is the current kid/coach fluency surface; `math_analysis.html`, `math_fluency.html`, and legacy `math_quiz.html` remain supported and tested; `dragon/` is a Three.js motivation layer that wraps the same fluency engine.
+  Data conventions: `problem_text` and SQLite rows use canonical ASCII operators such as `5 + 3` and `5 * 3`; display symbols are presentation-only. Learner data lives in gitignored `_data/` and S3/backup targets, never in source.
+  Behavior convention: fluency is recomputed from raw `ProblemAttempts`; status snapshots are not the source of truth. OpenSpec baseline requirements must describe current observable behavior only; roadmap ideas belong in `ROADMAP.md`, not in specs.

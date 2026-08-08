@@ -1,0 +1,120 @@
+## metadata
+source file: data/floodlamp/reg/fda-townhalls/dev-qa-extract/VTH 36_cemanual-sections.md
+last updated: 2024-12-30 Created QA Sections
+link pdf: https://www.fda.gov/media/144566/download?attachment
+link youtube: https://youtu.be/VNrwrH0N0dY
+link slides: 
+topic: COVID-19
+notes: delete and combine unimportant segments
+
+
+## content
+
+### qa
+
+
+#### 1. Updates on COVID-19 Testing Developments and Priorities
+
+QA Block 1-1
+CLARIFIED QUESTION: What are the specific caveats about the use of pooling that test developers should be aware of?
+CLARIFIED ANSWER: FDA advises test developers to review all caveats in the authorizations for pooling and note that authorized pooling for asymptomatic screening is specified. Off-label use is possible as long as specific limitations, like restricting use to symptomatic patients, are not applied.
+VERBATIM QUESTION: What are the specific caveats about the use of pooling that test developers should be aware of?
+VERBATIM ANSWER: Please note all the caveats in our authorizations about the use of pooling. And of course if the pooling scheme has not yet been authorized for an asymptomatic screening we do clearly state on the FDA Web site and we're supported by both the CDC and the CMS that you can use the tests that off label as long as there is no specific limitation about the use, very specific use limitations to very rare perhaps authorizations about the limitations to only symptomatic patients.
+SPEAKER QUESTION: NOT APPLICABLE
+SPEAKER ANSWER: Tim Stenzel (FDA IVD Director)
+TOPICS: Pooling guidelines, Test authorization, Off-label test use
+REVIEW FLAG: False
+
+QA Block 1-2
+CLARIFIED QUESTION: Can tests be used off-label if they have no specific use limitations, and what constitutes a specific limitation on use?
+CLARIFIED ANSWER: The FDA allows tests to be used off-label as long as there are no specific limitations on their use, such as authorizations restricting use to symptomatic patients.
+VERBATIM QUESTION: Can tests be used off-label if they have no specific use limitations, and what constitutes a specific limitation on use?
+VERBATIM ANSWER: And of course if the pooling scheme has not yet been authorized for an asymptomatic screening we do clearly state on the FDA Web site and we're supported by both the CDC and the CMS that you can use the tests that off label as long as there is no specific limitation about the use, very specific use limitations to very rare perhaps authorizations about the limitations to only symptomatic patients.
+SPEAKER QUESTION: NOT APPLICABLE
+SPEAKER ANSWER: Tim Stenzel (FDA IVD Director)
+TOPICS: off-label test use, specific use limitations
+REVIEW FLAG: False
+
+QA Block 1-3
+CLARIFIED QUESTION: Are there any emerging data or guidelines supporting the use of panel tests for SARS-CoV-2 and flu detection?
+CLARIFIED ANSWER: The FDA has authorized the first home collection panel test for SARS-CoV-2 and flu detection, signaling support for panel testing where supported by data.
+VERBATIM QUESTION: Are there any emerging data or guidelines supporting the use of panel tests for SARS-CoV-2 and flu detection?
+VERBATIM ANSWER: We also saw more home collection kits authorized and of note the first home collection for a panel test that involves both SARS-CoV-2 and flu detection. And of course we signal with that authorization our continued desire to see panel testing in all forms that are supported by data.
+SPEAKER QUESTION: NOT APPLICABLE
+SPEAKER ANSWER: Tim Stenzel (FDA IVD Director)
+TOPICS: panel tests, SARS-CoV-2 and flu detection, test authorization
+REVIEW FLAG: False
+
+QA Block 1-4
+CLARIFIED QUESTION: What types of testing methodologies or formats does the FDA prioritize for SARS-CoV-2 diagnostics?
+CLARIFIED ANSWER: The FDA prioritizes point-of-care tests, home collection kits, panel tests, and high-throughput systems for SARS-CoV-2 diagnostics to enable efficient testing of large sample volumes.
+VERBATIM QUESTION: IMPLICIT
+VERBATIM ANSWER: We - and want to remind everyone of our current highest priorities. This is - this - the priorities in two ways, one for review but also in seeking development of these tests from the development community. so that obviously they really haven't changed recently and so they are again point of care tests, home collection kits from home testing opportunities, panels and extremely high throughput systems that allow the most efficient testing of large volumes of samples.
+SPEAKER QUESTION: NOT APPLICABLE
+SPEAKER ANSWER: Tim Stenzel (FDA IVD Director)
+TOPICS: FDA priorities, Testing methodologies, COVID-19 diagnostics
+REVIEW FLAG: False
+
+QA Block 1-5
+CLARIFIED QUESTION: What does the FDA consider a high-throughput system for efficient testing of large sample volumes?
+CLARIFIED ANSWER: FDA defines high-throughput systems as those enabling the most efficient testing of large sample volumes.
+VERBATIM QUESTION: What does the FDA consider a high-throughput system for efficient testing of large sample volumes?
+VERBATIM ANSWER: Extremely high throughput systems that allow the most efficient testing of large volumes of samples.
+SPEAKER QUESTION: NOT APPLICABLE
+SPEAKER ANSWER: Tim Stenzel (FDA IVD Director)
+TOPICS: high-throughput systems, large volume testing, FDA priorities
+REVIEW FLAG: False
+
+
+#### 2. Streamlining EUA Process for Open-Source LAMP-Based Assays
+
+QA Block 2-1
+CLARIFIED QUESTION: Can you provide guidance on the use of a consolidated primer set for a LAMP-based assay, specifically addressing inclusivity in silico analysis, in silico cross-reactivity, and wet cross-reactivity?
+CLARIFIED ANSWER: FDA supports using consolidated primer sets as seen in models like Yale's SalivaDirect for open-source testing. Data on test performance can be leveraged via right of reference, either through individual EUA authorization or replication of an approved method. Changes in test components require review, but adherence to existing authorization setups reduces duplication and enhances efficiency.
+VERBATIM QUESTION: Can you provide guidance on the use of a consolidated primer set for a LAMP-based assay, specifically addressing inclusivity in silico analysis, in silico cross-reactivity, and wet cross-reactivity?
+VERBATIM ANSWER: Yes that's - we've seen that as a pathway that could be very successful. Of course the Yale saliva direct was the first to get authorization and we see a lot of interest in this sort of open source. As far as, you know, the data related to test performance yes that can be leveraged in a different - you know, in multiple ways. The two main ways are that if you seek your own authorization for the test you can give a right of reference for anyone else who wants to copy your test. That wouldn't eliminate the requirement for them to if they're a kit developer say for them to come in to get their own authorization. And it wouldn't extend the umbrella of an EUA authorization to any lab that might copy that method. So looking at the saliva direct model they have in their original submission and any amendments -- and I have to check what amendments they have to date -- they have an instruction for use that is the sole basis so to speak of the kit. And they point to off-the-shelf product that users can purchase. In the case of primers and probes for their tests - Toby you can correct me but I think it's the CDC's. And they can get that from vendors that produce primary probes under that CDC authorization. So those are very specific catalog numbers and those are primers and probes that we previously authorized. So again there's these two different pathways. I want to lay them out very clearly. You can get your own individual authorization for a kit. You can then give anybody, any other developer the right of reference to that and they can copy it and they can pretty much link up and use the data in your submission. There are some elements that if they were to be changed that we'd want to see. But if they are using the same suppliers for everything - and the same catalog numbers for everything that you're using then that makes it very easy. Or the other way is to have this method authorized as we did for saliva direct and then you - we would envision giving you or any other sponsors the same sort of flexibility that Yale is actually the one that designates which lab can use their method and are therefore covered by their EUA. And they have commitments to the FDA on what is required in making that determination of designation. And my understanding is they've designated quite a few labs already. And I would refer you to them if anybody wants to know those numbers but it appears to be a very highly successful program. So hopefully I've addressed the questions and...
+SPEAKER QUESTION: Randy True (FloodLAMP PBC)
+SPEAKER ANSWER: Tim Stenzel (FDA IVD Director)
+TOPICS: Consolidated primer sets, In silico and wet analysis, EUA authorization pathways
+REVIEW FLAG: False
+
+QA Block 2-2
+CLARIFIED QUESTION: If we get authorization for a test using one type of activation buffer and purification method, and another developer pursues authorization with a different purification method but the same primer set and LAMP master mix, would they need to repeat the interfering substances testing?
+CLARIFIED ANSWER: Additional validation may be required if changes are made to the test components. Developers can grant rights of reference, reducing duplication if core components remain the same.
+VERBATIM QUESTION: If we get authorization for a test using one type of activation buffer and purification method, and another developer pursues authorization with a different purification method but the same primer set and LAMP master mix, would they need to repeat the interfering substances testing?
+VERBATIM ANSWER: At a high level you're close. But the devil's sometimes in the detail. There are certain alterations to a test that we may require additional validation. So if they're adding something new that you didn't do say then we would want to evaluate the data around that change. And then you absolutely developers can give each other right of references as they so wish. They can specify what right they have or among their - from their entire EUA. They can have limitation or they can open them up entirely. But you can cross - basically cross reference each other's assays to the extent that you want. And there would absolutely be synergy. And if the components are all the same that they use for the core test then there would absolutely be synergy on reducing any sort of duplication that wouldn't - that isn't, you know, recommended because the tests are basically the same in those functions. Okay? So I look forward to hearing more about your development. Thank you so much.
+SPEAKER QUESTION: Randy True (FloodLAMP PBC)
+SPEAKER ANSWER: Tim Stenzel (FDA IVD Director)
+TOPICS: Test validation requirements, Rights of reference between developers, Reducing duplication in testing
+REVIEW FLAG: False
+
+QA Block 2-3
+CLARIFIED QUESTION: If we provide another developer a general right of reference for our test, allowing them to get their own EUA and control their own designations, while we maintain our own separate EUA and designations, is that the correct process?
+CLARIFIED ANSWER: Yes, developers can grant general rights of reference to others for separate EUAs, but changes to a test may require additional validation. Cross-referencing assays can reduce duplication if core components remain unchanged.
+VERBATIM QUESTION: If we provide another developer a general right of reference for our test, allowing them to get their own EUA and control their own designations, while we maintain our own separate EUA and designations, is that the correct process?
+VERBATIM ANSWER: At a high level you're close. But the devil's sometimes in the detail. There are certain alterations to a test that we may require additional validation. So if they're adding something new that you didn't do say then we would want to evaluate the data around that change. And then you absolutely developers can give each other right of references as they so wish. They can specify what right they have or among their - from their entire EUA. They can have limitation or they can open them up entirely. But you can cross - basically cross reference each other's assays to the extent that you want. And there would absolutely be synergy. And if the components are all the same that they use for the core test then there would absolutely be synergy on reducing any sort of duplication that wouldn't - that isn't, you know, recommended because the tests are basically the same in those functions.
+SPEAKER QUESTION: Randy True (FloodLAMP PBC)
+SPEAKER ANSWER: Tim Stenzel (FDA IVD Director)
+TOPICS: Right of reference, EUA process, Validation requirements
+REVIEW FLAG: False
+
+QA Block 2-4
+CLARIFIED QUESTION: What are the specific criteria the FDA uses to determine when additional validation is required for alterations to an EUA authorized test?
+CLARIFIED ANSWER: The FDA evaluates changes to a test to determine if they require additional validation. This includes assessing data for any new aspects not included in the original test. If components remain the same, duplication of validation can often be minimized.
+VERBATIM QUESTION: What are the specific criteria the FDA uses to determine when additional validation is required for alterations to an EUA authorized test?
+VERBATIM ANSWER: At a high level you're close. But the devil's sometimes in the detail. There are certain alterations to a test that we may require additional validation. So if they're adding something new that you didn't do say then we would want to evaluate the data around that change. And then you absolutely developers can give each other right of references as they so wish. They can specify what right they have or among their - from their entire EUA. They can have limitation or they can open them up entirely. But you can cross - basically cross reference each other's assays to the extent that you want. And there would absolutely be synergy. And if the components are all the same that they use for the core test then there would absolutely be synergy on reducing any sort of duplication that wouldn't - that isn't, you know, recommended because the tests are basically the same in those functions.
+SPEAKER QUESTION: Randy True (FloodLAMP PBC)
+SPEAKER ANSWER: Tim Stenzel (FDA IVD Director)
+TOPICS: EUA test alterations, FDA additional validation, developer collaboration
+REVIEW FLAG: False
+
+QA Block 2-5
+CLARIFIED QUESTION: Does the use of a shared primer set with identical suppliers and catalog numbers eliminate the need for independent validations for each developer?
+CLARIFIED ANSWER: Using the same suppliers and catalog numbers simplifies validation but does not entirely eliminate the need for independent evaluations.
+VERBATIM QUESTION: Does the use of a shared primer set with identical suppliers and catalog numbers eliminate the need for independent validations for each developer?
+VERBATIM ANSWER: But if they are using the same suppliers for everything - and the same catalog numbers for everything that you're using then that makes it very easy.
+SPEAKER QUESTION: Randy True (FloodLAMP PBC)
+SPEAKER ANSWER: Tim Stenzel (FDA IVD Director)
+TOPICS: shared primer sets, validation requirements, EUA pathways
+REVIEW FLAG: False
+

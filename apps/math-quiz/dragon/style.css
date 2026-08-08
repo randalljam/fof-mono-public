@@ -1,0 +1,415 @@
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #1a2a1a;
+  color: #fff;
+}
+.hidden { display: none !important; }
+#game-container { position: fixed; inset: 0; }
+#game-container canvas { display: block; width: 100%; height: 100%; }
+#loading-screen {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(180deg, #87ceeb 0%, #4a7c59 100%);
+}
+#loading-screen.hidden { display: none; }
+.loading-inner { text-align: center; }
+.loading-inner h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+#crosshair {
+  position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 12px; height: 12px; pointer-events: none; z-index: 10;
+  border: 2px solid rgba(255,255,255,0.85);
+  border-radius: 1px;
+}
+#interact-prompt {
+  position: fixed; bottom: 18%; left: 50%; transform: translateX(-50%);
+  padding: 10px 20px; background: rgba(0,0,0,0.55); border-radius: 8px;
+  font-size: 1.1rem; z-index: 11; pointer-events: none;
+}
+#hud-root {
+  position: fixed; top: 12px; left: 12px; right: 12px; z-index: 20;
+  pointer-events: none;
+}
+.hud-panel {
+  display: inline-block; padding: 10px 14px; border-radius: 10px;
+  background: rgba(30, 20, 40, 0.72); pointer-events: auto;
+  max-width: 320px;
+}
+.hud-title { font-weight: bold; }
+.hud-heart {
+  position: relative;
+  height: 14px; background: rgba(255,255,255,0.2); border-radius: 7px;
+  margin: 6px 0;
+}
+.hud-pct, .hud-bursts { font-size: 0.85rem; opacity: 0.95; margin-top: 4px; }
+.hud-heart-fill {
+  height: 100%; background: linear-gradient(90deg, #ff6b9d, #c44dff);
+  border-radius: 7px; transition: width 0.4s ease;
+  max-width: 100%;
+}
+.hud-foreshadow { font-size: 0.9rem; opacity: 0.9; line-height: 1.3; }
+.hud-btn {
+  margin-top: 8px; padding: 6px 12px; border: none; border-radius: 6px;
+  background: #7b5ea7; color: #fff; cursor: pointer; font-size: 0.85rem;
+}
+#quiz-root {
+  position: fixed; inset: 0; z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(20, 12, 30, 0.92);
+}
+#quiz-root.hidden { display: none; }
+.quiz-card {
+  position: relative;
+  background: linear-gradient(160deg, #fff8f0, #ffe8d6);
+  color: #333; border-radius: 16px; padding: 28px 32px;
+  max-width: 520px; width: 92%; text-align: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+}
+/* Go gate: full-card overlay so the quiz layout (problem slot, answer, keypad)
+   is already in place; the learner taps the center square to reveal the first problem. */
+.quiz-go-overlay {
+  position: absolute; inset: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 248, 240, 0.72);
+  border-radius: 16px;
+}
+.quiz-go-overlay.hidden { display: none; }
+.quiz-go-inner {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.quiz-go {
+  width: 168px; height: 168px; margin: 0; padding: 0;
+  font-size: 2.4rem; font-weight: 700; line-height: 1;
+  border: none; border-radius: 18px; cursor: pointer; touch-action: manipulation;
+  background: #2196f3; color: #fff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+}
+.quiz-go:disabled {
+  opacity: 0.85; cursor: default;
+}
+.quiz-go:not(:disabled):active { transform: translateY(1px); }
+.quiz-go:not(:disabled):hover { background: #1976d2; }
+.quiz-title { font-size: 1.05rem; color: #7b5ea7; font-weight: bold; }
+.quiz-problem { font-size: 3rem; margin: 16px 0; letter-spacing: 2px; min-height: 1.2em; line-height: 1.2; }
+.quiz-progress { font-size: 0.85rem; color: #888; margin-top: 4px; }
+.quiz-answer { font-size: 2rem; min-height: 2.5rem; color: #555; }
+.quiz-feedback { font-size: 1.2rem; min-height: 1.5rem; margin: 8px 0; }
+.quiz-feedback.correct { color: #2e7d32; }
+.quiz-feedback.wrong { color: #c62828; }
+.quiz-dots { display: flex; gap: 6px; justify-content: center; margin: 12px 0; flex-wrap: wrap; }
+.quiz-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #ccc;
+}
+.quiz-dot.done { background: #7b5ea7; }
+.quiz-dot.current { background: #ff9800; transform: scale(1.2); }
+.quiz-keypad {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px;
+}
+.quiz-key {
+  padding: 14px; font-size: 1.4rem; border: none; border-radius: 10px;
+  background: #e8d5f2; cursor: pointer; touch-action: manipulation;
+}
+.quiz-key:active { background: #c9a8e0; }
+/* Bottom-row action keys (± / C) — same treatment as the anchor keypad's .op keys. */
+.quiz-key.op { background: #607d8b; color: #fff; }
+.quiz-key.op:active { background: #455a64; }
+.quiz-actions { margin-top: 16px; text-align: center; }
+.quiz-action-row, .quiz-quit-row {
+  display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 10px;
+}
+.quiz-quit-row { margin-top: 14px; }
+.quiz-btn {
+  padding: 10px 16px; border: none; border-radius: 8px;
+  background: #7b5ea7; color: #fff; cursor: pointer; font-size: 0.95rem;
+  touch-action: manipulation;
+}
+.quiz-btn:active { transform: translateY(1px); }
+.quiz-btn.secondary { background: #78909c; }
+.quiz-btn.secondary:hover { background: #607d8b; }
+.quiz-btn.skipflag { background: #f57c00; }
+.quiz-btn.skipflag:hover { background: #ef6c00; }
+.quiz-btn.flagprev { background: #00897b; }
+.quiz-btn.flagprev:hover { background: #00796b; }
+.quiz-btn.lightbulb {
+  background: #fff8e1; color: #f9a825; border: 1px solid #ffe082;
+  font-size: 1.2rem; padding: 8px 12px; min-width: 2.5rem;
+}
+.quiz-btn.lightbulb:hover { background: #ffecb3; }
+.quiz-teach {
+  text-align: center; margin: 10px auto 12px; padding: 12px;
+  border: 1px solid #b3d4ff; border-radius: 8px; background: #f0f7ff; max-width: 500px;
+}
+.quiz-teach-visual svg { width: 100%; max-width: 440px; height: auto; display: block; margin: 0 auto; }
+.quiz-teach-divider { border-top: 1px solid #c7d7ea; max-width: 440px; margin: 10px auto; }
+.quiz-teach-done { margin-top: 10px; }
+.quiz-correction {
+  text-align: center; margin-top: 8px; padding: 10px 0;
+}
+.quiz-correction-answer {
+  font-size: 1.2rem; color: #c62828; font-weight: 600; margin-bottom: 10px;
+}
+.quiz-flag-menu { margin: 8px 0; text-align: left; display: inline-block; }
+.quiz-flag-reasons label { display: block; margin: 4px 0; font-size: 0.9rem; }
+.quiz-flag-comment {
+  width: 100%; max-width: 280px; margin-top: 6px; padding: 8px;
+  border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem;
+}
+.quiz-correction .quiz-btn { margin: 4px; }
+.quiz-pause-panel {
+  position: fixed; inset: 0; z-index: 550;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, 0.75); text-align: center;
+}
+.quiz-pause-panel.hidden { display: none; }
+.quiz-pause-title { font-size: 1.4rem; color: #fff; margin-bottom: 16px; }
+.quiz-pause-panel .quiz-btn { margin: 6px; }
+#howto-root {
+  position: fixed; inset: 0; z-index: 600;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.7);
+}
+#howto-root.hidden { display: none; }
+.howto-card {
+  background: #fff8f0; color: #333; border-radius: 16px; padding: 24px;
+  max-width: 400px; width: 92%;
+}
+.howto-card h2 { margin-top: 0; }
+.howto-step { margin: 12px 0; font-size: 1.05rem; line-height: 1.4; }
+.howto-icon { font-size: 2rem; margin-right: 8px; }
+#server-error {
+  position: fixed; inset: 0; z-index: 2000;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.85);
+}
+#start-choice, #player-picker {
+  position: fixed; inset: 0; z-index: 2001;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.85);
+}
+.start-choice-inner {
+  background: #fff; color: #333; padding: 28px; border-radius: 12px;
+  max-width: 520px; text-align: center;
+}
+.start-choice-buttons { display: flex; gap: 12px; justify-content: center; margin-top: 16px; }
+.start-choice-buttons button {
+  padding: 12px 20px; font-size: 1rem; border-radius: 8px; border: 1px solid #bbb;
+  background: #f5f5f5; cursor: pointer;
+}
+.start-choice-buttons button:hover { background: #e8e8e8; }
+#sc-clone { background: #fff3e0; border-color: #f9a825; }
+#sc-clone:hover { background: #ffe0b2; }
+.start-choice-status { margin-top: 12px; min-height: 1.2em; color: #c62828; font-size: 0.9rem; }
+.server-error-inner {
+  background: #fff; color: #333; padding: 24px; border-radius: 12px;
+  max-width: 480px; text-align: center;
+}
+.milestone-toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  padding: 14px 24px; background: rgba(123, 94, 167, 0.95);
+  border-radius: 12px; font-size: 1.1rem; z-index: 30;
+  animation: toast-in 0.4s ease;
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.quiz-card.flash-correct, #quiz-root.flash-correct .quiz-card {
+  box-shadow: 0 0 24px rgba(76, 175, 80, 0.6);
+}
+#mute-btn {
+  position: fixed; bottom: 12px; right: 12px; z-index: 25;
+  padding: 8px 12px; border: none; border-radius: 8px;
+  background: rgba(0,0,0,0.5); color: #fff; cursor: pointer;
+}
+/* Touch pads only render when controls.js detects a touch device. */
+body.touch-mode #mute-btn {
+  bottom: auto; top: 12px; right: 12px;
+}
+#touch-controls {
+  position: fixed; inset: 0; z-index: 22;
+  pointer-events: none;
+}
+#touch-controls.hidden { display: none; }
+.touch-pad {
+  position: absolute;
+  width: 132px; height: 132px;
+  border-radius: 50%;
+  background: rgba(20, 12, 30, 0.28);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.touch-move { right: 28px; bottom: 36px; }
+.touch-left {
+  position: absolute; left: 20px; bottom: 28px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+  pointer-events: none;
+}
+.touch-look { position: relative; left: 0; bottom: 0; }
+.touch-pad-ring {
+  position: absolute; inset: 18px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.28);
+  pointer-events: none;
+}
+.touch-pad-knob {
+  position: absolute; left: 50%; top: 50%;
+  width: 52px; height: 52px;
+  margin: 0;
+  border-radius: 50%;
+  background: rgba(123, 94, 167, 0.85);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.touch-pad-label {
+  position: absolute; left: 50%; bottom: 8px;
+  transform: translateX(-50%);
+  font-size: 0.72rem; letter-spacing: 0.04em;
+  text-transform: uppercase; color: rgba(255, 255, 255, 0.75);
+  pointer-events: none;
+}
+.touch-actions {
+  display: flex; gap: 10px; pointer-events: none;
+}
+.touch-btn {
+  pointer-events: auto;
+  touch-action: manipulation;
+  min-width: 72px; min-height: 52px;
+  padding: 10px 14px;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-radius: 14px;
+  background: rgba(30, 20, 40, 0.55);
+  color: #fff; font-size: 0.95rem; font-weight: 600;
+  user-select: none; -webkit-user-select: none;
+}
+.touch-btn:active { background: rgba(123, 94, 167, 0.85); transform: translateY(1px); }
+.touch-interact.hidden { display: none; }
+@media (max-width: 700px), (max-height: 500px) {
+  .touch-pad { width: 112px; height: 112px; }
+  .touch-move { right: 16px; bottom: 24px; }
+  .touch-left { left: 12px; bottom: 18px; }
+  .touch-pad-knob { width: 44px; height: 44px; }
+  .touch-btn { min-width: 64px; min-height: 46px; font-size: 0.88rem; }
+}
+/* Story overlay: parchment scroll cards (reaction, beats, GM letters, journal).
+   #sign-root reuses the same shell for the sign-writing dialog. */
+#story-root, #sign-root {
+  position: fixed; inset: 0; z-index: 550;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(20, 12, 30, 0.8);
+}
+#story-root.hidden, #sign-root.hidden { display: none; }
+.sign-keep-btn { display: block; margin: 10px auto 0; }
+.story-card {
+  background: linear-gradient(165deg, #fdf3dd, #f4e2bb);
+  color: #4a3520; border-radius: 6px; padding: 26px 30px;
+  max-width: 460px; width: 92%; text-align: center;
+  border: 1px solid #d9bf8c;
+  box-shadow: 0 0 0 6px rgba(244, 226, 187, 0.35), 0 12px 40px rgba(0,0,0,0.5);
+  animation: story-in 0.35s ease;
+  max-height: 84vh; overflow-y: auto;
+}
+@keyframes story-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.story-kicker {
+  font-size: 0.8rem; letter-spacing: 1.5px; text-transform: uppercase;
+  color: #a3701f; margin-bottom: 6px;
+}
+.story-title { margin: 0 0 10px; font-size: 1.5rem; color: #6d4715; }
+.story-text { font-size: 1.12rem; line-height: 1.55; min-height: 3.2em; margin: 0 0 14px; }
+.story-btn {
+  padding: 10px 26px; border: none; border-radius: 8px; font-size: 1rem;
+  background: #7b5ea7; color: #fff; cursor: pointer;
+}
+.story-btn:hover { background: #6a4f93; }
+.story-letter {
+  background: linear-gradient(165deg, #fff0f4, #ffd9e4);
+  border-color: #e8a8bd;
+}
+.story-letter .story-kicker { color: #c2497a; }
+.story-letter .story-title { color: #a1345f; }
+.story-name-input {
+  display: block; width: 80%; margin: 0 auto 10px; padding: 10px 14px;
+  font-size: 1.3rem; text-align: center; border: 2px solid #d9bf8c;
+  border-radius: 10px; background: #fffaf0; color: #4a3520;
+}
+.story-name-ideas { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 14px; }
+.story-name-chip {
+  padding: 6px 12px; border: 1px solid #c9a86a; border-radius: 999px;
+  background: #f8ecd2; color: #6d4715; cursor: pointer; font-size: 0.9rem;
+}
+.story-name-chip:hover { background: #efdcae; }
+.story-journal { text-align: left; }
+.story-journal .story-title { text-align: center; }
+.story-journal-list { max-height: 52vh; overflow-y: auto; margin-bottom: 14px; }
+.story-journal-phase {
+  font-size: 0.8rem; letter-spacing: 1.5px; text-transform: uppercase;
+  color: #a3701f; margin: 12px 0 4px;
+}
+.story-journal-entry { margin: 4px 0; }
+.story-journal-entry summary { cursor: pointer; font-weight: 600; }
+.story-journal-entry p { margin: 6px 0 8px 20px; line-height: 1.45; }
+.story-journal .story-btn { display: block; margin: 0 auto; }
+.hud-objective {
+  font-size: 0.9rem; line-height: 1.35; margin-top: 6px;
+  color: #ffe082;
+}
+.hud-btn-row { display: flex; gap: 8px; }
+.hud-gems { font-size: 0.95rem; margin-top: 6px; color: #b3e5fc; font-weight: 600; }
+/* Road Home map card */
+.story-map .map-stops { text-align: left; margin: 10px 0 6px; }
+.map-stop {
+  display: flex; align-items: center; gap: 8px;
+  padding: 3px 6px; border-radius: 8px; font-size: 1.02rem;
+}
+.map-stop.current { background: rgba(255, 213, 79, 0.35); font-weight: 700; }
+.map-stop.locked { opacity: 0.55; }
+.map-mark { width: 1.4em; text-align: center; }
+.map-here {
+  margin-left: auto; font-size: 0.78rem; color: #a15c00;
+  background: #ffe082; border-radius: 10px; padding: 1px 8px;
+}
+.map-progress { margin-top: 8px; font-weight: 600; }
+.map-gems { color: #0277bd; }
+/* Cross-device handoff overlays + transfer buttons */
+#handoff-overlay {
+  position: fixed; inset: 0; z-index: 900;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(18, 10, 28, 0.88);
+}
+#handoff-overlay.hidden { display: none; }
+.handoff-card {
+  background: linear-gradient(165deg, #fdf3dd, #f4e2bb);
+  color: #4a3520; border-radius: 8px; padding: 28px 32px;
+  max-width: 420px; width: 92%; text-align: center;
+  border: 1px solid #d9bf8c;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+.handoff-card h2 { margin: 0 0 10px; font-size: 1.45rem; }
+.handoff-card p { margin: 0 0 12px; line-height: 1.45; }
+.handoff-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 14px; }
+/* Hidden for now — wiring stays in handoff.js if we want Refresh status back. */
+.handoff-refresh-btn { display: none !important; }
+.handoff-hint { font-size: 0.88rem; opacity: 0.85; margin-top: 12px; }
+.hud-btn.handoff-transfer, .quiz-btn.handoff-transfer {
+  background: #5c6bc0; color: #fff;
+}
+.quiz-go-overlay .handoff-transfer,
+.quiz-go-overlay .quiz-go-cancel {
+  display: block; min-width: 220px; margin: 0;
+}
+.quiz-go-cancel.hidden { display: none; }
+.quiz-handoff-offer {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  margin-top: 18px;
+}
+.quiz-handoff-offer .quiz-btn { min-width: 220px; }

@@ -1,0 +1,406 @@
+---
+import SiteLayout from '../../components/SiteLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+<SiteLayout title="Family — Focus on Foundations">
+  <Header />
+  <main class="auth-page">
+    <div class="container">
+      <div class="auth-card auth-card-wide">
+        <h1>Family</h1>
+        <p class="auth-status" id="page-status" role="status"></p>
+
+        <div id="signed-out" hidden>
+          <p>Sign in to manage your family.</p>
+          <p class="auth-links"><a class="primary-button" href="/account/sign-in/">Sign in</a></p>
+        </div>
+
+        <div id="no-family" hidden>
+          <p>
+            A family links accounts so parents can see their kids’ learning progress, manage
+            which tools each child can use, and keep everything deletable in one place.
+          </p>
+          <form class="auth-form" id="create-family-form" novalidate>
+            <div class="form-field">
+              <label for="family-name">Family name</label>
+              <input id="family-name" type="text" placeholder="Our family" />
+            </div>
+            <button class="primary-button" type="submit">Create a family</button>
+          </form>
+          <div class="auth-divider">or</div>
+          <form class="auth-form" id="join-family-form" novalidate>
+            <div class="form-field">
+              <label for="invite-code">Invite code from a guardian</label>
+              <input id="invite-code" type="text" autocomplete="off" />
+            </div>
+            <button class="primary-button" type="submit">Join family</button>
+          </form>
+        </div>
+
+        <div id="has-family" hidden>
+          <h2 id="family-title"></h2>
+          <ul class="family-members" id="member-list"></ul>
+
+          <div id="child-view" hidden>
+            <p class="auth-guest-note">
+              Your account is part of this family. Settings and data access are managed by
+              your parent or guardian.
+            </p>
+          </div>
+
+          <div id="guardian-tools" hidden>
+            <h2>Add a child account</h2>
+            <form class="auth-form" id="add-child-form" novalidate>
+              <div class="form-field">
+                <label for="child-name">Child’s display name</label>
+                <input id="child-name" type="text" required />
+              </div>
+              <div class="form-field">
+                <label for="child-email">Email for the child’s sign-in</label>
+                <input id="child-email" type="email" required />
+                <small>A parent plus-address works well, e.g. <code>you+kidname@gmail.com</code> — codes and account email go to your inbox.</small>
+              </div>
+              <div class="form-field">
+                <label for="child-password">Password for the child</label>
+                <input id="child-password" type="text" autocomplete="off" minlength="8" required />
+                <small>At least 8 characters with an uppercase letter, a lowercase letter, and a number. You keep this — young kids’ sign-ins are managed by you.</small>
+              </div>
+              <div class="form-field">
+                <label class="consent-label">
+                  <input id="child-consent" type="checkbox" />
+                  <span id="consent-text"></span>
+                </label>
+              </div>
+              <button class="primary-button" type="submit">Create child account</button>
+            </form>
+
+            <h2>Invite another guardian</h2>
+            <p>We’ll email them a link that accepts the invite (single-use, expires in 7 days).</p>
+            <form class="auth-form" id="invite-form" novalidate>
+              <div class="form-field">
+                <label for="invite-email">Their email</label>
+                <input id="invite-email" type="email" autocomplete="off" required />
+              </div>
+              <div class="form-field">
+                <label for="invite-message">Add a custom message (optional)</label>
+                <textarea id="invite-message" rows="2"></textarea>
+              </div>
+              <div class="form-field">
+                <label class="consent-label">
+                  <input id="invite-cc" type="checkbox" checked />
+                  <span>Send me a copy (so you can re-forward it if it lands in their spam)</span>
+                </label>
+              </div>
+              <button class="primary-button" type="submit" id="send-invite">Send invite</button>
+            </form>
+            <p class="invite-code-display" id="invite-display" hidden></p>
+
+            <h2>Leave family</h2>
+            <button class="danger-button" id="leave-family" type="button">Leave this family</button>
+          </div>
+        </div>
+
+        <div id="member-detail" hidden>
+          <h2 id="detail-title"></h2>
+          <div id="detail-content"></div>
+        </div>
+
+        <p class="auth-links"><a href="/account/">← Back to your account</a></p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</SiteLayout>
+
+<script>
+  import { isAuthConfigured } from '../../lib/auth-config.js';
+  import { getSessionInfo } from '../../lib/auth.js';
+  import {
+    GUARDIAN_CONSENT_TEXT,
+    addChildAccount,
+    createFamily,
+    createGuardianInvite,
+    deleteChildAccount,
+    getFamily,
+    getMemberData,
+    joinFamily,
+    leaveFamily,
+    resolveEntitlement,
+    setChildEntitlements,
+  } from '../../lib/family.js';
+
+  const statusEl = document.getElementById('page-status');
+  function showStatus(message, isError = false) {
+    statusEl.textContent = message;
+    statusEl.classList.toggle('is-error', isError);
+  }
+  let mySub = null;
+
+  function memberLine(member, family) {
+    const li = document.createElement('li');
+    const label = document.createElement('span');
+    label.textContent = `${member.displayName || member.email || member.sub} — ${member.role}${member.sub === mySub ? ' (you)' : ''}`;
+    li.appendChild(label);
+    if (family.yourRole === 'guardian' && member.role === 'child') {
+      const viewBtn = document.createElement('button');
+      viewBtn.type = 'button';
+      viewBtn.className = 'link-button';
+      viewBtn.textContent = 'View data & settings';
+      viewBtn.addEventListener('click', () => showMemberDetail(member));
+      li.appendChild(viewBtn);
+    }
+    return li;
+  }
+
+  async function showMemberDetail(member) {
+    const box = document.getElementById('member-detail');
+    const content = document.getElementById('detail-content');
+    document.getElementById('detail-title').textContent = `${member.displayName || member.email} (child)`;
+    content.textContent = 'Loading…';
+    box.hidden = false;
+    try {
+      const data = await getMemberData(member.sub);
+      content.textContent = '';
+
+      const summary = document.createElement('p');
+      const byApp = new Map();
+      for (const entry of data.entries) byApp.set(entry.app, (byApp.get(entry.app) || 0) + 1);
+      summary.textContent = data.entries.length
+        ? `${data.entries.length} saved item${data.entries.length === 1 ? '' : 's'}: `
+          + [...byApp.entries()].map(([app, n]) => `${app} (${n})`).join(', ')
+        : 'No saved activity yet.';
+      content.appendChild(summary);
+
+      if (member.consent) {
+        const consent = document.createElement('p');
+        consent.className = 'auth-guest-note';
+        consent.textContent = `Guardian consent recorded ${member.consent.at} (version ${member.consent.consentVersion}).`;
+        content.appendChild(consent);
+      }
+
+      const entHeader = document.createElement('h3');
+      entHeader.textContent = 'Access settings';
+      content.appendChild(entHeader);
+      const profileForMember = data.profile || {};
+      const analysisLabel = document.createElement('label');
+      analysisLabel.className = 'consent-label';
+      const analysisToggle = document.createElement('input');
+      analysisToggle.type = 'checkbox';
+      analysisToggle.checked = Boolean(resolveEntitlement(profileForMember, '*').analysis);
+      analysisLabel.appendChild(analysisToggle);
+      analysisLabel.appendChild(document.createTextNode(
+        ' Allow this child to use analysis tools (their own data only)'
+      ));
+      content.appendChild(analysisLabel);
+      const saveEnt = document.createElement('button');
+      saveEnt.type = 'button';
+      saveEnt.className = 'primary-button';
+      saveEnt.textContent = 'Save access settings';
+      saveEnt.addEventListener('click', async () => {
+        try {
+          await setChildEntitlements(member.sub, {
+            '*': { analysis: analysisToggle.checked, analysisScope: 'own' },
+          });
+          showStatus('Access settings saved.');
+        } catch (error) {
+          showStatus(error.message, true);
+        }
+      });
+      content.appendChild(saveEnt);
+
+      const delHeader = document.createElement('h3');
+      delHeader.textContent = 'Delete this child account';
+      content.appendChild(delHeader);
+      const delNote = document.createElement('p');
+      delNote.textContent = 'Permanently deletes the child’s sign-in and all saved data (this is also how you withdraw consent). Cannot be undone.';
+      content.appendChild(delNote);
+      const delBtn = document.createElement('button');
+      delBtn.type = 'button';
+      delBtn.className = 'danger-button';
+      delBtn.textContent = 'Delete child account…';
+      let armed = false;
+      delBtn.addEventListener('click', async () => {
+        if (!armed) {
+          armed = true;
+          delBtn.textContent = 'Click again to permanently delete';
+          return;
+        }
+        try {
+          await deleteChildAccount(member.sub);
+          showStatus('Child account and data deleted.');
+          box.hidden = true;
+          init();
+        } catch (error) {
+          showStatus(error.message, true);
+        }
+      });
+      content.appendChild(delBtn);
+    } catch (error) {
+      content.textContent = `Couldn’t load: ${error.message}`;
+    }
+  }
+
+  async function renderFamily(family) {
+    // Reset role sections first — a stale cached render must never leave the
+    // other role's tools visible.
+    document.getElementById('guardian-tools').hidden = true;
+    document.getElementById('child-view').hidden = true;
+    document.getElementById('has-family').hidden = false;
+    document.getElementById('family-title').textContent = family.name || 'Your family';
+    const list = document.getElementById('member-list');
+    list.textContent = '';
+    for (const member of family.members) list.appendChild(memberLine(member, family));
+    if (family.yourRole === 'guardian') {
+      document.getElementById('guardian-tools').hidden = false;
+    } else {
+      document.getElementById('child-view').hidden = false;
+    }
+  }
+
+  const FAMILY_CACHE_KEY = 'fofFamilyCache';
+  function readInviteFromUrl() {
+    const code = new URLSearchParams(window.location.search).get('invite');
+    if (code) {
+      sessionStorage.setItem('fofPendingInvite', code);
+      history.replaceState(null, '', window.location.pathname);
+    }
+    return sessionStorage.getItem('fofPendingInvite');
+  }
+  async function init() {
+    document.getElementById('has-family').hidden = true;
+    document.getElementById('no-family').hidden = true;
+    document.getElementById('guardian-tools').hidden = true;
+    document.getElementById('child-view').hidden = true;
+    if (!isAuthConfigured()) {
+      showStatus('Accounts aren’t live in this environment yet.');
+      return;
+    }
+    // Instant render from the last-seen family, refreshed from the server below —
+    // the page shouldn't sit empty while session + API round-trips complete.
+    const cached = sessionStorage.getItem(FAMILY_CACHE_KEY);
+    if (cached) {
+      try { await renderFamily(JSON.parse(cached)); } catch {}
+    } else {
+      showStatus('Loading…');
+    }
+    const pendingInvite = readInviteFromUrl();
+    const session = await getSessionInfo();
+    if (!session.signedIn) {
+      document.getElementById('has-family').hidden = true;
+      document.getElementById('signed-out').hidden = false;
+      showStatus(pendingInvite ? 'Sign in (or create an account) to accept your family invite.' : '');
+      return;
+    }
+    mySub = session.userId;
+    document.getElementById('consent-text').textContent = GUARDIAN_CONSENT_TEXT;
+    try {
+      let family = await getFamily();
+      if (!family && pendingInvite) {
+        showStatus('Accepting your invite…');
+        try {
+          await joinFamily(pendingInvite);
+          family = await getFamily();
+          showStatus('Welcome — you joined the family.');
+        } catch (error) {
+          showStatus(`Couldn’t accept the invite: ${error.message}`, true);
+        }
+        sessionStorage.removeItem('fofPendingInvite');
+      } else if (family && pendingInvite) {
+        sessionStorage.removeItem('fofPendingInvite');
+      }
+      if (family) {
+        sessionStorage.setItem(FAMILY_CACHE_KEY, JSON.stringify(family));
+        if (statusEl.textContent === 'Loading…') showStatus('');
+        await renderFamily(family);
+      } else {
+        sessionStorage.removeItem(FAMILY_CACHE_KEY);
+        showStatus('');
+        document.getElementById('no-family').hidden = false;
+      }
+    } catch (error) {
+      showStatus(error.message, true);
+    }
+  }
+
+  document.getElementById('create-family-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    try {
+      await createFamily(document.getElementById('family-name').value.trim() || 'Our family');
+      showStatus('Family created.');
+      init();
+    } catch (error) {
+      showStatus(error.message, true);
+    }
+  });
+  document.getElementById('join-family-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const code = document.getElementById('invite-code').value.trim();
+    if (!code) return;
+    try {
+      await joinFamily(code);
+      showStatus('Joined the family.');
+      init();
+    } catch (error) {
+      showStatus(error.message, true);
+    }
+  });
+  document.getElementById('add-child-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!document.getElementById('child-consent').checked) {
+      showStatus('Please confirm the guardian consent statement first.', true);
+      return;
+    }
+    showStatus('Creating child account…');
+    try {
+      await addChildAccount({
+        email: document.getElementById('child-email').value.trim(),
+        displayName: document.getElementById('child-name').value.trim(),
+        password: document.getElementById('child-password').value,
+        consentAgreed: true,
+      });
+      showStatus('Child account created — they can sign in with the email and password you set.');
+      event.target.reset();
+      init();
+    } catch (error) {
+      showStatus(error.message, true);
+    }
+  });
+  document.getElementById('invite-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const email = document.getElementById('invite-email').value.trim();
+    if (!email) {
+      showStatus('Enter the other guardian’s email address.', true);
+      return;
+    }
+    showStatus('Sending invite…');
+    try {
+      const invite = await createGuardianInvite({
+        email,
+        message: document.getElementById('invite-message').value.trim(),
+        ccSelf: document.getElementById('invite-cc').checked,
+      });
+      showStatus('');
+      const display = document.getElementById('invite-display');
+      display.hidden = false;
+      display.textContent = `Invite emailed to ${invite.emailedTo}`
+        + (invite.ccSelf ? ' (copy sent to you)' : '')
+        + '. It expires in 7 days.';
+      event.target.reset();
+      document.getElementById('invite-cc').checked = true;
+    } catch (error) {
+      showStatus(error.message, true);
+    }
+  });
+  document.getElementById('leave-family').addEventListener('click', async () => {
+    try {
+      await leaveFamily(mySub);
+      sessionStorage.removeItem(FAMILY_CACHE_KEY);
+      showStatus('You left the family.');
+      init();
+    } catch (error) {
+      showStatus(error.message, true);
+    }
+  });
+  init();
+</script>

@@ -1,0 +1,11 @@
+schema: spec-driven
+
+context: |
+  App: content-forge
+  App stage: S1-dev
+  Spec stage: openspec-single-spec
+  Capability model: one living capability named "app" covers the whole Content Forge app until future content-tools capabilities split.
+  Tech stack: Python engine package (dforge/) with implicit typing; shared content-tools FastAPI + uvicorn local server bound to 127.0.0.1; hand-authored static HTML/JS UI served with a per-run session token; Deutsch graph services (dgraph.divergence, dgraph.grounding, dgraph.llm_util); pytest with stubbed LLM calls.
+  Data model: user description, routed topics/categories/concept needles, context package manifest, generated markdown piece, per-section citation sidecar, invalid citation records, coverage stats, and local saved runs under apps/deutsch/content-forge/data/runs/ via ctools.runs.
+  Key conventions: no product-specific logic belongs in ctools; dforge.engine exposes run_from_request(payload, state); outputs are text-only in v1; every generated piece must use ## section headings; citation sidecars are pure post-processing with no LLM repair call; web/content-forge.html is hand-authored source; data/ is local output only.
+  Provenance baseline: every markdown output includes the fixed AI-generated disclosure that the piece was generated from cited deutsch-graph sources and was not written or endorsed by David Deutsch. Dialogue outputs use fictional speakers, not "Deutsch" as a synthetic speaker label.

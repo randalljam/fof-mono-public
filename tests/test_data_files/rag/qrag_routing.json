@@ -1,0 +1,10 @@
+{
+    "metadata": {
+        "source": "synthetic test fixture"
+    },
+    "content": {
+        "user_question": "How many generated markers were recorded?",
+        "route": "synthetic",
+        "answer": "The fictional sensor recorded four markers."
+    }
+}

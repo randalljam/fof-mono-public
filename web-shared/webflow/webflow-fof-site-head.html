@@ -1,0 +1,565 @@
+<!--===== START OF FILE webflow-fof-site-head.html  =====--> 
+<!-- deploy: copy to Site Settings > Custom Code > Head -->
+<!-- contains: libraries and css styles not included in Webflow designer -->
+
+<script>
+  var fileInfo = `webflow-fof-site-head.html   2-21 0442 mobile margin-left`;
+  console.log('CSS loaded from site head  ', fileInfo);
+</script>
+
+<!-- Include validator.js library -->
+<script src="https://cdn.jsdelivr.net/npm/validator@latest/validator.min.js"></script>
+
+<!-- Include Sygnal SA5 Library for User Accounts -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sygnaltech/webflow-util@5.4.6/dist/css/webflow-membership.css">
+<script 
+    defer 
+    src="https://cdn.jsdelivr.net/gh/sygnaltech/webflow-util@5.4.6/dist/nocode/webflow-membership.js"
+    onload="console.log('Sygnal membership js library loaded successfully');"
+    onerror="console.error('Failed to load Sygnal membership js library');">
+</script>
+
+<!-- Configures the Sygnal SA5 membership system -->
+<script>
+    window.sa5 = window.sa5 || [];
+    window.sa5.push(['getMembershipConfig', (config) => {
+        console.log('Current SA5 membership config:', config);
+        
+        // Apply any configuration settings here
+        // such as access groups
+        
+        console.log('After any new config setting, Returning SA5 membership config:', config);
+        return config;
+    }]);
+</script>
+
+<!--  Existing Styles Used in webflow-qrag-input-component-embed.html */
+   .primary-button
+   .w-button
+-->
+
+<style>
+/* Used for elements in webflow-privacy-consent-component-embed.html
+/* .privacy-consent-box .checkbox-label {
+  white-space: normal; /* Allows normal wrapping 
+  line-height: 1.4; /* Adjust line-height for better vertical alignment 
+}*/
+
+.privacy-consent-box .checkbox-label a {
+  white-space: nowrap; /* Prevents awkward breaks in linked text if desired */
+}
+
+/* Used for elements in webflow-qrag-input-component-embed.html */
+.qrag-input-component {
+  margin-bottom: 10px;
+}
+
+.nicename-container {
+  position: relative;
+  margin-bottom: 4px;
+}
+
+.nicename-textarea {
+  width: 100%;
+  max-width: 300px; /* Limit width on desktop */
+  padding-top: 14px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  font-size: 16px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  resize: none;
+  overflow-y: hidden;
+  color: black;
+  line-height: 16px;
+}
+
+@media screen and (max-width: 767px) {
+  .nicename-textarea {
+    max-width: 100%; /* Full width on mobile */
+  }
+}
+
+.botsubmit-textarea {
+  width: 100%;
+  padding-top: 14px;
+  padding-right: 50px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  font-size: 16px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  resize: none;
+  overflow-y: hidden;
+  color: black;
+  line-height: 20px;
+}
+
+.botsubmit-error {
+  display: none;
+  color: red;
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.botsubmit-button {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 14px;
+  background-color: #3898ec;
+  border: none;
+  color: #fff;
+  font-family: 'Lato, sans-serif';
+  font-weight: 400;
+  line-height: 20px;
+  transform: translateY(2px);  /* Add this line to shift button down */
+}
+
+.botsubmit-button-icon {
+  font-size: 20px;
+  transform: translateY(2px);  /* Add this line to shift icon down */
+}
+
+.botsubmit-container {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.num-chunks-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.num-chunks-label {
+  margin-right: 10px;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.num-chunks-options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.num-chunks-option {
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  color: #333;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.num-chunks-option.selected {
+  background-color: #3898ec;
+  color: white;
+}
+
+.num-chunks-option:hover {
+  background-color: #e0e0e0;
+}
+
+.num-chunks-option.selected:hover {
+  background-color: #3898ec;
+}
+
+@media (hover: none) {
+  .num-chunks-option:not(.selected):active {
+    background-color: #e0e0e0;
+  }
+}
+
+@media (hover: hover) {
+  button:hover {
+    opacity: 0.9;
+  }
+}
+
+/* Styles for date range component */
+/* Update date range styles to match num-chunks layout */
+.qrag-input-component[data-show-date-range="false"] .date-range-container {
+  display: none;
+}
+.date-range-container {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;  /*  (top/bottom and left/right) */
+  gap: 10px;
+}
+.date-input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 130px;
+}
+
+/* Added CSS Classes for webflow-css_rag-devpage.js */
+  .icon-button {
+    margin-top: 10px;
+    margin-left: 20px;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 14px;
+    cursor: pointer;
+    background-color: #3898ec; /* Add background color if needed */
+    border: none; /* Add border style if needed */
+    color: #fff; /* Add text color if needed */
+    font-family: 'Lato, sans-serif'; /* Add font family if needed */
+    font-weight: 400; /* Add font weight if needed */
+    line-height: 20px; /* Add line height if needed */
+  }
+
+  .accordion-toggle {
+    box-sizing: border-box;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    pointer-events: auto;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: none;
+    height: auto;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 10px 0 0;
+    font-family: Lato, sans-serif;
+    display: flex;
+  }
+
+  .accordion-item {
+    margin-bottom: 10px;
+    margin-left: 0;
+    margin-right: 0;
+    display: block;
+    overflow: hidden;
+  }
+
+  .accordion-icon {
+    height: 20px;
+    margin-top: 10px;
+    margin-left: 0;
+    margin-right: 20px;
+    display: block;
+    position: absolute;
+    inset: 0% auto 0% 0%;
+  }
+
+  .accordion-dropdown-list {
+    background-color: var(--white);
+    padding-left: 30px;
+    padding-right: 10px;
+    font-family: Lato, sans-serif;
+    display: block;
+    position: static;
+  }
+
+  .accordion-title-text {
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: normal;
+    cursor: auto;
+    max-height: none;
+    margin-left: 20px;
+    padding-bottom: 5px;
+    font-size: 20px;
+    font-weight: 700;
+    transition-property: opacity;
+    transition-duration: .2s;
+    transition-timing-function: ease;
+    display: block;
+    overflow: hidden;
+  }
+
+  .accordion-dropdown-text {
+    margin-top: 20px;
+    font-size: 16px;
+  }
+
+  .button-processing {
+    background-color: #f0ad4e;
+    }
+
+  .icon-stop {
+  font-size: 24px;
+  transform: translateY(10%);
+  }
+  .button-initial {
+  background-color: #3898ec;
+  }
+  .icon-arrow-up {
+  font-size: 20px;
+  }
+  .accordion-dropdown-text-waiting {
+  color: red;
+  font-style: italic;
+  }
+  .accordion-dropdown-text-ai-answer {
+  color: red;
+  }
+  .hidden-div {
+  display: none;
+  }
+  .share-div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: left;
+  margin-left: 0;  /* Added 2-22 0433 */
+  }
+  .email-input-address {
+  display: none;
+  margin-left: 20px;
+  width: 300px;
+  height: 30px;
+  transform: translateY(30%);
+  }
+  .email-checkbox-container {
+  display: none;
+  margin-left: 20px;
+  transform: translateY(60%);
+  }
+  .email-checkbox {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  }
+  .email-checkbox-label {
+  display: inline-block;
+  font-size: 12px;
+  margin-left: 5px;
+  }
+  .temp-message {
+  text-align: left;
+  margin-left: 200px;
+  margin-top: 10px;
+  }
+  .temp-message-error {
+  color: red;
+  }
+  .temp-message-success {
+  color: green;
+  }
+
+  /* ===== SOURCE PAGE STYLES for transcript and qa html pages ===== */
+  .source-page {
+      margin: 0 auto;
+      max-width: 700px;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 0;  /* Add this to remove top padding */
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+  }
+
+  /* Headings */
+  .source-page h1 {
+      margin-top: 0;  /* Add this to remove top margin from h1 */
+  }
+  .source-page h1,
+  .source-page h2,
+  .source-page h3 {
+      font-size: 20px;
+      margin-bottom: 0.8em;
+      line-height: 1.2; /* 2-17 Add tighter line spacing for wrapped text */
+  }
+  .source-page h1, 
+  .source-page h2, 
+  .source-page h3, 
+  .source-page h4{
+      font-weight: 700;
+  }
+  .source-page h4 {
+      margin: .3em 0;
+      padding: 0;
+  }
+  .source-page p::first-line {
+      font-weight: 700;
+  }
+  .source-page p strong:not(:first-child) {
+      font-weight: 700;
+      color: #ff0000;
+  }
+
+  /* Details/Summary structure */
+  .source-page details {
+      margin: 0.1em 0;
+      padding: 0;
+      border: none;
+      font-family: Lato, sans-serif;
+  }
+  .source-page summary {
+      cursor: pointer;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      font-weight: 700;
+      color: #0c02c5;
+  }
+  .source-page summary::before {
+      content: "›";
+      display: inline-block;
+      margin-right: 0.5em;
+      transition: transform 0.2s;
+      font-size: 1.5em;
+      transform: translateY(0em);
+      color: #0c02c5;
+  }
+  .source-page details[open] > summary::before {
+      transform: translateY(0em) rotate(90deg);
+  }
+  .source-page summary::-webkit-details-marker {
+      display: none;
+  }
+  .source-page details > p {
+      padding-left: 30px;
+      padding-right: 10px;
+      font-size: 14px;
+      margin-top: 2px;
+  }
+
+  /* Nested details */
+  .source-page details details {
+      margin-left: 20px;
+      margin-top: 0.5em;
+  }
+  .source-page details details > summary {
+      --question-color: #cc0000;  /* Define color once */
+      font-size: 16px;
+      color: var(--question-color);
+      font-weight: 700;
+  }
+  .source-page details details > summary::before {   /* Collapse arrow character */
+      font-size: 20px;  /* Match the text size */
+      color: var(--question-color);  /* Use same color variable */
+  }
+  /* Double nested details (Answers) */
+  .source-page details details details {
+      margin-left: 10px;
+      margin-top: 0.5em;
+  }
+  .source-page details details details > summary {
+      --answer-color: #2a2525;  /* Define color once */
+      font-size: 16px;
+      color: var(--answer-color);
+      font-weight: normal;
+  }
+  .source-page details details details > summary::before {
+      font-size: 16px;  /* Match the text size */
+      color: var(--answer-color);  /* Use same color variable */
+  }
+
+  /* Header and control panel */
+  .source-page header {
+      position: sticky;
+      top: 0;
+      background: #fdfdfd;
+      padding: 0 0 10px 0;  /* Change this from padding: 10px 0 to only have bottom padding */
+      z-index: 100;
+      border-bottom: 1px solid #eee;
+      text-align: center;
+  }
+  .source-page .control-panel {
+      display: flex;
+      gap: 10px;
+      margin: 10px 0;
+      justify-content: center;
+  }
+  .source-page .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+  }
+  .source-page .header-row h3 {
+      text-align: left;
+  }
+  .button-small-text {
+    font-size: 14px;
+    line-height: 1.2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .button-orange {
+    background-color: #ff9933;
+  }
+
+  /* Print styles */
+  @media print {
+      .source-page {
+          background-color: transparent;
+          color: black;
+          font-size: 16pt;
+      }
+      
+      .source-page p, 
+      .source-page h2, 
+      .source-page h3 {
+          orphans: 3;
+          widows: 3;
+      }
+      
+      .source-page h2, 
+      .source-page h3, 
+      .source-page h4 {
+          page-break-after: avoid;
+      }
+  }
+
+  /* Mobile responsiveness */
+  @media screen and (max-width: 767px) {
+      .source-page {
+          font-size: 0.9em;
+          padding: 12px;
+      }
+  }
+  @media (max-width: 600px) {
+      .source-page {
+          padding: 4px;
+      }
+      
+      .source-page h1 {
+          font-size: 1.2em;
+      }
+      .share-div {
+        margin-left: 0;
+      }
+      .accordion-card {
+        margin-left: 0;
+      }
+  }
+</style>
+
+<!--
+  /* Existing Styles Used in webflow-css_rag-devpage.js */
+  /* .primary-button */
+  /* .w-button */
+  /* .botsubmit-textarea */
+  /* .botsubmit-error */
+  /* .accordion-card */
+  /* .accordion-item */
+  /* .accordion-toggle */
+  /* .accordion-icon */
+  /* .accordion-title-text */
+  /* .accordion-dropdown-list */
+  /* .accordion-dropdown-text */
+  /* .hidden-div */
+  /* .share-div */
+  /* .email-input-address */
+  /* .email-checkbox-container */
+-->
+<!--===== END OF FILE webflow-fof-site-head.html  =====-->

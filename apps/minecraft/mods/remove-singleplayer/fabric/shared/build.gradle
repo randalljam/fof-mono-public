@@ -1,0 +1,30 @@
+// Shared Fabric source. The fabric-* target(s) pull this directory in as an extra source
+// directory; the target subprojects own the actual Loom configuration, mappings choice,
+// and Minecraft version.
+//
+// This module does not apply Loom directly. We mark it as a plain Java project so IDE
+// indexing works, but the real compile happens inside each target.
+
+apply plugin: 'java-library'
+
+base {
+    archivesName = "${project.archives_base_name}-fabric-shared"
+}
+
+sourceSets {
+    main {
+        java { srcDirs = [] }
+        resources { srcDirs = [] }
+    }
+    test {
+        java { srcDirs = [] }
+        resources { srcDirs = [] }
+    }
+}
+
+tasks.named('jar').configure { enabled = false }
+tasks.named('compileJava').configure { enabled = false }
+tasks.named('compileTestJava').configure { enabled = false }
+tasks.named('processResources').configure { enabled = false }
+tasks.named('processTestResources').configure { enabled = false }
+tasks.named('test').configure { enabled = false }

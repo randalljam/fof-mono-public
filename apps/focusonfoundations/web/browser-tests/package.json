@@ -1,0 +1,11 @@
+{
+  "name": "focusonfoundations-browser-tests",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "node run.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.45.0"
+  }
+}

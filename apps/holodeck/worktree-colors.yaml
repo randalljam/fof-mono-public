@@ -1,0 +1,58 @@
+# file: apps/holodeck/worktree-colors.yaml
+# Stable title-bar colors for holodeck worktree cards.
+# Survives branch merges and new worktree folder creation — match by display name
+# (checkout folder basename or codex-*.code-workspace stem), case-insensitive.
+# First matching rule wins. Reuse when creating worktrees for the same app/area.
+
+foreground: "#ffffff"
+fallback_background: "#245f99"
+
+rules:
+  - id: minecraft
+    name_contains: minecraft
+    background: "#800000"
+
+  - id: fof-mono-main
+    name_exact: fof-mono
+    branch: main
+    background: "#068102"
+
+  - id: holodeck
+    name_contains: holodeck
+    background: "#2696d3"
+
+  - id: stellar-transcriber
+    name_contains: stellar-transcriber
+    background: "#22ae96"
+
+  - id: web-site-fof
+    name_contains_all: [web-site, website, fof]
+    background: "#a25605"
+
+  - id: dragon-baby
+    name_contains: dragon-baby
+    background: "#8625ab"
+
+  - id: deutsch
+    name_contains: deutsch
+    background: "#c2185b"
+
+  - id: voice-router
+    name_contains: voice-router
+    background: "#564776"
+
+  - id: content-studio
+    name_contains: content-studio
+    background: "#d3872b"
+
+  - id: autolearner
+    name_contains: autolearner
+    background: "#ba3720"
+
+  - id: admin
+    name_contains: admin
+    background: "#001f3f"
+
+  - id: flex
+    name_contains: flex
+    background: "#64748b"

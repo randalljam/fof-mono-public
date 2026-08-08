@@ -1,0 +1,6 @@
+chalice
+boto3
+requests
+pytz
+termcolor
+PyJWT

@@ -1,0 +1,11 @@
+schema: spec-driven
+
+context: |
+  App: content-redo
+  App stage: S1-dev
+  Spec stage: openspec-single-spec
+  Capability model: one living capability named "app" covers the whole app until future content-tools capabilities split.
+  Tech stack: Python engine package (dredo/) with implicit typing; shared content-tools FastAPI + uvicorn local server bound to 127.0.0.1; hand-authored static HTML/JS UI served with a per-run session token; Deutsch graph services (dgraph.claims, dgraph.divergence, dgraph.grounding, dgraph.llm_util); pytest with stubbed LLM calls.
+  Data model: source turns, extracted claims, divergence verdicts, grounded citations, sanitized rewrite plan, dropped plan rows, per-turn diff rows, applied changes, skipped notes, rewritten markdown, change-list markdown, and JSON sidecar. Saved runs are local JSON files under apps/deutsch/content-redo/data/runs/ via ctools.runs.
+  Key conventions: no product-specific logic belongs in ctools; dredo.engine exposes run_from_request(payload, state); default degree is 2; default reading level is adult; unchanged turns are copied byte-identically; no-position claims are never corrected; web/content-redo.html is hand-authored source; data/ is local output only.
+  Ethics baseline: every markdown output includes the private-education AI-transformation disclosure and every applied change carries graph-grounded citations. Publishing-safe behavior is explicitly deferred.

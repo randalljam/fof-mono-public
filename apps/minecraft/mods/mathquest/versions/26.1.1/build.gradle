@@ -1,0 +1,90 @@
+plugins {
+    id 'fabric-loom' version '1.15.+'
+    id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // To change the versions see the gradle.properties file
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    // Yarn when published for your MC version; otherwise official Mojang mappings (see mappings_kind)
+    if ((project.findProperty('mappings_kind') ?: 'yarn') == 'official_mojang') {
+        mappings loom.officialMojangMappings()
+    } else {
+        mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    }
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    // Fabric API
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    // SQLite JDBC for quiz data tracking
+    include implementation("org.xerial:sqlite-jdbc:3.49.1.0")
+
+    // Test dependencies (added post-ffd2696 for unit tests)
+    testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+    testImplementation "org.xerial:sqlite-jdbc:3.49.1.0"
+    testImplementation "com.google.code.gson:gson:2.11.0"
+}
+
+tasks.register('generateNerdTexture', JavaExec) {
+    description = 'Generate the Wandering Nerd texture PNG from the base villager texture'
+    classpath = files('tools')
+    mainClass = 'GenerateNerdTexture'
+    args = [
+        'tools/villager_base.png',
+        'src/main/resources/assets/mathquest/textures/entity/wandering_nerd.png'
+    ]
+    inputs.file 'tools/villager_base.png'
+    inputs.file 'tools/GenerateNerdTexture.java'
+    outputs.file 'src/main/resources/assets/mathquest/textures/entity/wandering_nerd.png'
+}
+
+tasks.configureEach {
+    if (it.name == 'sourcesJar') { it.dependsOn generateNerdTexture }
+}
+
+processResources {
+    dependsOn generateNerdTexture
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 25
+}
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.base.archivesName.get()}" }
+    }
+}
+
+// Final mod jar name: <archives_base_name>_<minecraft_version>_v<mod_version>.jar (see gradle.properties)
+tasks.named('remapJar') {
+    archiveFileName = "${project.archives_base_name}_${project.minecraft_version}_v${project.mod_version}.jar"
+}

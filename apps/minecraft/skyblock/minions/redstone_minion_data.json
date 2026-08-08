@@ -1,0 +1,114 @@
+{
+  "minion_tiers": {
+    "1": {
+      "speed_seconds": 32,
+      "actions_per_minute": 1.88,
+      "storage_slots": 128,
+      "upgrade_cost": {"item": "redstone_dust", "amount": 128},
+      "cumulative_dust": 128
+    },
+    "2": {
+      "speed_seconds": 29,
+      "actions_per_minute": 2.07,
+      "storage_slots": 192,
+      "upgrade_cost": {"item": "redstone_dust", "amount": 256},
+      "cumulative_dust": 384
+    },
+    "3": {
+      "speed_seconds": 27,
+      "actions_per_minute": 2.22,
+      "storage_slots": 192,
+      "upgrade_cost": {"item": "redstone_dust", "amount": 512},
+      "cumulative_dust": 896
+    },
+    "4": {
+      "speed_seconds": 27,
+      "actions_per_minute": 2.22,
+      "storage_slots": 384,
+      "upgrade_cost": {"item": "enchanted_redstone_dust", "amount": 8},
+      "cumulative_dust": 2176
+    },
+    "5": {
+      "speed_seconds": 25,
+      "actions_per_minute": 2.40,
+      "storage_slots": 384,
+      "upgrade_cost": {"item": "enchanted_redstone_dust", "amount": 24},
+      "cumulative_dust": 6016
+    },
+    "6": {
+      "speed_seconds": 25,
+      "actions_per_minute": 2.40,
+      "storage_slots": 576,
+      "upgrade_cost": {"item": "enchanted_redstone_dust", "amount": 64},
+      "cumulative_dust": 16256
+    },
+    "7": {
+      "speed_seconds": 23,
+      "actions_per_minute": 2.61,
+      "storage_slots": 576,
+      "upgrade_cost": {"item": "enchanted_redstone_dust", "amount": 128},
+      "cumulative_dust": 36736
+    },
+    "8": {
+      "speed_seconds": 23,
+      "actions_per_minute": 2.61,
+      "storage_slots": 768,
+      "upgrade_cost": {"item": "enchanted_redstone_dust", "amount": 256},
+      "cumulative_dust": 77696
+    },
+    "9": {
+      "speed_seconds": 21,
+      "actions_per_minute": 2.86,
+      "storage_slots": 768,
+      "upgrade_cost": {"item": "enchanted_redstone_dust", "amount": 512},
+      "cumulative_dust": 159616
+    },
+    "10": {
+      "speed_seconds": 21,
+      "actions_per_minute": 2.86,
+      "storage_slots": 960,
+      "upgrade_cost": {"item": "enchanted_redstone_block", "amount": 8},
+      "cumulative_dust": 364416
+    },
+    "11": {
+      "speed_seconds": 18,
+      "actions_per_minute": 3.33,
+      "storage_slots": 960,
+      "upgrade_cost": {"item": "enchanted_redstone_block", "amount": 16},
+      "cumulative_dust": 774016
+    }
+  },
+  "prices": {
+    "redstone_dust": 7.4,
+    "enchanted_redstone_dust": 898,
+    "enchanted_redstone_block": 25750,
+    "price_date": "2025-01-20 6am"
+  },
+  "conversion": {
+    "dust_per_enchanted_dust": 160,
+    "enchanted_dust_per_block": 160,
+    "dust_per_block": 25600
+  },
+  "collection_tiers": {
+    "1": {"required": 100, "reward": "Redstone Minion I Recipe"},
+    "2": {"required": 250, "reward": "Small Accessory Bag Upgrade"},
+    "3": {"required": 750, "reward": "Efficiency Exp Discount (-25%)"},
+    "4": {"required": 1500, "reward": "Enchanted Redstone Dust Recipe"},
+    "5": {"required": 3000, "reward": "Weather Stick Recipe"},
+    "6": {"required": 5000, "reward": "Medium Accessory Bag Upgrade"},
+    "7": {"required": 10000, "reward": "Travel Scroll To Deep Caverns Recipe"},
+    "8": {"required": 25000, "reward": "Enchanted Redstone Block Recipe"},
+    "9": {"required": 50000, "reward": "Large Accessory Bag Upgrade, Personal Compactor 4000 Recipe"},
+    "10": {"required": 200000, "reward": "Greater Accessory Bag Upgrade"},
+    "11": {"required": 400000, "reward": "Giant Accessory Bag Upgrade, Personal Compactor 5000 Recipe"},
+    "12": {"required": 600000, "reward": "Massive Accessory Bag Upgrade"},
+    "13": {"required": 800000, "reward": "Humongous Accessory Bag Upgrade, Personal Compactor 6000 Recipe"},
+    "14": {"required": 1000000, "reward": "Colossal Accessory Bag Upgrade, Personal Compactor 7000 Recipe"},
+    "15": {"required": 1200000, "reward": "Titanic Accessory Bag Upgrade"},
+    "16": {"required": 1400000, "reward": "Preposterous Accessory Bag Upgrade"}
+  },
+  "notes": {
+    "enchanted_redstone_dust_recipe": "160 redstone dust",
+    "enchanted_redstone_block_recipe": "160 enchanted redstone dust (25,600 dust total)"
+  }
+}
